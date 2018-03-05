@@ -2,8 +2,22 @@ import React, {Component} from 'react';
 import AddHouse from './components/AddHouse';
 import {createStore, combineReducers} from 'redux';
 import {Provider} from 'react-redux';
-
-let nextAdvantageId = 0;
+import SearchResults from './components/Search/SearchResults';
+import {
+  Row,
+  Grid,
+  Col,
+  Button,
+  DropdownButton,
+  MenuItem,
+  Clearfix,
+  ButtonToolbar,
+  ButtonGroup
+} from 'react-bootstrap';
+import faker from 'faker';
+import Rheostat from 'rheostat';
+import './rheostat.css';
+/*let nextAdvantageId = 0;
 
 const advantages = (state = [], action) => {
   switch (action.type) {
@@ -59,15 +73,84 @@ const superReducer = combineReducers({
   description,
   currency
 });
-const store = createStore(superReducer);
+const store = createStore(superReducer);*/
+
+faker.image.city();
+const data = [];
+for (let i = 0; i < 5; i++) {
+  data.push({
+    link: 'https://instagram.com/annayatsuta',
+    price: faker.random.number(2000, 3000),
+    description: faker.random.words(10),
+    rating: faker.random.number({min: 3, max: 5, precision: 3}),
+    isLiked: faker.random.boolean(),
+    image: faker.image.city(),
+    currency: 'usd'
+  });
+}
+
+let string = `
+link, price, description, rating, isLiked, image,currency
+`;
+
+const searchResult = {
+  link: 'https://instagram.com/annayatsuta',
+  price: 3000,
+  currency: 'rub',
+  description:
+    'Lorem ipsum dolor sit amet consectetur adipisicing elit. Voluptatum similique asperiores non quasi? Deserunt dignissimos quos, officiis repudiandae eos possimus sint, reiciendis distinctio nemo autem perferendis, omnis a. Velit, ad.',
+  rating: 4.5,
+  isLiked: true,
+  image: 'http://clipart-library.com/images/pio5bjdoT.png'
+};
+
+class LabeledSlider extends React.Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      values: props.values || [0]
+    };
+
+    this.updateValue = this.updateValue.bind(this);
+  }
+
+  updateValue(sliderState) {
+    this.setState({
+      values: sliderState.values
+    });
+  }
+
+  render() {
+    const {formatValue} = this.props;
+
+    return (
+      <div
+        style={{
+          margin: '10% auto',
+          height: '50%',
+          width: '50%'
+        }}
+      >
+        <Rheostat
+          {...this.props}
+          onValuesUpdated={this.updateValue}
+          values={this.state.values}
+        />
+        <ol>
+          <lh>Values</lh>
+          {this.state.values.map(value => (
+            <li key={value}>{formatValue ? formatValue(value) : value}</li>
+          ))}
+        </ol>
+      </div>
+    );
+  }
+}
 
 class App extends Component {
   render() {
-    return (
-      <Provider store={store}>
-        <AddHouse />
-      </Provider>
-    );
+    return <LabeledSlider values={[0, 100]} />;
   }
 }
 

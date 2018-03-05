@@ -19,4 +19,4 @@ const StyledTextArea = styled.textarea`
   margin: 10px 0;
 `;
 
-export {StyledInput, StyledTextArea};
+export { StyledInput, StyledTextArea };
