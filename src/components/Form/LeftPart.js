@@ -14,7 +14,7 @@ let CurrencyButton = ({dispatch, currency, active}) => (
 CurrencyButton = connect(
   (state, props) => {
     return {
-      active: state.currency === props.currency
+      active: state.form.currency === props.currency
     };
   },
   dispatch => {

@@ -1,20 +1,45 @@
 import React from 'react';
-import {connect} from 'react-redux';
+import {connect, Provider} from 'react-redux';
 import FA from 'react-fontawesome';
 import LeftPart from './Form/LeftPart';
 import RightPart from './Form/RightPart';
-import {
-  Row,
-  Grid,
-  Col,
-  Button,
-  DropdownButton,
-  MenuItem,
-  Clearfix,
-  ButtonToolbar,
-  ButtonGroup
-} from 'react-bootstrap';
+import {createStore, combineReducers} from 'redux';
+import {Row, Grid, Col, Button} from 'react-bootstrap';
 import {Input, TextArea} from './Input';
+
+let nextAdvantageId = 0;
+
+const advantages = (state = [], action) => {
+  switch (action.type) {
+    case 'add_advantage':
+      return [...state, {id: nextAdvantageId++, text: action.text}];
+    case 'remove_advantage':
+      return state.filter(advantage => advantage.id !== action.id);
+    default:
+      return state;
+  }
+};
+
+const form = (state = {}, action) => {
+  switch (action.type) {
+    case 'change_address':
+      return {...state, address: action.value};
+    case 'change_price':
+      return {...state, price: action.value};
+    case 'change_description':
+      return {...state, description: action.value};
+    case 'change_currency':
+      return {...state, currency: action.currency};
+    default:
+      return state;
+  }
+};
+
+const superReducer = combineReducers({
+  advantages,
+  form
+});
+const store = createStore(superReducer);
 
 let CompleteButton = ({state}) => (
   <Col md={12}>
@@ -35,13 +60,15 @@ CompleteButton = connect(state => {
 class AddHouse extends React.Component {
   render() {
     return (
-      <Grid>
-        <Row>
-          <LeftPart />
-          <RightPart />
-          <CompleteButton />
-        </Row>
-      </Grid>
+      <Provider store={store}>
+        <Grid>
+          <Row>
+            <LeftPart />
+            <RightPart />
+            <CompleteButton />
+          </Row>
+        </Grid>
+      </Provider>
     );
   }
 }
