@@ -14,19 +14,37 @@ import {
 } from 'react-bootstrap';
 import faker from 'faker';
 import SearchResults from './SearchResults';
+import SearchBar from './SearchBar';
 
 const filterReducer = (state = {}, action) => {
   switch (action.type) {
     case 'change_price':
       return {
         ...state,
-        minPrice: action.minPrice || 0,
-        maxPrice: action.maxPrice || 'infinity'
+        price: {
+          min: action.min,
+          max: action.max
+        }
+      };
+    case 'change_rating':
+      return {
+        ...state,
+        rating: {
+          min: action.min,
+          max: action.max
+        }
+      };
+    case 'change_distance':
+      return {
+        ...state,
+        distance: {
+          min: action.min,
+          max: action.max
+        }
       };
     case 'change_request':
       return {...state, request: action.request};
-    case 'change_date':
-      return {...state, date: action.date};
+
     default:
       return state;
   }
@@ -56,9 +74,10 @@ const superReducer = combineReducers({
   filter: filterReducer
 });
 const store = createStore(superReducer);
-
+store.subscribe(() => console.log(store.getState())); //todo post
 class Search extends React.Component {
   componentDidMount() {
+    //there will be fetch
     const data = [];
     for (let i = 0; i < 5; i++) {
       data.push({
@@ -78,6 +97,7 @@ class Search extends React.Component {
     return (
       <Provider store={store}>
         <Grid>
+          <SearchBar />
           <SearchResults />
         </Grid>
       </Provider>

@@ -24,12 +24,12 @@ const StyledDescriptionText = styled.p`
   text-overflow: ellipsis;
   overflow: hidden;
   width: 100%;
-  height: 1.2em;
+  height: 1.4em;
   white-space: nowrap;
 `;
 
 const StyledImageWrap = styled.div`
-  border: 1px solid #000;
+  position: relative;
   width: 100%;
   overflow: hidden;
   img {
@@ -50,9 +50,14 @@ const StyledLike = styled.div`
 `;
 
 const StyledDescription = styled.div`
-  border: 1px solid #000;
   padding: 15px 20px;
   font-size: 1.1em;
+`;
+
+const Flex = styled.div`
+  display: flex;
+  justify-content: space-between;
+  padding: 10px 0;
 `;
 
 const Rating = ({rating}) => (
@@ -80,7 +85,6 @@ let Like = ({dispatch, id, isLiked}) => (
     onClick={e => {
       e.preventDefault();
       dispatch({type: 'toggle_liked_flag', id});
-      //toggleLikeQuery();
     }}
   />
 );
@@ -99,18 +103,23 @@ const Price = ({price, currency}) => (
 const Description = ({price, description, rating, currency}) => (
   <StyledDescription>
     <DescriptionText description={description} />
-    <div
-      style={{
-        display: 'flex',
-        justifyContent: 'space-between',
-        padding: '10px 0'
-      }}
-    >
+    <Flex>
       <Rating rating={rating} />
       <Price currency={currency} price={price} />
-    </div>
+    </Flex>
   </StyledDescription>
 );
+
+const StyledSearchResult = styled.div`
+  margin: 30px 0;
+  padding: 0;
+  box-shadow: 0px 1px 3px 0px rgba(0, 0, 0, 0.2),
+    0px 1px 1px 0px rgba(0, 0, 0, 0.14), 0px 2px 1px -1px rgba(0, 0, 0, 0.12);
+  border-radius: 2px;
+  a {
+    text-decoration: none;
+  }
+`;
 
 const SearchResult = ({
   link,
@@ -122,28 +131,35 @@ const SearchResult = ({
   currency,
   id
 }) => (
-  <Col md={4} style={{margin: '30px 0'}}>
-    <a href={link} style={{color: '#000', textDecoration: 'none'}}>
-      <ImageWrap img={image} isLiked={isLiked} id={id} />
-      <Description
-        description={description}
-        price={price}
-        rating={rating}
-        currency={currency}
-      />
-    </a>
+  <Col md={4}>
+    <StyledSearchResult>
+      <a
+        href={link}
+        style={{
+          color: '#000',
+          textDecoration: 'none'
+        }}
+      >
+        <ImageWrap img={image} isLiked={isLiked} id={id} />
+        <Description
+          description={description}
+          price={price}
+          rating={rating}
+          currency={currency}
+        />
+      </a>
+    </StyledSearchResult>
   </Col>
 );
 
-let SearchResults1 = ({results}) =>
+let SearchResults = ({results}) =>
   results ? (
     <Row>
       {results.map(result => <SearchResult key={result.id} {...result} />)}
     </Row>
   ) : null;
 
-const SearchResults = connect(({results}) => {
+export default (SearchResults = connect(({results}) => {
+  //connected
   return {results};
-}, null)(SearchResults1);
-
-export default SearchResults;
+}, null)(SearchResults));
