@@ -2,8 +2,7 @@ import React, {Component} from 'react';
 import Search from './components/Search/Search';
 import AddHouse from './components/AddHouse';
 import {BrowserRouter, Route, Switch} from 'react-router-dom';
-import SearchBar from './components/Search/SearchBar';
-
+import About from './components/About/About';
 class App extends Component {
   render() {
     //return
@@ -12,7 +11,7 @@ class App extends Component {
         <Switch>
           <Route path="/" exact component={Search} />
           <Route path="/add-house" component={AddHouse} />
-          <Route path="/test" component={Search} />
+          <Route path="/test" component={About} />
         </Switch>
       </BrowserRouter>
     );

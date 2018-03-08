@@ -32,6 +32,7 @@ const StyledImageWrap = styled.div`
   position: relative;
   width: 100%;
   overflow: hidden;
+  height: 250px;
   img {
     width: 100%;
   }
@@ -60,7 +61,7 @@ const Flex = styled.div`
   padding: 10px 0;
 `;
 
-const Rating = ({rating}) => (
+export const Rating = ({rating}) => (
   <StyledRating>
     <StarRatings
       rating={rating}
@@ -94,7 +95,7 @@ const DescriptionText = ({description}) => (
   <StyledDescriptionText>{description}</StyledDescriptionText>
 );
 
-const Price = ({price, currency}) => (
+export const Price = ({price, currency}) => (
   <StyledPrice>
     <span>{price}</span> {currency}
   </StyledPrice>
