@@ -1,8 +1,9 @@
 import React, {Component} from 'react';
 import Search from './components/Search/Search';
-import AddHouse from './components/AddHouse';
+import AddHouse from './components/AddHouse/AddHouse';
 import {BrowserRouter, Route, Switch} from 'react-router-dom';
 import About from './components/About/About';
+import Login from './components/Login/Login';
 class App extends Component {
   render() {
     //return
@@ -11,7 +12,8 @@ class App extends Component {
         <Switch>
           <Route path="/" exact component={Search} />
           <Route path="/add-house" component={AddHouse} />
-          <Route path="/test" component={About} />
+          <Route path="/about" component={About} />
+          <Route path="/login" component={Login} />
         </Switch>
       </BrowserRouter>
     );

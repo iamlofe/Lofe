@@ -1,11 +1,10 @@
 import React from 'react';
 import {connect, Provider} from 'react-redux';
 import FA from 'react-fontawesome';
-import LeftPart from './Form/LeftPart';
-import RightPart from './Form/RightPart';
+import LeftPart from './LeftPart';
+import RightPart from './RightPart';
 import {createStore, combineReducers} from 'redux';
 import {Row, Grid, Col, Button} from 'react-bootstrap';
-import {Input, TextArea} from './Input';
 
 let nextAdvantageId = 0;
 

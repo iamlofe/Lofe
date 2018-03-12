@@ -1,7 +1,7 @@
 import React from 'react';
 import {connect} from 'react-redux';
 import {Row, Col, Button, ButtonGroup} from 'react-bootstrap';
-import {StyledInput, StyledTextArea} from '../Input';
+import {StyledInput, StyledTextArea} from '../Styled';
 
 let CurrencyButton = ({dispatch, currency, active}) => (
   <Button

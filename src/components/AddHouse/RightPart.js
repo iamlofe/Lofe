@@ -1,7 +1,7 @@
 import React from 'react';
 import {connect} from 'react-redux';
 import {Row, Col, Button, ButtonGroup} from 'react-bootstrap';
-import {StyledInput} from '../Input';
+import {StyledInput} from '../Styled';
 import styled from 'styled-components';
 
 let AddAdvantage = ({dispatch}) => {
