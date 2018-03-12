@@ -12,11 +12,14 @@
   "dependencies": {
     "bcrypt": "^1.0.3",
     "bcrypt-node": "^0.1.0",
+    "bcrypt-nodejs": "0.0.3",
     "bcrypt-promised": "^1.0.1",
+    "bcryptjs": "^2.4.3",
     "bluebird": "^3.5.1",
     "body-parser": "^1.18.2",
     "express": "^4.16.2",
     "express-session": "^1.15.6",
+    "jsonwebtoken": "^8.2.0",
     "mongoose": "^5.0.7",
     "morgan": "^1.9.0"
   },

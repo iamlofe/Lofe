@@ -1,21 +1,27 @@
+import handler from "./middlewares/errorHandler";
 import express from "express";
 import mongoose from "mongoose";
 import bodyParser from "body-parser";
 import morgan from "morgan";
 import session from "express-session";
 import bluebird from "bluebird";
-import authRouter from "./rootes/auth";
+
 import config from "./config/index";
+import jwt from "jsonwebtoken";
+import bcrypt from "bcryptjs";
+import router from "./rootes/signinFromToken";
 
+import routersSignup from "./rootes/routersSignup";
+import routersSignin from "./rootes/routersSignin";
 
-import User from "./models/user";
+import checkToken from "./middlewares/checkToken";
 import {Schema} from "mongoose";
 
 mongoose.Promise = bluebird;
 mongoose.connect(config.dataBase, err => {
     if (err) throw err;
 
-    console.log("Mongoose has connected")
+    console.log("Mongo has connected")
 })
 
 const app = express();
@@ -26,9 +32,9 @@ app.listen(config.port, err => {
 })
 
 app.get('/', (req,res) => {
-    
+    res.send("hi");
 })
-app.use(morgan('combined'));
+app.use(morgan('tiny'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(session({
@@ -39,27 +45,11 @@ app.use(session({
 
 ////////////////////////
 
-const signup = async (req,res,next) =>{
-    const creditionals = req.body;
+app.use('/api', routersSignin);
+app.use('/api', routersSignin);
+app.use('/api', checkToken, router);
 
-    let user;
-
-    try {
-        user = await User.create(creditionals);
-    } catch(e) {
-        return next(e);
-    }
-
-    res.json(user)
-}
-
-function signin(req,res,next){
-    res.json('signin');
-}
-
-app.use('/api/signin', signin);
-app.use('/api/signup', signup);
-
+app.use(handler);
 
 
 
