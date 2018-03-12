@@ -46,7 +46,7 @@ app.use(session({
 ////////////////////////
 
 app.use('/api', routersSignin);
-app.use('/api', routersSignin);
+app.use('/api', routersSignup);
 app.use('/api', checkToken, router);
 
 app.use(handler);
