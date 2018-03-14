@@ -32,7 +32,7 @@ let SignUp = props => {
   const {handleSubmit, submitting} = props;
   return (
     <form onSubmit={handleSubmit}>
-      <Center>
+      <Center height="100vh">
         <Field
           label="username"
           name="username"

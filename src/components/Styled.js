@@ -2,9 +2,16 @@ import React from 'react';
 import styled from 'styled-components';
 import TextField from 'material-ui/TextField';
 
+const CenterRow = styled.div`
+  display: flex;
+  width: 100%;
+  justify-content: space-between;
+  align-content: center;
+`;
+
 const Center = styled.div`
   display: flex;
-  height: 100vh;
+  height: ${props => props.height || 'auto'};
   width: 100%;
   flex-direction: column;
   justify-content: center;
@@ -30,7 +37,7 @@ const StyledTextArea = styled.textarea`
   width: 100%;
   padding: 10px 30px;
   height: 300px;
-  margin: 10px 0;
+  margin: ${props => props.margin || '0 0 0 0'};
 `;
 
-export {StyledError, Center, StyledInput, StyledTextArea};
+export {StyledError, Center, StyledInput, StyledTextArea, CenterRow};
