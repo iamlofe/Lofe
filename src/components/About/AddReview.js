@@ -22,11 +22,13 @@ const AddPoint = ({input, fields, meta: {touched, error}}) => (
     {fields.map((point, index) => (
       <Field
         remove={() => fields.remove(index)}
-        name="point"
+        name={point}
         component={Point}
       />
     ))}
-    <Button onClick={() => fields.push()}>Add</Button>
+    <Button style={{margin: '10px 0'}} onClick={() => fields.push()}>
+      Add
+    </Button>
   </div>
 );
 
@@ -46,11 +48,27 @@ let Form = ({handleSubmit, submitting}) => (
   </Grid>
 );
 
-const validate = values => {
+const validate = ({review, advantages, disadvantages}) => {
   const errors = {};
-  if (!values.review) errors.review = 'Why are you adding a blank review?';
-  else if (values.review.length > 300)
+  if (!review) errors.review = 'Why are you adding a blank review?';
+  else if (review.length > 300)
     errors.review = 'We have also copied some twitter features)';
+  if (advantages) {
+    const advantagesErrors = [];
+    advantages.forEach(
+      (advantage, index) =>
+        (advantagesErrors[index] = advantage ? '' : 'type smth')
+    );
+    errors.advantages = advantagesErrors;
+  }
+  if (disadvantages) {
+    const disadvantagesErrors = [];
+    disadvantages.forEach(
+      (disadvantage, index) =>
+        (disadvantagesErrors[index] = disadvantage ? '' : 'beggin you')
+    );
+    errors.disadvantages = disadvantagesErrors;
+  }
   return errors;
 };
 
