@@ -3,22 +3,7 @@ import {createStore, combineReducers} from 'redux';
 import {Provider, connect} from 'react-redux';
 import {Row, Grid, Col} from 'react-bootstrap';
 import styled from 'styled-components';
-import StarRatings from 'react-star-ratings';
-
-const StyledPrice = styled.div`
-  float: right;
-  display: inline-block;
-  font-weight: bold;
-  line-height: 20px;
-  span {
-    font-size: 30px;
-  }
-`;
-
-const StyledRating = styled.div`
-  display: inline-block;
-  line-height: 0;
-`;
+import {Rating, Price} from '../Styled';
 
 const StyledDescriptionText = styled.p`
   text-overflow: ellipsis;
@@ -61,18 +46,6 @@ const Flex = styled.div`
   padding: 10px 0;
 `;
 
-export const Rating = ({rating}) => (
-  <StyledRating>
-    <StarRatings
-      rating={rating}
-      starRatedColor="#c5ea2e"
-      numberOfStars={5}
-      starDimension="20px"
-      starSpacing="2px"
-    />
-  </StyledRating>
-);
-
 const ImageWrap = ({img, isLiked, id}) => (
   <StyledImageWrap>
     <Like isLiked={isLiked} id={id} />
@@ -93,12 +66,6 @@ Like = connect()(Like);
 
 const DescriptionText = ({description}) => (
   <StyledDescriptionText>{description}</StyledDescriptionText>
-);
-
-export const Price = ({price, currency}) => (
-  <StyledPrice>
-    <span>{price}</span> {currency}
-  </StyledPrice>
 );
 
 const Description = ({price, description, rating, currency}) => (

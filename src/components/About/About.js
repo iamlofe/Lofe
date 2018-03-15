@@ -6,6 +6,8 @@ import faker from 'faker';
 import styled from 'styled-components';
 import Description from './Description';
 import Advantages from './Advantages';
+import Reviews from './Review';
+
 const Top = styled.div`
   padding: 30px 0;
 `;
@@ -44,6 +46,21 @@ class About extends React.Component {
           'http://placekitten.com/g/600/300'
         ],
         currency: 'USD'
+      },
+      review: {
+        description: `Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.`,
+        rating: 4,
+        author: 'Andrei Malahov',
+        advantages: [
+          'Lorem Ipsum is',
+          'simply dummy text',
+          'printing and typesetting industry'
+        ],
+        disadvantages: [
+          'simply dummy text',
+          'printing and typesetting industry',
+          'Lorem Ipsum is'
+        ]
       }
     });
     console.log(this.state.coords);
@@ -59,6 +76,7 @@ class About extends React.Component {
       rating,
       currency
     } = this.state.data;
+    const {review} = this.state;
     return this.state.data && this.state.data.images ? (
       <div>
         <Top>
@@ -96,6 +114,8 @@ class About extends React.Component {
                 </Center>
               </Col>
             </Row>
+
+            <Reviews reviews={[review, review]} />
           </Grid>
         </Bottom>
       </div>
