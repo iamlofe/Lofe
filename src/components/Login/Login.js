@@ -5,6 +5,7 @@ import {Provider, connect} from 'react-redux';
 import {Button} from 'react-bootstrap';
 import SignIn from './SignIn';
 import SignUp from './SignUp';
+import axios from 'axios';
 
 const authType = (state = 'sign_in', action) => {
   // make normal understandable names
@@ -33,11 +34,42 @@ ToggleButton = connect(
   }
 )(ToggleButton);
 
+const register = ({email, username, password}) => {
+  console.log(email, username, password);
+  const xhttp = new XMLHttpRequest();
+  xhttp.open('POST', 'http://localhost:3030/api/signup', true);
+  const json = {
+    email,
+    login: username,
+    password
+  };
+  console.log(json);
+  console.log(JSON.stringify(json));
+  xhttp.send({
+    json
+  });
+};
+
+function handleNoteAdd(email, username, password) {
+  axios
+    .post('http://localhost:3030/api/signup', {
+      email,
+      login: username,
+      password
+    })
+    .then(res => console.log(res))
+    .catch(err => alert(err));
+}
+
 let Authorization = ({authType}) =>
   authType === 'sign_in' ? (
     <SignIn onSubmit={values => console.log(values)} />
   ) : (
-    <SignUp onSubmit={values => console.log(values)} />
+    <SignUp
+      onSubmit={({email, username, password}) =>
+        handleNoteAdd(email, username, password)
+      }
+    />
   );
 
 Authorization = connect(({authType}) => {
