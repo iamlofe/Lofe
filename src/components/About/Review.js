@@ -1,11 +1,11 @@
 import React from 'react';
-import {Grid, Row, Col} from 'react-bootstrap';
+import {Row, Col} from 'react-bootstrap';
 import {Rating, CenterRow} from '../Styled';
 import styled from 'styled-components';
 
 const Description = styled.p``;
 
-const Points = styled.ul`
+/*const Points = styled.ul`  // if points are not written in one line
   margin-top: 20px;
   list-style-type: none;
   padding: 0;
@@ -16,6 +16,7 @@ const Point = styled.li`
   padding: 0;
   color: ${props => (props.advantage ? 'green' : 'red')};
 `;
+*/
 
 const Container = styled.li`
   padding: 30px 0;
@@ -46,19 +47,8 @@ const Review = ({
           <Rating rating={rating} />
         </CenterRow>
 
-        <Points>
-          {advantages &&
-            advantages.map(advantage => (
-              <Point advantage={true}>{advantage}</Point>
-            ))}
-        </Points>
-
-        <Points>
-          {disadvantages &&
-            disadvantages.map(disadvantage => (
-              <Point advantage={false}>{disadvantage}</Point>
-            ))}
-        </Points>
+        <p style={{color: 'green'}}>{advantages}</p>
+        <p style={{color: 'red'}}>{disadvantages}</p>
       </Col>
       <Col md={8}>
         <Description>{description}</Description>

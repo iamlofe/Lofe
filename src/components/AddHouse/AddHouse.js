@@ -1,5 +1,4 @@
 import React from 'react';
-import {render} from 'react-dom';
 import {reducer as reduxFormReducer} from 'redux-form';
 import {Field, FieldArray, reduxForm} from 'redux-form';
 import {StyledError, StyledInput, CenterRow, StyledTextArea} from '../Styled';

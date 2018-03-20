@@ -1,7 +1,6 @@
 import React from 'react';
-import {createStore, combineReducers} from 'redux';
-import {Provider, connect} from 'react-redux';
-import {Row, Grid, Col} from 'react-bootstrap';
+import {connect} from 'react-redux';
+import {Row, Col} from 'react-bootstrap';
 import styled from 'styled-components';
 import {Rating, Price} from '../Styled';
 

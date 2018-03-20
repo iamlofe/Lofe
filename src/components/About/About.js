@@ -7,6 +7,7 @@ import styled from 'styled-components';
 import Description from './Description';
 import Advantages from './Advantages';
 import Reviews from './Review';
+import AddReview from './AddReview';
 
 const Top = styled.div`
   padding: 30px 0;
@@ -37,7 +38,7 @@ class About extends React.Component {
         },
         description: faker.lorem.paragraph(5),
         rating: parseInt(Math.random() * 3 + 2),
-        advantages: faker.lorem.paragraph(1).split(' '),
+        advantages: faker.lorem.paragraph(5).split('. '),
         price: parseInt(Math.random() * 100) * 10 + 200,
         images: [
           'http://placekitten.com/g/400/200',
@@ -51,16 +52,9 @@ class About extends React.Component {
         description: `Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.`,
         rating: 4,
         author: 'Andrei Malahov',
-        advantages: [
-          'Lorem Ipsum is',
-          'simply dummy text',
-          'printing and typesetting industry'
-        ],
-        disadvantages: [
-          'simply dummy text',
-          'printing and typesetting industry',
-          'Lorem Ipsum is'
-        ]
+        advantages: 'Perferendis cum vel culpa nesciunt blanditiis odit.',
+        disadvantages:
+          'Lorem, ipsum dolor sit amet consectetur adipisicing elit. Provident, quisquam.'
       }
     });
     console.log(this.state.coords);
@@ -116,6 +110,7 @@ class About extends React.Component {
             </Row>
 
             <Reviews reviews={[review, review]} />
+            <AddReview />
           </Grid>
         </Bottom>
       </div>

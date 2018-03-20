@@ -1,6 +1,5 @@
 import React from 'react';
 import styled from 'styled-components';
-import TextField from 'material-ui/TextField';
 import StarRatings from 'react-star-ratings';
 import FontAwesome from 'react-fontawesome';
 
@@ -64,6 +63,7 @@ const StyledInput = styled.input`
   display: block;
   padding: 10px 30px;
   border: 1px solid #888;
+  height: ${props => props.height || 'auto'};
   width: ${props => props.width || '100%'};
   margin: ${props => props.margin || '0 0 0 0'};
 `;

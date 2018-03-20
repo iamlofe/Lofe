@@ -1,17 +1,7 @@
 import React from 'react';
 import {createStore, combineReducers} from 'redux';
 import {Provider} from 'react-redux';
-import {
-  Row,
-  Grid,
-  Col,
-  Button,
-  DropdownButton,
-  MenuItem,
-  Clearfix,
-  ButtonToolbar,
-  ButtonGroup
-} from 'react-bootstrap';
+import {Grid} from 'react-bootstrap';
 import faker from 'faker';
 import SearchResults from './SearchResults';
 import SearchBar from './SearchBar';

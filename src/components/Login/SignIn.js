@@ -1,9 +1,5 @@
 import React from 'react';
-import {render} from 'react-dom';
-import {createStore, combineReducers} from 'redux';
-import {reducer as formReducer} from 'redux-form';
 import {Field, reduxForm} from 'redux-form';
-import {Provider} from 'react-redux';
 import {StyledError, StyledInput, Center} from '../Styled';
 import {Button} from 'react-bootstrap';
 

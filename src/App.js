@@ -6,7 +6,6 @@ import About from './components/About/About';
 import Login from './components/Login/Login';
 import {Grid, Col, Row} from 'react-bootstrap';
 import {Provider} from 'react-redux';
-import {component} from './components/About/AddReview';
 
 class App extends Component {
   render() {
@@ -18,7 +17,6 @@ class App extends Component {
           <Route path="/add-house" component={AddHouse} />
           <Route path="/about" component={About} />
           <Route path="/login" component={Login} />
-          <Route path="/test" component={component} />
         </Switch>
       </BrowserRouter>
     );
