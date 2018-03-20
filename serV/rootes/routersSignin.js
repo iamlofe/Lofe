@@ -5,7 +5,7 @@ import config from "../config/index"
 
 const router = express.Router();
 
-router.post('/signin', async (req,res,next) => {
+router.post('/login', async (req,res,next) => {
     let {login, password} = req.body;
 
     const user = await User.findOne({login});
@@ -19,12 +19,13 @@ router.post('/signin', async (req,res,next) => {
     try {
         const result = await user.comparePasswords(password);
 
-        if(user.password !== password) {
+        if(password !== user.password) {
             return next({
                 status:401,
                 message:"encorrect"
             })
         }
+
     }catch(e) {
         return next({
             status:401,
@@ -32,8 +33,10 @@ router.post('/signin', async (req,res,next) => {
         })
     }
 
+
     const token = jwt.sign({_id:user._id}, config.secretKey);
-    res.json(user);
+    req.session.user = user._id;
+    res.send(user);
     
 });
 

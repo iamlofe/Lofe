@@ -1,5 +1,5 @@
 const config = {
-    port:3030,
+    port:3000,
     secretKey:'ver',
     dataBase:'mongodb://admin:admin@ds111299.mlab.com:11299/datausers',
 }

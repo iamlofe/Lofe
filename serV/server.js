@@ -13,18 +13,56 @@ import router from "./rootes/signinFromToken";
 
 import routersSignup from "./rootes/routersSignup";
 import routersSignin from "./rootes/routersSignin";
+import getPages from "./rootes/getPages";
+import routerImages from "./rootes/routerImages"
 
 import checkToken from "./middlewares/checkToken";
 import {Schema} from "mongoose";
 
+//img
+
+
+Grid.mongo = mongoose.mongo;
 mongoose.Promise = bluebird;
+const mg = mongoose.createConnection(config.dataBase);
+
 mongoose.connect(config.dataBase, err => {
     if (err) throw err;
 
     console.log("Mongo has connected")
 })
 
-const app = express();
+
+let gfs;
+mg.once('open', async(req,res) => {
+    gfs = Grid(mg.db, mongoose.mongo)
+    gfs.collection('uploads')
+
+})
+
+const storage = new GridFsStorage({
+    url: mongoURI,
+    file: (req, file) => {
+      return (res, err) => {
+        crypto.randomBytes(16, (err, req) => {
+          if (err) {
+            return reject(err);
+          }
+
+          const filename = req.toString('hex') + path.extname(file.originalname);
+          const fileInfo = {
+            filename: filename,
+            bucketName: 'uploads'
+          };
+          next({fileInfo});
+        });
+      };
+    }
+  });
+  const upload = multer({ storage });
+
+
+
 
 app.listen(config.port, err => {
     if(err) throw err;
@@ -32,7 +70,7 @@ app.listen(config.port, err => {
 })
 
 app.get('/', (req,res) => {
-    res.send("hi");
+    
 })
 app.use(morgan('tiny'));
 app.use(bodyParser.json());
@@ -47,7 +85,11 @@ app.use(session({
 
 app.use('/api', routersSignin);
 app.use('/api', routersSignup);
-app.use('/api', checkToken, router);
+app.use('/api', router);
+app.use('/api', getPages)
+//img
+app.use('/api', routerImg)
+
 
 app.use(handler);
 
