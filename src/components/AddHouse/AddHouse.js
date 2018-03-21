@@ -7,6 +7,7 @@ import FontAwesome from 'react-fontawesome';
 import styled from 'styled-components';
 import {Provider} from 'react-redux';
 import {createStore, combineReducers} from 'redux';
+import axios from 'axios';
 
 const Ul = styled.ul`
   list-style-type: none;
@@ -153,9 +154,17 @@ const reducer = combineReducers({
 });
 const store = createStore(reducer);
 
+const onSubmit = values => {
+  console.log(values);
+  axios
+    .post('http://localhost:3030/add-house', values)
+    .then(res => console.log(res))
+    .catch(error => console.log(error));
+};
+
 const AddHouse = () => (
   <Provider store={store}>
-    <AddHouseForm onSubmit={values => console.log(values)} />
+    <AddHouseForm onSubmit={onSubmit} />
   </Provider>
 );
 

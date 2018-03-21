@@ -6,7 +6,7 @@ import FontAwesome from 'react-fontawesome';
 const CenterRow = styled.div`
   display: flex;
   width: 100%;
-  justify-content: space-between;
+  justify-content: ${props => props.justifyContent || 'space-between'}
   align-content: center;
 `;
 

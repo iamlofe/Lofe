@@ -1,26 +1,15 @@
 import React from 'react';
 import {Field, reduxForm} from 'redux-form';
-import {StyledInput, StyledError, Center} from '../Styled';
-import {Button} from 'react-bootstrap';
-
-let LoginButton = ({onClick, disabled, text}) => (
-  <Button
-    type="submit"
-    style={{margin: '40px auto'}}
-    onClick={onClick}
-    disabled={disabled}
-    bsStyle="primary"
-  >
-    {text}
-  </Button>
-);
+import {StyledInput, StyledError, CenterRow} from '../Styled';
+import {Grid, Row, Col, Button} from 'react-bootstrap';
+import {CircularProgress} from 'material-ui/Progress';
+import {connect} from 'react-redux';
 
 const renderField = ({input, label, type, meta: {touched, error, warning}}) => (
   <div>
     <StyledInput
       {...input}
       margin="10px auto"
-      width="30%"
       placeholder={label}
       type={type}
     />
@@ -28,37 +17,94 @@ const renderField = ({input, label, type, meta: {touched, error, warning}}) => (
   </div>
 );
 
+let Status = ({status}) => {
+  switch (status) {
+    case 'normal':
+      return (
+        <Button type="submit" bsStyle="primary">
+          register
+        </Button>
+      );
+    case 'pending':
+      return <CircularProgress />;
+    case 'success':
+      return (
+        <Button type="submit" disabled={true} bsStyle="success">
+          you have rigistered
+        </Button>
+      );
+    case 'network_error':
+      return (
+        <Button type="submit" bsStyle="danger">
+          network error occured. try again
+        </Button>
+      );
+    case 'user_already_exists':
+      return (
+        <div>
+          <Button type="submit" bsStyle="primary">
+            register
+          </Button>
+          <StyledError>user with such username already exists</StyledError>
+        </div>
+      );
+    default:
+      return null;
+  }
+};
+Status = connect(({status}) => {
+  return {status: status.signUp};
+})(Status);
+
 let SignUp = props => {
   const {handleSubmit, submitting} = props;
   return (
     <form onSubmit={handleSubmit}>
-      <Center height="100vh">
-        <Field
-          label="username"
-          name="username"
-          component={renderField}
-          type="text"
-        />
-        <Field
-          label="email"
-          name="email"
-          component={renderField}
-          type="email"
-        />
-        <Field
-          label="password"
-          name="password"
-          component={renderField}
-          type="password"
-        />
-        <Field
-          label="confirm password"
-          name="confirmPassword"
-          component={renderField}
-          type="password"
-        />
-        <LoginButton disabled={submitting} text="register" />
-      </Center>
+      <Grid>
+        <Row>
+          <Col md={4} className="offset-md-4">
+            <Row>
+              <Col md={12}>
+                <Field
+                  label="username"
+                  name="username"
+                  component={renderField}
+                  type="text"
+                />
+              </Col>
+              <Col md={12}>
+                <Field
+                  label="email"
+                  name="email"
+                  component={renderField}
+                  type="email"
+                />
+              </Col>
+              <Col md={12}>
+                <Field
+                  label="password"
+                  name="password"
+                  component={renderField}
+                  type="password"
+                />
+              </Col>
+              <Col md={12}>
+                <Field
+                  label="confirm password"
+                  name="confirmPassword"
+                  component={renderField}
+                  type="password"
+                />
+              </Col>
+              <Col md={12}>
+                <CenterRow justifyContent="center">
+                  <Status />
+                </CenterRow>
+              </Col>
+            </Row>
+          </Col>
+        </Row>
+      </Grid>
     </form>
   );
 };

@@ -1,12 +1,13 @@
 import React from 'react';
 import {Field, reduxForm} from 'redux-form';
-import {StyledError, StyledInput, Center} from '../Styled';
-import {Button} from 'react-bootstrap';
+import {StyledError, StyledInput, Center, CenterRow} from '../Styled';
+import {Grid, Row, Col, Button} from 'react-bootstrap';
+import {CircularProgress} from 'material-ui/Progress';
+import {connect} from 'react-redux';
 
 const renderField = ({input, label, type, meta: {touched, error, warning}}) => (
   <div>
     <StyledInput
-      width="30%"
       margin="10px auto"
       {...input}
       placeholder={label}
@@ -28,25 +29,80 @@ let LoginButton = ({onClick, disabled, text}) => (
   </Button>
 );
 
+let Status = ({status}) => {
+  switch (status) {
+    case 'normal':
+      return (
+        <Button type="submit" bsStyle="primary">
+          login
+        </Button>
+      );
+    case 'pending':
+      return <CircularProgress />;
+    case 'success':
+      return (
+        <Button type="submit" disabled={true} bsStyle="success">
+          your logged in
+        </Button>
+      );
+    case 'network_error':
+      return (
+        <Button type="submit" bsStyle="danger">
+          error occured. try again
+        </Button>
+      );
+    case 'incorrect_pair':
+      return (
+        <div>
+          <Button type="submit" bsStyle="primary">
+            login
+          </Button>
+          <StyledError>the wrong username/password pair</StyledError>
+        </div>
+      );
+    default:
+      return null;
+  }
+};
+Status = connect(({status}) => {
+  return {status: status.signIn};
+})(Status);
+
 let SignIn = props => {
   const {handleSubmit, submitting} = props;
   return (
     <form onSubmit={handleSubmit}>
-      <Center height="100vh">
-        <Field
-          label="username"
-          name="username"
-          component={renderField}
-          type="text"
-        />
-        <Field
-          label="password"
-          name="password"
-          component={renderField}
-          type="password"
-        />
-        <LoginButton disabled={submitting} text="login" />
-      </Center>
+      <Grid>
+        <Row>
+          <Col md={4} className="offset-md-4">
+            <Row>
+              <Col md={12}>
+                <Field
+                  label="username"
+                  name="username"
+                  component={renderField}
+                  type="text"
+                />
+              </Col>
+              <Col md={12}>
+                <Field
+                  label="password"
+                  name="password"
+                  component={renderField}
+                  type="password"
+                />
+              </Col>
+              <Col md={12}>
+                <CenterRow justifyContent="center">
+                  <Status />
+                </CenterRow>
+              </Col>
+            </Row>
+          </Col>
+        </Row>
+      </Grid>
+
+      <Center height="100vh" />
     </form>
   );
 };
