@@ -8,6 +8,8 @@ import styled from 'styled-components';
 import {Provider} from 'react-redux';
 import {createStore, combineReducers} from 'redux';
 import axios from 'axios';
+import {CircularProgress} from 'material-ui/Progress';
+import {connect} from 'react-redux';
 
 const Ul = styled.ul`
   list-style-type: none;
@@ -87,6 +89,45 @@ const Description = ({input, meta: {touched, error}}) => (
   </div>
 );
 
+let Status = ({status}) => {
+  switch (status) {
+    case 'normal':
+      return (
+        <Button type="submit" bsStyle="primary">
+          add house
+        </Button>
+      );
+    case 'pending':
+      return <CircularProgress />;
+    case 'success':
+      return (
+        <Button type="submit" disabled={true} bsStyle="success">
+          your successfully added your house
+        </Button>
+      );
+    case 'network_error':
+      return (
+        <Button type="submit" bsStyle="danger">
+          error occured. try again
+        </Button>
+      );
+    default:
+      return null;
+  }
+};
+Status = connect(({status}) => {
+  return {status};
+})(Status);
+
+const status = (state = 'normal', action) => {
+  switch (action.type) {
+    case 'change_status':
+      return action.status;
+    default:
+      return state;
+  }
+};
+
 let AddHouseForm = props => {
   const {handleSubmit, submitting} = props;
   return (
@@ -104,13 +145,7 @@ let AddHouseForm = props => {
         </Row>
         <Row>
           <CenterRow>
-            <Button
-              style={{margin: '10px auto'}}
-              type="submit"
-              disabled={submitting}
-            >
-              Submit
-            </Button>
+            <Status />
           </CenterRow>
         </Row>
       </Grid>
@@ -150,21 +185,66 @@ AddHouseForm = reduxForm({
 })(AddHouseForm);
 
 const reducer = combineReducers({
-  form: reduxFormReducer // mounted under "form"
+  status,
+  form: reduxFormReducer
 });
 const store = createStore(reducer);
 
+const onSignUp = values => {
+  store.dispatch({type: 'change_signup_status', status: 'pending'});
+  axios
+    .post('http://localhost:3030/signup', values)
+    .then(res => {
+      switch (res) {
+        case 'user_already_exists':
+          store.dispatch({
+            type: 'change_signup_status',
+            status: 'user_already_exists'
+          });
+          break;
+        default:
+          //success
+          store.dispatch({type: 'change_signup_status', status: 'success'});
+          break;
+      }
+    })
+    .catch(() =>
+      store.dispatch({type: 'change_signup_status', status: 'network_error'})
+    );
+};
+
 const onSubmit = values => {
-  console.log(values);
+  store.dispatch({type: 'change_status', status: 'pending'});
   axios
     .post('http://localhost:3030/add-house', values)
-    .then(res => console.log(res))
-    .catch(error => console.log(error));
+    .then(res => {
+      switch (res) {
+        case 'success':
+          store.dispatch({
+            type: 'change_status',
+            status: 'success'
+          });
+          break;
+        default:
+          break;
+      }
+    })
+    .catch(() =>
+      store.dispatch({type: 'change_status', status: 'network_error'})
+    );
+};
+
+const testGeocoding = ({address}) => {
+  const formattedAddress = address.split(' ').join('+');
+  const url = `https://maps.googleapis.com/maps/api/geocode/json?address=${formattedAddress}&key=AIzaSyAPgp2up9kVOEq2H1wBDhmSS4EmHGdssbw`;
+  fetch(url)
+    .then(res => res.json())
+    .then(data => console.log(data));
 };
 
 const AddHouse = () => (
   <Provider store={store}>
-    <AddHouseForm onSubmit={onSubmit} />
+    <AddHouseForm onSubmit={testGeocoding} />
   </Provider>
 );
 
