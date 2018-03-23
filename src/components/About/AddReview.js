@@ -134,9 +134,14 @@ const reducer = combineReducers({
 });
 const store = createStore(reducer);
 
-const AddReview = ({id}) => (
+const AddReview = ({id, addToList}) => (
   <Provider store={store}>
-    <Form onSubmit={values => makeRequest(id, values)} />
+    <Form
+      onSubmit={values => {
+        addToList(values);
+        makeRequest(id, values);
+      }}
+    />
   </Provider>
 );
 

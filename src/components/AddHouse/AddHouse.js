@@ -153,10 +153,29 @@ let AddHouseForm = props => {
   );
 };
 
+const asyncValidate = ({address}) => {
+  if (address) {
+    const formattedAddress = address.split(' ').join('+');
+    const url = `https://maps.googleapis.com/maps/api/geocode/json?address=${formattedAddress}&key=AIzaSyAPgp2up9kVOEq2H1wBDhmSS4EmHGdssbw`;
+    return fetch(url)
+      .then(res => res.json())
+      .then(data => {
+        console.log(data);
+        if (
+          !(
+            data.status === 'OK' &&
+            data.results.length === 1 &&
+            data.results[0].types.includes('street_address')
+          )
+        )
+          throw {address: 'this is not an address'};
+      });
+  } else return new Promise((res, rej) => rej());
+};
+
 const validate = ({advantages, price, description, address}) => {
   const errors = {};
   if (!address) errors.address = 'We are not CIA, please add the address';
-  else if (address.length > 30) errors.address = 'Is it address?';
   if (!price) errors.price = 'Required';
   else if (!Number.isInteger(price - 0))
     errors.price = 'Price should be in numerals';
@@ -181,7 +200,8 @@ const validate = ({advantages, price, description, address}) => {
 
 AddHouseForm = reduxForm({
   form: 'addHouse',
-  validate
+  validate,
+  asyncValidate
 })(AddHouseForm);
 
 const reducer = combineReducers({
@@ -234,13 +254,7 @@ const onSubmit = values => {
     );
 };
 
-const testGeocoding = ({address}) => {
-  const formattedAddress = address.split(' ').join('+');
-  const url = `https://maps.googleapis.com/maps/api/geocode/json?address=${formattedAddress}&key=AIzaSyAPgp2up9kVOEq2H1wBDhmSS4EmHGdssbw`;
-  fetch(url)
-    .then(res => res.json())
-    .then(data => console.log(data));
-};
+const testGeocoding = values => {};
 
 const AddHouse = () => (
   <Provider store={store}>
