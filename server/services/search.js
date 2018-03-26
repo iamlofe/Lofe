@@ -15,10 +15,10 @@ export default async (req, res, next) => {
 		} else {
 			house = await House.find({
 				address: new RegExp('^' + search.q, 'i'),
-				price: { $gte: search.minprice },
-				price: { $lte: search.maxprice },
-				rating: { $lte: search.maxrating },
-				rating: { $gte: search.minrating }
+				price: { $gt: search.minprice },
+				price: { $lt: search.maxprice },
+				rating: { $lt: search.maxrating },
+				rating: { $gt: search.minrating }
 			});
 		}
 	} catch ({ message }) {
