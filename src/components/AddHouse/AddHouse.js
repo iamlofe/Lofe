@@ -211,35 +211,12 @@ const reducer = combineReducers({
 });
 const store = createStore(reducer);
 
-const onSignUp = values => {
-  store.dispatch({type: 'change_signup_status', status: 'pending'});
-  axios
-    .post('http://localhost:3030/signup', values)
-    .then(res => {
-      switch (res) {
-        case 'user_already_exists':
-          store.dispatch({
-            type: 'change_signup_status',
-            status: 'user_already_exists'
-          });
-          break;
-        default:
-          //success
-          store.dispatch({type: 'change_signup_status', status: 'success'});
-          break;
-      }
-    })
-    .catch(() =>
-      store.dispatch({type: 'change_signup_status', status: 'network_error'})
-    );
-};
-
 const onSubmit = values => {
   store.dispatch({type: 'change_status', status: 'pending'});
   axios
     .post('http://localhost:3030/add-house', values)
     .then(res => {
-      switch (res) {
+      switch (res.data) {
         case 'success':
           store.dispatch({
             type: 'change_status',
@@ -255,17 +232,9 @@ const onSubmit = values => {
     );
 };
 
-const testGeocoding = ({address}) => {
-  const formattedAddress = address.split(' ').join('+');
-  const url = `https://maps.googleapis.com/maps/api/geocode/json?address=${formattedAddress}&key=AIzaSyAPgp2up9kVOEq2H1wBDhmSS4EmHGdssbw`;
-  fetch(url)
-    .then(res => res.json())
-    .then(data => console.log(data));
-};
-
 const AddHouse = () => (
   <Provider store={store}>
-    <AddHouseForm onSubmit={testGeocoding} />
+    <AddHouseForm onSubmit={onSubmit} />
   </Provider>
 );
 

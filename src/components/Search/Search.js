@@ -1,125 +1,126 @@
 import React from 'react';
-import {createStore, combineReducers} from 'redux';
-import {Provider} from 'react-redux';
-import {Grid} from 'react-bootstrap';
+import { createStore, combineReducers } from 'redux';
+import { Provider } from 'react-redux';
+import { Grid } from 'react-bootstrap';
 import faker from 'faker';
 import SearchResults from './SearchResults';
 import SearchBar from './SearchBar';
 import axios from 'axios';
 
 const makeRequest = () => {
-  const {request, price, rating} = store.getState().filter;
-  axios
-    .get(
-      `http://localhost:3030/search?q=${request}&minprice=${
-        price.min
-      }&maxprice=${price.max}&minrating=${rating.min}&maxrating=${rating.max}`
-    )
-    .then(results => store.dispatch({type: 'change_list', results}))
-    .catch(() =>
-      store.dispatch({
-        type: 'error_occured',
-        error: 'no connection or other reason'
-      })
-    );
+	const { request, price, rating } = store.getState().filter;
+	axios
+		.get(
+			`http://localhost:3030/search?q=${request}&minprice=${
+			price.min
+			}&maxprice=${price.max}&minrating=${rating.min}&maxrating=${rating.max}`
+		)
+		.then(data => {
+			if (data.status === 200)
+				store.dispatch({ type: 'change_list', results: data.data });
+			else
+				store.dispatch({
+					type: 'change_list',
+					error: []
+				})
+		});
 };
 
 const error = (state = '', action) => {
-  switch (action.type) {
-    case 'error_occured':
-      return action.error;
-    default:
-      return state;
-  }
+	switch (action.type) {
+		case 'error_occured':
+			return action.error;
+		default:
+			return state;
+	}
 };
 
-const filterReducer = (state = {}, action) => {
-  switch (action.type) {
-    case 'change_price':
-      return {
-        ...state,
-        price: {
-          min: action.min,
-          max: action.max
-        }
-      };
-    case 'change_rating':
-      return {
-        ...state,
-        rating: {
-          min: action.min,
-          max: action.max
-        }
-      };
-    case 'change_distance':
-      return {
-        ...state,
-        distance: {
-          min: action.min,
-          max: action.max
-        }
-      };
-    case 'change_request':
-      return {...state, request: action.request};
+const filterReducer = (
+	state = {
+		request: '',
+		price: {
+			min: 0,
+			max: 1000,
+		},
+		rating: {
+			min: 0,
+			max: 5
+		}
+	},
+	action
+) => {
+	switch (action.type) {
+		case 'change_price':
+			setTimeout(() => makeRequest(), 0);
+			return {
+				...state,
+				price: {
+					min: action.min,
+					max: action.max
+				}
+			};
+		case 'change_rating':
+			setTimeout(() => makeRequest(), 0);
+			return {
+				...state,
+				rating: {
+					min: action.min,
+					max: action.max
+				}
+			};
 
-    default:
-      return state;
-  }
+		case 'change_request':
+			setTimeout(() => makeRequest(), 0);
+
+			return { ...state, request: action.request };
+
+		default:
+			return state;
+	}
 };
 
 const resultsReducer = (state = [], action) => {
-  switch (action.type) {
-    case 'toggle_liked_flag':
-      //makeRequestToDB();
-      return state.map(
-        result =>
-          result.id === action.id
-            ? {...result, isLiked: !result.isLiked}
-            : result
-      );
-    case 'update_list':
-      return [...state, ...action.results];
-    case 'change_list':
-      return [...action.results];
-    default:
-      return state;
-  }
+	switch (action.type) {
+		case 'toggle_liked_flag':
+			//makeRequestToDB();
+			return state.map(
+				result =>
+					result.id === action.id
+						? { ...result, isLiked: !result.isLiked }
+						: result
+			);
+		case 'update_list':
+			return [...state, ...action.results];
+		case 'change_list':
+			return [...action.results];
+		default:
+			return state;
+	}
 };
 
 const superReducer = combineReducers({
-  results: resultsReducer,
-  filter: filterReducer
+	results: resultsReducer,
+	filter: filterReducer,
+	error
 });
 const store = createStore(superReducer);
-store.subscribe(() => console.log(store.getState())); //todo post
 class Search extends React.Component {
-  componentDidMount() {
-    //there will be fetch
-    const data = [];
-    for (let i = 0; i < 5; i++) {
-      data.push({
-        link: 'https://instagram.com/annayatsuta',
-        price: faker.random.number(2000, 3000),
-        description: faker.random.words(10),
-        rating: faker.random.number({min: 3, max: 5, precision: 3}),
-        isLiked: faker.random.boolean(),
-        image: faker.image.city(),
-        currency: 'usd',
-        id: i
-      });
-    }
-    store.dispatch({type: 'change_list', results: data});
-  }
-  render() {
-    return (
-      <Provider store={store}>
-        <Grid>
-          <SearchBar />
-          <SearchResults />
-        </Grid>
-      </Provider>
-    );
-  }
+	componentDidMount() {
+		//there will be fetch
+		makeRequest();
+	}
+	render() {
+		return (
+			<Provider store={store}>
+				<Grid>
+					<SearchBar />
+
+					<SearchResults />
+
+				</Grid>
+			</Provider>
+		);
+	}
 }
 
 export default Search;
