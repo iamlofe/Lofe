@@ -8,6 +8,7 @@ import {Grid, Col, Row} from 'react-bootstrap';
 import {Provider} from 'react-redux';
 import AboutRedux from './components/About/AboutRedux';
 import WishListComponent from './components/WishList/WishList';
+import Generator from './components/generator';
 
 class App extends Component {
   render() {
@@ -21,6 +22,7 @@ class App extends Component {
           <Route path="/login" component={Login} />
           <Route path="/wish-list" component={WishListComponent} />
           <Route path="/test/:id" component={About} />
+          <Route path="/generate" component={() => <Generator number={1} />} />
         </Switch>
       </BrowserRouter>
     );
