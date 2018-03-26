@@ -2,7 +2,6 @@ import React from 'react';
 import Slider from 'react-slick';
 import 'slick-carousel/slick/slick-theme.css';
 import 'slick-carousel/slick/slick.css';
-import {Grid, Row} from 'react-bootstrap';
 import './slider.css';
 
 const settings = {
@@ -15,8 +14,8 @@ const settings = {
 
 const ImageCarousel = ({images}) => (
   <Slider {...settings}>
-    {images.map(image => (
-      <div>
+    {images.map((image, index) => (
+      <div key={index}>
         <img src={image} alt="something valueable" />
       </div>
     ))}

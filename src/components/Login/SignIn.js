@@ -1,40 +1,21 @@
 import React from 'react';
-import {render} from 'react-dom';
-import {createStore, combineReducers} from 'redux';
-import {reducer as formReducer} from 'redux-form';
 import {Field, reduxForm} from 'redux-form';
-import {Provider} from 'react-redux';
-import styled from 'styled-components';
-import {Button} from 'react-bootstrap';
-
-const Center = styled.div`
-  display: flex;
-  height: 100vh;
-  width: 100%;
-  flex-direction: column;
-  justify-content: center;
-`;
+import {StyledError, StyledInput, Center, CenterRow} from '../Styled';
+import {Grid, Row, Col, Button} from 'react-bootstrap';
+import {CircularProgress} from 'material-ui/Progress';
+import {connect} from 'react-redux';
 
 const renderField = ({input, label, type, meta: {touched, error, warning}}) => (
   <div>
-    <StyledInput {...input} placeholder={label} type={type} />
+    <StyledInput
+      margin="10px auto"
+      {...input}
+      placeholder={label}
+      type={type}
+    />
     {touched && error && <StyledError>{error}</StyledError>}
   </div>
 );
-
-const StyledError = styled.div`
-  text-align: center;
-  color: red;
-`;
-
-const StyledInput = styled.input`
-  border-radius: 3px;
-  display: block;
-  padding: 10px 30px;
-  border: 1px solid #888;
-  width: 30%;
-  margin: 10px auto;
-`;
 
 let LoginButton = ({onClick, disabled, text}) => (
   <Button
@@ -48,25 +29,80 @@ let LoginButton = ({onClick, disabled, text}) => (
   </Button>
 );
 
+let Status = ({status}) => {
+  switch (status) {
+    case 'normal':
+      return (
+        <Button type="submit" bsStyle="primary">
+          login
+        </Button>
+      );
+    case 'pending':
+      return <CircularProgress />;
+    case 'success':
+      return (
+        <Button type="submit" disabled={true} bsStyle="success">
+          your logged in
+        </Button>
+      );
+    case 'network_error':
+      return (
+        <Button type="submit" bsStyle="danger">
+          error occured. try again
+        </Button>
+      );
+    case 'incorrect_pair':
+      return (
+        <div>
+          <Button type="submit" bsStyle="primary">
+            login
+          </Button>
+          <StyledError>the wrong username/password pair</StyledError>
+        </div>
+      );
+    default:
+      return null;
+  }
+};
+Status = connect(({status}) => {
+  return {status: status.signIn};
+})(Status);
+
 let SignIn = props => {
   const {handleSubmit, submitting} = props;
   return (
     <form onSubmit={handleSubmit}>
-      <Center>
-        <Field
-          label="username"
-          name="username"
-          component={renderField}
-          type="text"
-        />
-        <Field
-          label="password"
-          name="password"
-          component={renderField}
-          type="password"
-        />
-        <LoginButton disabled={submitting} text="login" />
-      </Center>
+      <Grid>
+        <Row>
+          <Col md={4} className="offset-md-4">
+            <Row>
+              <Col md={12}>
+                <Field
+                  label="username"
+                  name="username"
+                  component={renderField}
+                  type="text"
+                />
+              </Col>
+              <Col md={12}>
+                <Field
+                  label="password"
+                  name="password"
+                  component={renderField}
+                  type="password"
+                />
+              </Col>
+              <Col md={12}>
+                <CenterRow justifyContent="center">
+                  <Status />
+                </CenterRow>
+              </Col>
+            </Row>
+          </Col>
+        </Row>
+      </Grid>
+
+      <Center height="100vh" />
     </form>
   );
 };

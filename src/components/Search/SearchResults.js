@@ -1,24 +1,8 @@
 import React from 'react';
-import {createStore, combineReducers} from 'redux';
-import {Provider, connect} from 'react-redux';
-import {Row, Grid, Col} from 'react-bootstrap';
+import {connect} from 'react-redux';
+import {Row, Col} from 'react-bootstrap';
 import styled from 'styled-components';
-import StarRatings from 'react-star-ratings';
-
-const StyledPrice = styled.div`
-  float: right;
-  display: inline-block;
-  font-weight: bold;
-  line-height: 20px;
-  span {
-    font-size: 30px;
-  }
-`;
-
-const StyledRating = styled.div`
-  display: inline-block;
-  line-height: 0;
-`;
+import {Rating, Price} from '../Styled';
 
 const StyledDescriptionText = styled.p`
   text-overflow: ellipsis;
@@ -61,18 +45,6 @@ const Flex = styled.div`
   padding: 10px 0;
 `;
 
-export const Rating = ({rating}) => (
-  <StyledRating>
-    <StarRatings
-      rating={rating}
-      starRatedColor="#c5ea2e"
-      numberOfStars={5}
-      starDimension="20px"
-      starSpacing="2px"
-    />
-  </StyledRating>
-);
-
 const ImageWrap = ({img, isLiked, id}) => (
   <StyledImageWrap>
     <Like isLiked={isLiked} id={id} />
@@ -93,12 +65,6 @@ Like = connect()(Like);
 
 const DescriptionText = ({description}) => (
   <StyledDescriptionText>{description}</StyledDescriptionText>
-);
-
-export const Price = ({price, currency}) => (
-  <StyledPrice>
-    <span>{price}</span> {currency}
-  </StyledPrice>
 );
 
 const Description = ({price, description, rating, currency}) => (
@@ -122,31 +88,29 @@ const StyledSearchResult = styled.div`
   }
 `;
 
-const SearchResult = ({
-  link,
-  price,
-  description,
-  rating,
-  isLiked,
-  image,
-  currency,
-  id
-}) => (
+const SearchResult = ({price, description, rating, isLiked, image, id}) => (
   <Col md={4}>
     <StyledSearchResult>
       <a
-        href={link}
+        href={`/about/${id}`}
         style={{
           color: '#000',
           textDecoration: 'none'
         }}
       >
-        <ImageWrap img={image} isLiked={isLiked} id={id} />
+        <ImageWrap
+          img={
+            image ||
+            'http://www.joshuacasper.com/contents/uploads/joshua-casper-samples-free.jpg'
+          }
+          isLiked={isLiked || false}
+          id={id}
+        />
         <Description
           description={description}
           price={price}
           rating={rating}
-          currency={currency}
+          currency="usd"
         />
       </a>
     </StyledSearchResult>

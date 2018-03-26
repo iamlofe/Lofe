@@ -1,20 +1,37 @@
 import React from 'react';
 import {createStore, combineReducers} from 'redux';
 import {Provider} from 'react-redux';
-import {
-  Row,
-  Grid,
-  Col,
-  Button,
-  DropdownButton,
-  MenuItem,
-  Clearfix,
-  ButtonToolbar,
-  ButtonGroup
-} from 'react-bootstrap';
+import {Grid} from 'react-bootstrap';
 import faker from 'faker';
 import SearchResults from './SearchResults';
 import SearchBar from './SearchBar';
+import axios from 'axios';
+
+const makeRequest = () => {
+  const {request, price, rating} = store.getState().filter;
+  axios
+    .get(
+      `http://localhost:3030/search?q=${request}&minprice=${
+        price.min
+      }&maxprice=${price.max}&minrating=${rating.min}&maxrating=${rating.max}`
+    )
+    .then(results => store.dispatch({type: 'change_list', results}))
+    .catch(() =>
+      store.dispatch({
+        type: 'error_occured',
+        error: 'no connection or other reason'
+      })
+    );
+};
+
+const error = (state = '', action) => {
+  switch (action.type) {
+    case 'error_occured':
+      return action.error;
+    default:
+      return state;
+  }
+};
 
 const filterReducer = (state = {}, action) => {
   switch (action.type) {

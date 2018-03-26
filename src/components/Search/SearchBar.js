@@ -1,16 +1,15 @@
 import React from 'react';
 import Rheostat from 'rheostat';
 import '../../rheostat.css';
-import {Grid, Row, Col, Button, ButtonGroup} from 'react-bootstrap';
+import {Row, Col} from 'react-bootstrap';
 import {connect} from 'react-redux';
 import ExpansionPanel, {
   ExpansionPanelSummary,
-  ExpansionPanelDetails,
-  TextField
+  ExpansionPanelDetails
 } from 'material-ui/ExpansionPanel';
 import styled from 'styled-components';
 
-import Input, {InputLabel, InputAdornment} from 'material-ui/Input';
+import Input from 'material-ui/Input';
 
 function MyHandle({style, ...passProps}) {
   return (
@@ -54,8 +53,6 @@ class LabeledSlider extends React.Component {
   }
 
   render() {
-    const {formatValue} = this.props;
-
     return (
       <div
         style={{

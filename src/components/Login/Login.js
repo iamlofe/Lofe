@@ -34,49 +34,75 @@ ToggleButton = connect(
   }
 )(ToggleButton);
 
-const register = ({email, username, password}) => {
-  console.log(email, username, password);
-  const xhttp = new XMLHttpRequest();
-  xhttp.open('POST', 'http://localhost:3030/api/signup', true);
-  const json = {
-    email,
-    login: username,
-    password
-  };
-  console.log(json);
-  console.log(JSON.stringify(json));
-  xhttp.send({
-    json
-  });
+const onSignIn = values => {
+  store.dispatch({type: 'change_signin_status', status: 'pending'});
+  axios
+    .post('http://localhost:3030/signin', values)
+    .then(res => {
+      switch (res) {
+        case 'incorrect_pair':
+          store.dispatch({
+            type: 'change_signin_status',
+            status: 'incorrect_pair'
+          });
+          break;
+        default:
+          //success
+          store.dispatch({type: 'change_signin_status', status: 'success'});
+          break;
+      }
+    })
+    .catch(() =>
+      store.dispatch({type: 'change_signin_status', status: 'network_error'})
+    );
 };
 
-function handleNoteAdd(email, username, password) {
+const onSignUp = values => {
+  store.dispatch({type: 'change_signup_status', status: 'pending'});
   axios
-    .post('http://localhost:3030/api/signup', {
-      email,
-      login: username,
-      password
+    .post('http://localhost:3030/signup', values)
+    .then(res => {
+      switch (res) {
+        case 'user_already_exists':
+          store.dispatch({
+            type: 'change_signup_status',
+            status: 'user_already_exists'
+          });
+          break;
+        default:
+          //success
+          store.dispatch({type: 'change_signup_status', status: 'success'});
+          break;
+      }
     })
-    .then(res => console.log(res))
-    .catch(err => alert(err));
-}
+    .catch(() =>
+      store.dispatch({type: 'change_signup_status', status: 'network_error'})
+    );
+};
 
 let Authorization = ({authType}) =>
   authType === 'sign_in' ? (
-    <SignIn onSubmit={values => console.log(values)} />
+    <SignIn onSubmit={onSignIn} />
   ) : (
-    <SignUp
-      onSubmit={({email, username, password}) =>
-        handleNoteAdd(email, username, password)
-      }
-    />
+    <SignUp onSubmit={onSignUp} />
   );
 
 Authorization = connect(({authType}) => {
   return {authType};
 })(Authorization);
 
-const rootReducer = combineReducers({form: formReducer, authType});
+let status = (state = {signIn: 'normal', signUp: 'normal'}, action) => {
+  switch (action.type) {
+    case 'change_signin_status':
+      return {...state, signIn: action.status};
+    case 'change_signup_status':
+      return {...state, signUp: action.status};
+    default:
+      return state;
+  }
+};
+
+const rootReducer = combineReducers({status, form: formReducer, authType});
 const store = createStore(rootReducer);
 
 const Login = () => (
