@@ -6,8 +6,8 @@ export default async (req, res, next) => {
 	try {
 		if (!search.q) {
 			house = await House.find({
-				price: { $gte: search.minprice },
-				price: { $lte: search.maxprice },
+				price: { $gte: search.minprice, $lte: search.maxprice },
+				rating: { $lte: search.maxrating, $gte: search.minrating },
 
 			});
 			console.log(1);
@@ -15,10 +15,8 @@ export default async (req, res, next) => {
 		} else {
 			house = await House.find({
 				address: new RegExp('^' + search.q, 'i'),
-				price: { $gt: search.minprice },
-				price: { $lt: search.maxprice },
-				rating: { $lt: search.maxrating },
-				rating: { $gt: search.minrating }
+				price: { $gt: search.minprice, $lt: search.maxprice },
+				rating: { $lt: search.maxrating, $gt: search.minrating },
 			});
 		}
 	} catch ({ message }) {
