@@ -179,9 +179,30 @@ const validate = ({advantages, price, description, address}) => {
   return errors;
 };
 
+const asyncValidate = ({address}) => {
+  if (address) {
+    const formattedAddress = address.split(' ').join('+');
+    const url = `https://maps.googleapis.com/maps/api/geocode/json?address=${formattedAddress}&key=AIzaSyAPgp2up9kVOEq2H1wBDhmSS4EmHGdssbw`;
+    return fetch(url)
+      .then(res => res.json())
+      .then(data => {
+        console.log(data);
+        if (
+          !(
+            data.status === 'OK' &&
+            data.results.length === 1 &&
+            data.results[0].types.includes('street_address')
+          )
+        )
+          throw {address: 'this is not an address'};
+      });
+  } else return new Promise((res, rej) => rej());
+};
+
 AddHouseForm = reduxForm({
   form: 'addHouse',
-  validate
+  validate,
+  asyncValidate
 })(AddHouseForm);
 
 const reducer = combineReducers({

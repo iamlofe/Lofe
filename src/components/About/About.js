@@ -34,6 +34,7 @@ class About extends React.Component {
   }
   constructor(props) {
     super(props);
+    console.log(props);
     this.id = props.match.params.id;
     this.state = {
       data: {}

@@ -88,31 +88,29 @@ const StyledSearchResult = styled.div`
   }
 `;
 
-const SearchResult = ({
-  link,
-  price,
-  description,
-  rating,
-  isLiked,
-  image,
-  currency,
-  id
-}) => (
+const SearchResult = ({price, description, rating, isLiked, image, id}) => (
   <Col md={4}>
     <StyledSearchResult>
       <a
-        href={link}
+        href={`/about/${id}`}
         style={{
           color: '#000',
           textDecoration: 'none'
         }}
       >
-        <ImageWrap img={image} isLiked={isLiked} id={id} />
+        <ImageWrap
+          img={
+            image ||
+            'http://www.joshuacasper.com/contents/uploads/joshua-casper-samples-free.jpg'
+          }
+          isLiked={isLiked || false}
+          id={id}
+        />
         <Description
           description={description}
           price={price}
           rating={rating}
-          currency={currency}
+          currency="usd"
         />
       </a>
     </StyledSearchResult>

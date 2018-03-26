@@ -6,11 +6,8 @@ import About from './components/About/About';
 import Login from './components/Login/Login';
 import {Grid, Col, Row} from 'react-bootstrap';
 import {Provider} from 'react-redux';
-<<<<<<< HEAD
-import component from './components/WishList/WishList';
-=======
-import component from './components/About/AboutRedux';
->>>>>>> 3150674f6d2866208a5c0936fe19495acf1b4630
+import AboutRedux from './components/About/AboutRedux';
+import WishListComponent from './components/WishList/WishList';
 
 class App extends Component {
   render() {
@@ -20,9 +17,10 @@ class App extends Component {
         <Switch>
           <Route path="/" exact component={Search} />
           <Route path="/add-house" component={AddHouse} />
-          <Route path="/about/:id" component={About} />
+          <Route path="/about/:id" component={AboutRedux} />
           <Route path="/login" component={Login} />
-          <Route path="/test" component={component} />
+          <Route path="/wish-list" component={WishListComponent} />
+          <Route path="/test/:id" component={About} />
         </Switch>
       </BrowserRouter>
     );

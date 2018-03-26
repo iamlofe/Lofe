@@ -185,7 +185,7 @@ const WishListContainer = connect(state => {
   };
 })(WishList);
 
-const component = () => (
+const WishListComponent = () => (
   <Provider store={createStore(wishList)}>
     <div>
       <WishListContainer />
@@ -194,4 +194,4 @@ const component = () => (
   </Provider>
 );
 
-export default component;
+export default WishListComponent;

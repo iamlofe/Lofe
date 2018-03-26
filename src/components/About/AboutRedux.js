@@ -62,10 +62,9 @@ let ReviewsContainer = connect(({reviews}) => {
 class About extends React.Component {
   constructor(props) {
     super(props);
-    this.dispatch = props.dispatch;
-    this.error = props.error;
-    this.id = 123;
-    if (!this.id) this.dispatch({type: 'add_error', error: 'not found'});
+    console.log(props);
+    this.id = props.match.params.id;
+    if (!this.id) this.props.dispatch({type: 'add_error', error: 'not found'});
     const data = {
       coords: {
         lat: Math.random() * -90 + Math.random() * 90,
@@ -101,7 +100,7 @@ class About extends React.Component {
         }
       ]
     };
-    this.dispatch({type: 'data_loaded', data});
+    this.props.dispatch({type: 'data_loaded', data});
   }
   componentDidMount() {
     console.log(store.getState());
@@ -158,8 +157,8 @@ class About extends React.Component {
   }
 }
 
-const AboutContainer = connect(state => {
-  return {error: state.error};
+const AboutContainer = connect((state, ownProps) => {
+  return {...ownProps, error: state.error};
 })(About);
 
 const reducer = (state = {error: '', reviews: [], id: ''}, action) => {
@@ -179,9 +178,9 @@ const reducer = (state = {error: '', reviews: [], id: ''}, action) => {
 
 const store = createStore(reducer);
 
-const component = () => (
+const AboutRedux = () => (
   <Provider store={store}>
-    <AboutContainer />
+    <AboutContainer l={'hello world'} />
   </Provider>
 );
-export default component;
+export default AboutRedux;
