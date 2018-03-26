@@ -1,6 +1,6 @@
 import React from 'react';
-import {Rating, Price} from '../Search/SearchResults';
 import styled from 'styled-components';
+import {Rating, Price} from '../Styled';
 import {Button} from 'react-bootstrap';
 
 const Container = styled.div`
