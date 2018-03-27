@@ -7,8 +7,10 @@ import signin from "../services/signin";
 import signup from "../services/signup";
 import createHouse from "../services/createHouse";
 import getHouse from "../services/getHouse";
-import search from "../services/search"
-import logout from "../services/logout"
+import search from "../services/search";
+import logout from "../services/logout";
+import createComment from "../services/addcomment"
+import getUser from "../services/getUser"
 
 const router = express.Router();
 
@@ -30,6 +32,12 @@ router.get('/search', search)
 
 //Delete session 
 router.get('/logout', logout)
+
+//Create comment
+router.post('/createComment', createComment)
+
+//Get user
+router.post('/getUser', getUser)
 
 
 export default router;
