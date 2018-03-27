@@ -13,7 +13,7 @@ const pagesSchem = new Schema({
 	},
 	userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
 	rating: { type: Number, default: 0 },
-	comments: { type: Array }
+	reviews: { type: Array }
 });
 
 export default mongoose.model('House', pagesSchem);
