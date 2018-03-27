@@ -108,7 +108,6 @@ const superReducer = combineReducers({
 const store = createStore(superReducer);
 class Search extends React.Component {
   componentDidMount() {
-    //there will be fetch
     makeRequest();
   }
   render() {

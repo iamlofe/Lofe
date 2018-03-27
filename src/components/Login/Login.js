@@ -6,6 +6,7 @@ import {Button} from 'react-bootstrap';
 import SignIn from './SignIn';
 import SignUp from './SignUp';
 import axios from 'axios';
+import {getCookie, setCookie, deleteCookie} from '../../cookies';
 
 const authType = (state = 'sign_in', action) => {
   // make normal understandable names
@@ -47,7 +48,6 @@ const onSignIn = values => {
           });
           break;
         default:
-          //success
           store.dispatch({type: 'change_signin_status', status: 'success'});
           break;
       }
@@ -62,7 +62,7 @@ const onSignUp = values => {
   axios
     .post('http://localhost:3030/signup', values)
     .then(res => {
-      switch (res) {
+      switch (res.data.status) {
         case 'user_already_exists':
           store.dispatch({
             type: 'change_signup_status',
@@ -70,8 +70,9 @@ const onSignUp = values => {
           });
           break;
         default:
-          //success
+          setCookie('userid', res.data.session.user);
           store.dispatch({type: 'change_signup_status', status: 'success'});
+          window.location.replace('http://localhost:3000/');
           break;
       }
     })

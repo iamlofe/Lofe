@@ -1,8 +1,8 @@
 import React from 'react';
-import { connect } from 'react-redux';
-import { Row, Col } from 'react-bootstrap';
+import {connect} from 'react-redux';
+import {Row, Col} from 'react-bootstrap';
 import styled from 'styled-components';
-import { Rating, Price } from '../Styled';
+import {Rating, Price} from '../Styled';
 
 const StyledDescriptionText = styled.p`
   text-overflow: ellipsis;
@@ -45,36 +45,36 @@ const Flex = styled.div`
   padding: 10px 0;
 `;
 
-const ImageWrap = ({ img, isLiked, id }) => (
-	<StyledImageWrap>
-		<Like isLiked={isLiked} id={id} />
-		<img src={img} alt="test" />
-	</StyledImageWrap>
+const ImageWrap = ({img, isLiked, id}) => (
+  <StyledImageWrap>
+    <Like isLiked={isLiked} id={id} />
+    <img src={img} alt="test" />
+  </StyledImageWrap>
 );
 
-let Like = ({ dispatch, id, isLiked }) => (
-	<StyledLike
-		isLiked={isLiked}
-		onClick={e => {
-			e.preventDefault();
-			dispatch({ type: 'toggle_liked_flag', id });
-		}}
-	/>
+let Like = ({dispatch, id, isLiked}) => (
+  <StyledLike
+    isLiked={isLiked}
+    onClick={e => {
+      e.preventDefault();
+      dispatch({type: 'toggle_liked_flag', id});
+    }}
+  />
 );
 Like = connect()(Like);
 
-const DescriptionText = ({ description }) => (
-	<StyledDescriptionText>{description}</StyledDescriptionText>
+const DescriptionText = ({description}) => (
+  <StyledDescriptionText>{description}</StyledDescriptionText>
 );
 
-const Description = ({ price, description, rating, currency }) => (
-	<StyledDescription>
-		<DescriptionText description={description} />
-		<Flex>
-			<Rating rating={rating} />
-			<Price currency={currency} price={price} />
-		</Flex>
-	</StyledDescription>
+const Description = ({price, description, rating, currency}) => (
+  <StyledDescription>
+    <DescriptionText description={description} />
+    <Flex>
+      <Rating rating={rating} />
+      <Price currency={currency} price={price} />
+    </Flex>
+  </StyledDescription>
 );
 
 const StyledSearchResult = styled.div`
@@ -88,43 +88,51 @@ const StyledSearchResult = styled.div`
   }
 `;
 
-const SearchResult = ({ address, price, description, rating, isLiked, image, id }) => (
-	<Col md={4}>
-		<StyledSearchResult>
-			<a
-				href={`/about/${id}`}
-				style={{
-					color: '#000',
-					textDecoration: 'none'
-				}}
-			>
-				<ImageWrap
-					img={
-						image ||
-						'http://www.joshuacasper.com/contents/uploads/joshua-casper-samples-free.jpg'
-					}
-					isLiked={isLiked || false}
-					id={id}
-				/>
-				<Description
-					description={address}
-					price={price}
-					rating={rating}
-					currency="usd"
-				/>
-			</a>
-		</StyledSearchResult>
-	</Col>
+const SearchResult = ({
+  address,
+  price,
+  description,
+  rating,
+  isLiked,
+  image,
+  _id
+}) => (
+  <Col md={4}>
+    <StyledSearchResult>
+      <a
+        href={`/about/${_id}`}
+        style={{
+          color: '#000',
+          textDecoration: 'none'
+        }}
+      >
+        <ImageWrap
+          img={
+            image ||
+            'http://www.joshuacasper.com/contents/uploads/joshua-casper-samples-free.jpg'
+          }
+          isLiked={isLiked || false}
+          id={_id}
+        />
+        <Description
+          description={address}
+          price={price}
+          rating={rating}
+          currency="usd"
+        />
+      </a>
+    </StyledSearchResult>
+  </Col>
 );
 
-let SearchResults = ({ results }) =>
-	results ? (
-		<Row>
-			{results.map(result => <SearchResult key={result.id} {...result} />)}
-		</Row>
-	) : null;
+let SearchResults = ({results}) =>
+  results ? (
+    <Row>
+      {results.map(result => <SearchResult key={result.id} {...result} />)}
+    </Row>
+  ) : null;
 
-export default (SearchResults = connect(({ results }) => {
-	//connected
-	return { results };
+export default (SearchResults = connect(({results}) => {
+  //connected
+  return {results};
 }, null)(SearchResults));
