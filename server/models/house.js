@@ -6,7 +6,7 @@ const pagesSchem = new Schema({
 	description: { type: String },
 	advantages: { type: Array },
 	price: { type: Number },
-	urlPhotos: {
+	images: {
 		type: Array,
 		default:
 			'https://www.google.by/search?q=photos&tbm=isch&source=iu&ictx=1&fir=8Yzq_mUke5UEwM%253A%252CfD4CS8xZrXkeVM%252C_&usg=__nHyLPKGlbWcTLuSjYVyWd6Z3b5E%3D&sa=X&ved=0ahUKEwjPl8Wz-YLaAhWEEywKHZ5rAMUQ9QEIOjAF#imgrc=MHkGQLGnKUWv2M:'
