@@ -22,7 +22,7 @@ router.post('/signup', signup)
 router.post('/add-house', createHouse)
 
 //Router for get pages
-router.get('/getHouse', getHouse)
+router.get('/getHouse', getHouse, )
 
 //Search
 router.get('/search', search)
