@@ -2,7 +2,13 @@ import React from 'react';
 import {reducer as reduxFormReducer, Field, reduxForm} from 'redux-form';
 import {createStore, combineReducers} from 'redux';
 import {Provider, connect} from 'react-redux';
-import {StyledInput, StyledTextArea, StyledError} from '../Styled';
+import {
+  StyledInput,
+  StyledTextArea,
+  StyledError,
+  CenterRow,
+  Rating
+} from '../Styled';
 import {Row, Col, Button} from 'react-bootstrap';
 import axios from 'axios';
 import {CircularProgress} from 'material-ui/Progress';
@@ -42,14 +48,12 @@ let Status = ({status}) => {
           your review added
         </Button>
       );
-    case 'fail':
+    default:
       return (
         <Button type="submit" bsStyle="danger">
-          error occured. try again
+          {status.split('_').join(' ')}
         </Button>
       );
-    default:
-      return null;
   }
 };
 Status = connect(({status}) => {
@@ -62,7 +66,7 @@ let Form = ({handleSubmit, submitting}) => (
       <Col md={10} className="offset-md-1">
         <Row>
           <Col md={12}>
-            <Field name="review" component={Review} />
+            <Field name="description" component={Review} />
           </Col>
           <Col md={6}>
             <Field
@@ -104,40 +108,61 @@ Form = reduxForm({
   validate
 })(Form);
 
-const makeRequest = (id, values) => {
-  const data = {
-    id,
-    values
-  };
-  store.dispatch({type: 'change_status', status: 'pending'});
-  axios
-    .post('http://localhost:3030/add-review', data)
-    .then(res => {
-      let status = res === 'ok' ? 'success' : 'fail';
-      store.dispatch({type: 'change_status', status});
-    })
-    .catch(() => store.dispatch({type: 'change_status', status: 'fail'}));
-};
-
-const status = (state = 'normal', action) => {
-  switch (action.type) {
-    case 'change_status':
-      return action.status;
-    default:
-      return state;
-  }
-};
-
-const reducer = combineReducers({
-  status,
-  form: reduxFormReducer
-});
-const store = createStore(reducer);
-
-const AddReview = ({id}) => (
-  <Provider store={store}>
-    <Form onSubmit={values => makeRequest(id, values)} />
-  </Provider>
+let FormRating = ({onChange, rating}) => (
+  <Rating isSelectable={true} rating={rating} onChange={onChange} />
 );
+FormRating = connect(
+  ({rating}) => {
+    return {rating};
+  },
+  dispatch => {
+    return {onChange: rating => dispatch({type: 'change_rating', rating})};
+  }
+)(Rating);
+
+let AddReview = ({id, addReview, rating, askToPickRating, dispatch}) => (
+  <div>
+    <FormRating />
+    <Form
+      onSubmit={values => {
+        if (rating) addReview(values, id, rating);
+        else askToPickRating();
+      }}
+    />
+  </div>
+);
+AddReview = connect(
+  ({about, rating}) => {
+    return {rating, id: about.id, formDisabled: about.formDisabled};
+  },
+  dispatch => {
+    return {
+      addReview: (review, id, rating) => {
+        dispatch({type: 'change_status', status: 'pending'});
+        axios
+          .post('http://localhost:3030/add-review', {
+            ...review,
+            id,
+            rating
+          })
+          .then(res => {
+            if (res.status === 200) {
+              dispatch({type: 'add_review', review});
+              dispatch({type: 'change_status', status: 'success'});
+            }
+          })
+          .catch(() => {
+            console.log(review, id);
+            dispatch({type: 'add_review', review: {...review, rating}});
+            dispatch({type: 'change_status', status: 'fail'});
+            dispatch({type: 'disable_form'});
+          });
+      },
+      askToPickRating: () =>
+        dispatch({type: 'change_status', status: 'pick_the_rating'}),
+      dispatch
+    };
+  }
+)(AddReview);
 
 export default AddReview;

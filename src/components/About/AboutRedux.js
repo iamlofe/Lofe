@@ -11,7 +11,8 @@ import AddReview from './AddReview';
 import FourOFour from './404';
 import axios from 'axios';
 import {Provider, connect} from 'react-redux';
-import {createStore} from 'redux';
+import {createStore, combineReducers} from 'redux';
+import {reducer as reduxFormReducer} from 'redux-form';
 
 const Top = styled.div`
   padding: 30px 0;
@@ -29,18 +30,18 @@ const Center = styled.div`
 let AdvantagesContainer = ({advantages}) => (
   <Advantages advantages={advantages} />
 );
-AdvantagesContainer = connect(({advantages}) => {
-  return {advantages};
+AdvantagesContainer = connect(({about}) => {
+  return {advantages: about.advantages};
 })(AdvantagesContainer);
 
 let MapContainer = ({coords}) => <Map coords={coords} />;
-MapContainer = connect(({coords}) => {
-  return {coords};
+MapContainer = connect(({about}) => {
+  return {coords: about.coords};
 })(MapContainer);
 
 let ImageContainer = ({images}) => <ImageCarousel images={images} />;
-ImageContainer = connect(state => {
-  return {images: state.images};
+ImageContainer = connect(({about}) => {
+  return {images: about.images};
 })(ImageContainer);
 
 let DescriptionContainer = ({description, price, rating, currency}) => (
@@ -51,20 +52,34 @@ let DescriptionContainer = ({description, price, rating, currency}) => (
     currency={currency}
   />
 );
-DescriptionContainer = connect(state => {
-  return {...state};
+DescriptionContainer = connect(({about}) => {
+  return {...about};
 })(DescriptionContainer);
 
-let ReviewsContainer = connect(({reviews}) => {
-  return {reviews};
+let ReviewsContainer = connect(({about}) => {
+  return {reviews: about.reviews};
 })(Reviews);
 
 class About extends React.Component {
+  makeRequest() {
+    axios
+      .get('localhost:3030/houses?id=' + this.props.id)
+      .then(res => {
+        if (res.status === 200)
+          this.props.dispatch({type: 'data_loaded', data: res.data});
+        else
+          this.props.dispatch({
+            type: 'add_error',
+            error: (res.data && res.data.status) || 'other error'
+          });
+      })
+      .catch(error => console.log(error)); //todo
+  }
   constructor(props) {
     super(props);
-    console.log(props);
-    this.id = props.match.params.id;
-    if (!this.id) this.props.dispatch({type: 'add_error', error: 'not found'});
+    this.props.dispatch({type: 'change_id', id: this.props.id});
+    //this.makeRequest();
+
     const data = {
       coords: {
         lat: Math.random() * -90 + Math.random() * 90,
@@ -158,17 +173,31 @@ class About extends React.Component {
 }
 
 const AboutContainer = connect((state, ownProps) => {
-  return {...ownProps, error: state.error};
+  return {error: state.about.error};
 })(About);
 
-const reducer = (state = {error: '', reviews: [], id: ''}, action) => {
+const status = (state = 'normal', action) => {
+  switch (action.type) {
+    case 'change_status':
+      return action.status;
+    default:
+      return state;
+  }
+};
+
+const about = (
+  state = {error: '', reviews: [], id: '', formDisabled: false},
+  action
+) => {
   switch (action.type) {
     case 'add_review':
       return {...state, reviews: [...state.reviews, action.review]};
     case 'data_loaded':
-      return {...action.data};
+      return {...state, ...action.data};
     case 'change_id':
       return {...state, id: action.id};
+    case 'disable_form':
+      return {...state, formDisabled: true};
     case 'add_error':
       return {...state, error: action.error};
     default:
@@ -176,11 +205,21 @@ const reducer = (state = {error: '', reviews: [], id: ''}, action) => {
   }
 };
 
-const store = createStore(reducer);
+const rating = (state = 0, action) =>
+  action.type === 'change_rating' ? action.rating : state;
 
-const AboutRedux = () => (
+const rootReducer = combineReducers({
+  rating,
+  form: reduxFormReducer,
+  status,
+  about
+});
+
+const store = createStore(rootReducer);
+store.subscribe(() => console.log(store.getState()));
+const AboutRedux = ({id}) => (
   <Provider store={store}>
-    <AboutContainer l={'hello world'} />
+    <AboutContainer id={id} />
   </Provider>
 );
 export default AboutRedux;

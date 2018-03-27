@@ -18,11 +18,12 @@ class App extends Component {
         <Switch>
           <Route path="/" exact component={Search} />
           <Route path="/add-house" component={AddHouse} />
-          <Route path="/about/:id" component={AboutRedux} />
+          <Route
+            path="/about/:id"
+            component={props => <AboutRedux id={props.match.params.id} />}
+          />
           <Route path="/login" component={Login} />
           <Route path="/wish-list" component={WishListComponent} />
-          <Route path="/test/:id" component={About} />
-          <Route path="/generate" component={() => <Generator number={1} />} />
         </Switch>
       </BrowserRouter>
     );

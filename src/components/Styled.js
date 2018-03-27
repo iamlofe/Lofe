@@ -41,10 +41,14 @@ const Point = ({input, remove, label, type, meta: {touched, error}}) => (
   </div>
 );
 
-const Rating = ({rating}) => (
+<StarRatings />;
+
+const Rating = ({rating, onChange, isSelectable}) => (
   <StyledRating>
     <StarRatings
       rating={rating}
+      isSelectable={isSelectable || 'false'}
+      changeRating={onChange}
       starRatedColor="#c5ea2e"
       numberOfStars={5}
       starDimension="20px"
