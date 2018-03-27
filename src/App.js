@@ -8,6 +8,7 @@ import {Grid, Col, Row} from 'react-bootstrap';
 import {Provider} from 'react-redux';
 import AboutRedux from './components/About/AboutRedux';
 import WishListComponent from './components/WishList/WishList';
+import Generator from './components/generator';
 
 class App extends Component {
   render() {
@@ -17,10 +18,12 @@ class App extends Component {
         <Switch>
           <Route path="/" exact component={Search} />
           <Route path="/add-house" component={AddHouse} />
-          <Route path="/about/:id" component={AboutRedux} />
+          <Route
+            path="/about/:id"
+            component={props => <AboutRedux id={props.match.params.id} />}
+          />
           <Route path="/login" component={Login} />
           <Route path="/wish-list" component={WishListComponent} />
-          <Route path="/test/:id" component={About} />
         </Switch>
       </BrowserRouter>
     );
