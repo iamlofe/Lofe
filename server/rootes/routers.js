@@ -19,25 +19,25 @@ const router = express.Router();
 router.post('/signin', signin);
 
 // Router for signup
-router.post('/signup', signup)
+router.post('/signup', signup);
 
 //Router for create pages
-router.post('/add-house', createHouse)
+router.post('/add-house', createHouse);
 
 //Router for get pages
-router.get('/getHouse', getHouse)
+router.get('/about', getHouse);
 
 //Search
-router.get('/search', search)
+router.get('/search', search);
 
 //Delete session 
-router.get('/logout', logout)
+router.get('/logout', logout);
 
 //Create comment
 router.post('/createComment', createComment)
 
 //Get user
-router.get('/getUser', getUser)
+router.get('/getUser', getUser);
 
 
 export default router;
