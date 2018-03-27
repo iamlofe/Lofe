@@ -7,11 +7,14 @@ export default async (req, res, next) => {
 
 	try {
 		user = await User.create(creditionals);
-		req.session.user = user._id;
-		res.send({
-			status: "success",
-			session: req.session,
-		});
+		if (user) {
+			req.session.authorized = true;
+			req.session.user = user._id;
+			res.send({
+				status: "success",
+				session: req.session,
+			});
+		}
 	} catch ({ message }) {
 		return next({
 			status: 400,

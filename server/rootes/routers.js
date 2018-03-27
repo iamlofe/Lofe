@@ -8,6 +8,7 @@ import signup from "../services/signup";
 import createHouse from "../services/createHouse";
 import getHouse from "../services/getHouse";
 import search from "../services/search"
+import logout from "../services/logout"
 
 const router = express.Router();
 
@@ -22,10 +23,13 @@ router.post('/signup', signup)
 router.post('/add-house', createHouse)
 
 //Router for get pages
-router.get('/getHouse', getHouse, )
+router.get('/getHouse', getHouse)
 
 //Search
 router.get('/search', search)
+
+//Delete session 
+router.get('/logout', logout)
 
 
 export default router;

@@ -8,6 +8,7 @@ import bluebird from 'bluebird';
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcryptjs';
 import cors from 'cors';
+import cookieParser from "cookie-parser";
 
 //External modules
 import router from './rootes/routers';
@@ -22,11 +23,12 @@ app.use(cors({ origin: '*' }));
 app.use(morgan('tiny'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
+app.use(cookieParser());
 app.use(
 	session({
-		resave: true,
-		saveUninitialized: true,
-		secret: config.secretKey
+		// resave: true,
+		// saveUninitialized: true,
+		secret: config.secretKey,
 	})
 );
 
@@ -49,12 +51,6 @@ app.get('/', (req, res) => {
 });
 //Router
 app.use('', router);
-app.get('http://localhost:3000/test', async (req, res) => {
-	console.log(document.cookie)
-})
 
-app.get('/cookie', (req, res) => {
-	res.send(req.headers);
-});
 //Error handler
 app.use(handler);
