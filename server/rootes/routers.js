@@ -37,7 +37,7 @@ router.get('/logout', logout)
 router.post('/createComment', createComment)
 
 //Get user
-router.post('/getUser', getUser)
+router.get('/getUser', getUser)
 
 
 export default router;

@@ -2,10 +2,9 @@ import User from "../models/user";
 
 export default async (req, res, next) => {
 	const { _id } = req.query;
-
-
-
+	console.log(_id)
 	const user = await User.findOne({ _id }, { password: 0 });
+
 
 	if (!user) {
 		return next({
