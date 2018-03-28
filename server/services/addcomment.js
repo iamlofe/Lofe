@@ -6,6 +6,7 @@ export default async (req, res, next) => {
 	let comment;
 	try {
 		comment = await Comment.create(objComment);
+		res.send(comment);
 
 	} catch ({ message }) {
 		return next({
@@ -13,5 +14,4 @@ export default async (req, res, next) => {
 			message,
 		});
 	}
-	res.send(comment)
 }
