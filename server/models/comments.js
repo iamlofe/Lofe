@@ -5,6 +5,7 @@ const pagesSchem = new Schema({
 	description: { type: String, required: true },
 	advantages: { type: String },
 	disadvantages: { type: String },
+	rating: { type: Number },
 });
 
-export default mongoose.model('Comments', pagesSchem);
+export default mongoose.model('Comment', pagesSchem);
