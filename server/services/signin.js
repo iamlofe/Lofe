@@ -3,9 +3,9 @@ import jwt from 'jsonwebtoken';
 import config from '../config/config';
 
 export default async (req, res, next) => {
-  let {login, password} = req.body;
+  let {username, password} = req.body;
 
-  const user = await User.findOne({login});
+  const user = await User.findOne({username});
 
   if (!user) {
     return next({
@@ -21,6 +21,13 @@ export default async (req, res, next) => {
         status: 401,
         message: 'encorrect'
       });
+    } else {
+      req.session.authorized = true;
+      req.session.user = user._id;
+      res.send({
+        status: 'success',
+        session: req.session
+      });
     }
   } catch (e) {
     return next({
@@ -35,6 +42,4 @@ export default async (req, res, next) => {
   // 	status: "succes",
   // 	session: req.session,
   // }
-
-  res.send(answer);
 };

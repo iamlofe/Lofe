@@ -13,7 +13,8 @@ const userScheme = new Schema({
     lowercase: true,
     index: {unique: true}
   },
-  password: {type: String}
+  password: {type: String},
+  wishList: {type: Array}
 });
 
 //Must modifier
