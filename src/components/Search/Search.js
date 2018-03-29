@@ -1,11 +1,14 @@
 import React from 'react';
-import {createStore, combineReducers} from 'redux';
+import {createStore, combineReducers, applyMiddleware} from 'redux';
+import thunk from 'redux-thunk';
+import {composeWithDevTools} from 'redux-devtools-extension';
 import {Provider} from 'react-redux';
 import {Grid} from 'react-bootstrap';
 import faker from 'faker';
 import SearchResults from './SearchResults';
 import SearchBar from './SearchBar';
 import axios from 'axios';
+import {getCookie} from '../../cookies';
 
 const makeRequest = () => {
   const {request, price, rating} = store.getState().filter;
@@ -84,7 +87,7 @@ const filterReducer = (
 const resultsReducer = (state = [], action) => {
   switch (action.type) {
     case 'toggle_liked_flag':
-      //makeRequestToDB();
+      console.log(state);
       return state.map(
         result =>
           result.id === action.id
@@ -100,22 +103,47 @@ const resultsReducer = (state = [], action) => {
   }
 };
 
+const session = (
+  state = {loginStatus: 'not_logged_in', username: ''},
+  action
+) => {
+  switch (action.type) {
+    case 'login':
+      return {username: action.username, loginStatus: 'logged_in'};
+    case 'logout':
+      return {username: '', loginStatus: 'not_logged_in'};
+    default:
+      return state;
+  }
+};
+
 const superReducer = combineReducers({
   results: resultsReducer,
   filter: filterReducer,
+  session,
   error
 });
-const store = createStore(superReducer);
+const store = createStore(
+  superReducer,
+  composeWithDevTools(applyMiddleware(thunk))
+);
 class Search extends React.Component {
   componentDidMount() {
     makeRequest();
+    const userid = getCookie('userid');
+    if (userid)
+      axios
+        .get('http://localhost:3030/getUser?_id=' + userid)
+        .then(res =>
+          store.dispatch({type: 'login', username: res.data.username})
+        );
   }
+
   render() {
     return (
       <Provider store={store}>
         <Grid>
           <SearchBar />
-
           <SearchResults />
         </Grid>
       </Provider>

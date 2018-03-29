@@ -52,16 +52,21 @@ const ImageWrap = ({img, isLiked, id}) => (
   </StyledImageWrap>
 );
 
-let Like = ({dispatch, id, isLiked}) => (
+let Like = ({username, dispatch, id, isLiked}) => (
   <StyledLike
     isLiked={isLiked}
     onClick={e => {
       e.preventDefault();
+      console.log(id);
       dispatch({type: 'toggle_liked_flag', id});
     }}
   />
 );
-Like = connect()(Like);
+Like = connect(state => {
+  return {
+    username: state.session.username
+  };
+})(Like);
 
 const DescriptionText = ({description}) => (
   <StyledDescriptionText>{description}</StyledDescriptionText>

@@ -6,8 +6,13 @@ import styled from 'styled-components';
 import FontAwesome from 'react-fontawesome';
 import Snackbar from 'material-ui/Snackbar';
 import TextField from 'material-ui/TextField';
+import Paper from 'material-ui/Paper';
 
 const StyledWishListItem = styled.div`
+  margin: 40px 0;
+  padding: 40px 15px;
+  box-shadow: 0px 1px 5px 0px rgba(0, 0, 0, 0.2),
+    0px 2px 2px 0px rgba(0, 0, 0, 0.14), 0px 3px 1px -2px rgba(0, 0, 0, 0.12);
   div.address {
     font-size: 30px;
     text-transform: capitalize;
@@ -18,14 +23,14 @@ const StyledImageWrap = styled.div`
   position: relative;
   width: 100%;
   overflow: hidden;
-  height: 250px;
+  height: 200px;
   img {
     width: 100%;
   }
 `;
 
 const StyledAdvantage = styled.div`
-  margin: 10px 0;
+  margin: 5px 0;
   span.fa {
     margin-right: 10px;
   }
@@ -38,7 +43,7 @@ const AdvantageList = ({advantages}) => (
 const Advantage = ({advantage}) => (
   <Col md={6}>
     <StyledAdvantage>
-      <FontAwesome name="times" />
+      <FontAwesome name="check" />
       {advantage}
     </StyledAdvantage>
   </Col>
@@ -75,7 +80,7 @@ const wishList = (state = {visibleItems: [], trash: []}, action) => {
 };
 
 const WishListItem = ({id, description, address, image, advantages}) => (
-  <li key={id}>
+  <div key={id}>
     <StyledWishListItem>
       <Row>
         <Col md={3}>
@@ -93,11 +98,15 @@ const WishListItem = ({id, description, address, image, advantages}) => (
         </Col>
       </Row>
     </StyledWishListItem>
-  </li>
+  </div>
 );
 
 let RemoveButton = ({id, dispatch}) => (
-  <Button onClick={() => dispatch({type: 'remove_to_trash', id})}>
+  <Button
+    block
+    style={{height: '100%'}}
+    onClick={() => dispatch({type: 'remove_to_trash', id})}
+  >
     remove
   </Button>
 );
@@ -136,7 +145,6 @@ class WishList extends React.Component {
       }
     ];
     this.props.dispatch({type: 'data_loaded', data});
-    console.log(this.props);
   }
   componentDidMount() {
     //makeRequest();
@@ -157,7 +165,14 @@ let Undo = ({dispatch, id}) => (
   <Snackbar
     open={true}
     message={`to restore ${id} click undo`}
-    action={<div onClick={() => dispatch({type: 'restore', id})}>undo</div>}
+    action={
+      <div
+        style={{color: '#D19A58', cursor: 'pointer'}}
+        onClick={() => dispatch({type: 'restore', id})}
+      >
+        undo
+      </div>
+    }
     autoHideDuration={4000}
     onClose={() => dispatch({type: 'remove_completely', id})}
   />
@@ -165,7 +180,7 @@ let Undo = ({dispatch, id}) => (
 Undo = connect()(Undo);
 
 let UndoList = ({undos}) => (
-  <ul>
+  <ul style={{listStyle: 'none'}}>
     {undos.map((undo, index) => (
       <li key={index}>
         <Undo id={undo.id} />

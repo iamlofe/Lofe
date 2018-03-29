@@ -11,8 +11,10 @@ import AddReview from './AddReview';
 import FourOFour from './404';
 import axios from 'axios';
 import {Provider, connect} from 'react-redux';
-import {createStore, combineReducers} from 'redux';
+import {createStore, combineReducers, applyMiddleware} from 'redux';
+import {composeWithDevTools} from 'redux-devtools-extension';
 import {reducer as reduxFormReducer} from 'redux-form';
+import thunk from 'redux-thunk';
 
 const Top = styled.div`
   padding: 30px 0;
@@ -175,8 +177,10 @@ const rootReducer = combineReducers({
   about
 });
 
-const store = createStore(rootReducer);
-store.subscribe(() => console.log(store.getState()));
+const store = createStore(
+  rootReducer,
+  composeWithDevTools(applyMiddleware(thunk))
+);
 const AboutRedux = ({id}) => (
   <Provider store={store}>
     <AboutContainer id={id} />

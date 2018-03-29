@@ -11,7 +11,8 @@ const CenterRow = styled.div`
 `;
 
 const StyledRating = styled.div`
-  display: inline-block;
+  display: ${props => (!props.centered ? 'flex' : 'inline-block')};
+  justify-content: ${props => (!props.centered ? 'center' : null)};
   line-height: 0;
 `;
 
@@ -43,8 +44,8 @@ const Point = ({input, remove, label, type, meta: {touched, error}}) => (
 
 <StarRatings />;
 
-const Rating = ({rating, onChange, isSelectable}) => (
-  <StyledRating>
+const Rating = ({centered, rating, onChange, isSelectable}) => (
+  <StyledRating centered={centered}>
     <StarRatings
       rating={rating}
       isSelectable={isSelectable || 'false'}

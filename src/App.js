@@ -10,6 +10,28 @@ import AboutRedux from './components/About/AboutRedux';
 import WishListComponent from './components/WishList/WishList';
 import Generator from './components/generator';
 import Home from './components/Home/Home';
+import axios from 'axios';
+
+class UploadFile extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      file: {}
+    };
+  }
+  makeRequest() {}
+  render() {
+    return (
+      <div>
+        <input
+          type="file"
+          onChange={e => this.setState({file: e.target.files[0]})}
+        />
+        <button>click me</button>
+      </div>
+    );
+  }
+}
 
 class App extends Component {
   render() {
@@ -26,6 +48,7 @@ class App extends Component {
           <Route path="/login" component={Login} />
           <Route path="/wish-list" component={WishListComponent} />
           <Route path="/home" component={Home} />
+          <Route path="/test" component={UploadFile} />
           <Route
             path="/generate"
             component={() => <Generator number={100} />}

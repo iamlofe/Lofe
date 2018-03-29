@@ -36,7 +36,7 @@ const Review = ({
   key,
   description,
   rating,
-  author,
+  username,
   advantages,
   disadvantages
 }) => (
@@ -52,7 +52,7 @@ const Review = ({
       </Col>
       <Col md={8}>
         <Description>{description}</Description>
-        <Author>{author}</Author>
+        <Author>{username}</Author>
       </Col>
     </Row>
   </Container>
