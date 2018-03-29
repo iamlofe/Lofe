@@ -12,6 +12,7 @@ import {
 import {Row, Col, Button} from 'react-bootstrap';
 import axios from 'axios';
 import {CircularProgress} from 'material-ui/Progress';
+import {getCookie} from '../../cookies';
 
 const Review = ({input, meta: {touched, error}}) => (
   <div>
@@ -138,25 +139,31 @@ AddReview = connect(
   dispatch => {
     return {
       addReview: (review, id, rating) => {
-        dispatch({type: 'change_status', status: 'pending'});
-        axios
-          .post('http://localhost:3030/add-review', {
-            ...review,
-            id,
-            rating
-          })
-          .then(res => {
-            if (res.status === 200) {
-              dispatch({type: 'add_review', review});
-              dispatch({type: 'change_status', status: 'success'});
-            }
-          })
-          .catch(() => {
-            console.log(review, id);
-            dispatch({type: 'add_review', review: {...review, rating}});
-            dispatch({type: 'change_status', status: 'fail'});
-            dispatch({type: 'disable_form'});
-          });
+        const session = getCookie('userid');
+        if (session) {
+          dispatch({type: 'change_status', status: 'pending'});
+          axios.get('http://localhost:3030/userExists?session');
+          axios
+            .post('http://localhost:3030/', {
+              ...review,
+              id,
+              rating
+            })
+            .then(res => {
+              if (res.status === 200) {
+                dispatch({type: 'add_review', review});
+                dispatch({type: 'change_status', status: 'success'});
+              }
+            })
+            .catch(() => {
+              console.log(review, id);
+              dispatch({type: 'add_review', review: {...review, rating}});
+              dispatch({type: 'change_status', status: 'fail'});
+              dispatch({type: 'disable_form'});
+            });
+        } else {
+          window.location.replace('http://localhost:3000');
+        }
       },
       askToPickRating: () =>
         dispatch({type: 'change_status', status: 'pick_the_rating'}),

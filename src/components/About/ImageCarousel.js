@@ -14,11 +14,12 @@ const settings = {
 
 const ImageCarousel = ({images}) => (
   <Slider {...settings}>
-    {images.map((image, index) => (
-      <div key={index}>
-        <img src={image} alt="something valueable" />
-      </div>
-    ))}
+    {images &&
+      images.map((image, index) => (
+        <div key={index}>
+          <img src={image} alt="something valueable" />
+        </div>
+      ))}
   </Slider>
 );
 
