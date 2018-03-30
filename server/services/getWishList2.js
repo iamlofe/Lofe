@@ -7,19 +7,13 @@ export default async (req, res) => {
 	let wishList, houses;
 	try {
 		wishList = await User.findOne({ _id }, { email: 0, password: 0, username: 0, __v: 0, _id: 0 });
-		// const arraId = wishList.wishList;
-		// for (let i = 0; i < arrayId.length; i++) {
-		// 	houses[0] = await House.find({ "_id": arraId[0] });
-		// }
-		// res.send(houses);
-		res.send(wishList)
+		console.log(wishList)
+		// houses = House.find({ wishList.wishList.toString() })
 	} catch ({ message }) {
 		return next({
 			status: 402,
 			message
 		});
 	}
+	res.send(wishList)
 };
-
-// const arraId = wishList.wishList;
-

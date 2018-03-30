@@ -8,10 +8,14 @@ import signup from '../services/signup';
 import createHouse from '../services/createHouse';
 import getHouse from '../services/getHouse';
 import search from '../services/search';
-import logout from '../services/logout';
 import createComment from '../services/addComment';
 import getUser from '../services/getUser';
 import checkUser from '../services/checkUser';
+import addToWishList from '../services/addToWishList';
+import getWishList from '../services//getWishList';
+
+//
+import userF from '../services/getF';
 
 const router = express.Router();
 
@@ -27,14 +31,20 @@ router.post('/add-house', createHouse);
 //Create comment
 router.post('/createComment', createComment);
 
+//Add to wish list
+router.post('/addToWishList', addToWishList);
+
+//Get WishList
+router.post('/getWishList', getWishList);
+
+//Get user
+router.post('/get', userF);
+
 //Router for get pages
 router.get('/about', getHouse);
 
 //Search
 router.get('/search', search);
-
-//Delete session
-router.get('/logout', logout);
 
 //Get user
 router.get('/getUser', getUser);
