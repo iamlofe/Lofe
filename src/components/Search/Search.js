@@ -9,6 +9,7 @@ import SearchResults from './SearchResults';
 import SearchBar from './SearchBar';
 import axios from 'axios';
 import {getCookie} from '../../cookies';
+import {menu} from '../../reducer/menu';
 
 const makeRequest = () => {
   const {request, price, rating} = store.getState().filter;
@@ -76,7 +77,6 @@ const filterReducer = (
 
     case 'change_request':
       setTimeout(() => makeRequest(), 0);
-
       return {...state, request: action.request};
 
     default:
@@ -103,21 +103,19 @@ const resultsReducer = (state = [], action) => {
   }
 };
 
-const session = (
-  state = {loginStatus: 'not_logged_in', username: ''},
-  action
-) => {
+const session = (state = {loggedIn: false, username: ''}, action) => {
   switch (action.type) {
     case 'login':
-      return {username: action.username, loginStatus: 'logged_in'};
+      return {username: action.username, loggedIn: true};
     case 'logout':
-      return {username: '', loginStatus: 'not_logged_in'};
+      return {username: '', loggedIn: false};
     default:
       return state;
   }
 };
 
 const superReducer = combineReducers({
+  menu,
   results: resultsReducer,
   filter: filterReducer,
   session,
@@ -132,11 +130,9 @@ class Search extends React.Component {
     makeRequest();
     const userid = getCookie('userid');
     if (userid)
-      axios
-        .get('http://localhost:3030/getUser?_id=' + userid)
-        .then(res =>
-          store.dispatch({type: 'login', username: res.data.username})
-        );
+      axios.get('http://localhost:3030/getUser?_id=' + userid).then(res => {
+        store.dispatch({type: 'login', username: res.data.username});
+      });
   }
 
   render() {

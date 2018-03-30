@@ -48,7 +48,6 @@ class App extends Component {
           <Route path="/login" component={Login} />
           <Route path="/wish-list" component={WishListComponent} />
           <Route path="/home" component={Home} />
-          <Route path="/test" component={UploadFile} />
           <Route
             path="/generate"
             component={() => <Generator number={100} />}

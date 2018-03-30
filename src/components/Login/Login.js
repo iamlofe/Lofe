@@ -43,7 +43,8 @@ const onSignIn = values => {
   axios
     .post('http://localhost:3030/signin', values)
     .then(res => {
-      switch (res) {
+      console.log(res);
+      switch (res.status) {
         case 'incorrect_pair':
           store.dispatch({
             type: 'change_signin_status',
@@ -51,7 +52,9 @@ const onSignIn = values => {
           });
           break;
         default:
+          setCookie('userid', res.data.session.user);
           store.dispatch({type: 'change_signin_status', status: 'success'});
+          window.location.replace('/');
           break;
       }
     })

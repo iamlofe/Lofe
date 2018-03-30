@@ -9,7 +9,7 @@ import ExpansionPanel, {
 } from 'material-ui/ExpansionPanel';
 import {deleteCookie} from '../../cookies';
 import styled from 'styled-components';
-
+import Menu from '../Menu/Menu';
 import Input from 'material-ui/Input';
 
 function MyHandle({style, ...passProps}) {
@@ -98,6 +98,7 @@ const SearchBar = () => (
       <Col md={6}>
         <SmartInput />
       </Col>
+
       <Col md={2}>
         <ExpansionPanel>
           <ExpansionPanelSummary>Price</ExpansionPanelSummary>
@@ -130,35 +131,10 @@ const SearchBar = () => (
         </ExpansionPanel>
       </Col>
       <Col md={2}>
-        <LoginButton />
+        <Menu active="search" />
       </Col>
     </Row>
   </StyledSearchBar>
 );
-
-let LoginButton = ({onClick, text, status}) => (
-  <Button block style={{height: '100%'}} onClick={() => onClick(status)}>
-    {text}
-  </Button>
-);
-LoginButton = connect(
-  ({session}) => {
-    return {
-      text: session.loginStatus === 'not_logged_in' ? 'sign in' : 'sign out',
-      status: session.loginStatus
-    };
-  },
-  dispatch => {
-    return {
-      onClick: status => {
-        if (status === 'not_logged_in') window.location.replace('/login');
-        else {
-          deleteCookie('userid');
-          dispatch({type: 'logout'});
-        }
-      }
-    };
-  }
-)(LoginButton);
 
 export default SearchBar;

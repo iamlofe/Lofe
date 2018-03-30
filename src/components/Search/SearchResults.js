@@ -3,6 +3,8 @@ import {connect} from 'react-redux';
 import {Row, Col} from 'react-bootstrap';
 import styled from 'styled-components';
 import {Rating, Price} from '../Styled';
+import {getCookie} from '../../cookies';
+import axios from 'axios';
 
 const StyledDescriptionText = styled.p`
   text-overflow: ellipsis;
@@ -57,8 +59,11 @@ let Like = ({username, dispatch, id, isLiked}) => (
     isLiked={isLiked}
     onClick={e => {
       e.preventDefault();
-      console.log(id);
-      dispatch({type: 'toggle_liked_flag', id});
+      const data = {session: getCookie('userid'), houseId: id};
+      console.log(data);
+      axios.post('http://localhost:3030/addToWishList', data).then(() => {
+        dispatch({type: 'toggle_liked_flag', id});
+      });
     }}
   />
 );
@@ -87,6 +92,12 @@ const StyledSearchResult = styled.div`
   padding: 0;
   box-shadow: 0px 1px 3px 0px rgba(0, 0, 0, 0.2),
     0px 1px 1px 0px rgba(0, 0, 0, 0.14), 0px 2px 1px -1px rgba(0, 0, 0, 0.12);
+  :hover {
+    box-shadow: rgba(0, 0, 0, 0.19) 0px 10px 30px,
+      rgba(0, 0, 0, 0.23) 0px 6px 10px;
+    transform: translate(0, 3px);
+  }
+  transition: all 0.3s ease;
   border-radius: 2px;
   a {
     text-decoration: none;

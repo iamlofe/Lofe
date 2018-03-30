@@ -7,13 +7,13 @@ import {
   StyledTextArea,
   StyledError,
   CenterRow,
-  Rating
+  Rating,
+  Status
 } from '../Styled';
 import {Row, Col, Button} from 'react-bootstrap';
 import axios from 'axios';
-import {CircularProgress} from 'material-ui/Progress';
 import {getCookie} from '../../cookies';
-import {addReview} from '../../actions/actions';
+import {addReview} from '../../actions/asyncactions';
 
 const Review = ({input, meta: {touched, error}}) => (
   <div>
@@ -33,34 +33,6 @@ const Point = ({placeholder, input, meta: {touched, error}}) => (
     {touched && error && <StyledError>{error}</StyledError>}
   </div>
 );
-
-let Status = ({status}) => {
-  switch (status) {
-    case 'normal':
-      return (
-        <Button type="submit" bsStyle="primary">
-          add review
-        </Button>
-      );
-    case 'pending':
-      return <CircularProgress />;
-    case 'success':
-      return (
-        <Button type="submit" disabled={true} bsStyle="success">
-          your review added
-        </Button>
-      );
-    default:
-      return (
-        <Button type="submit" bsStyle="danger">
-          {status.split('_').join(' ')}
-        </Button>
-      );
-  }
-};
-Status = connect(({status}) => {
-  return {status};
-})(Status);
 
 let Form = ({handleSubmit, submitting}) => (
   <form onSubmit={handleSubmit}>
@@ -85,7 +57,7 @@ let Form = ({handleSubmit, submitting}) => (
             />
           </Col>
           <Col md={12}>
-            <Status />
+            <Status normalMessage="add review" />
           </Col>
         </Row>
       </Col>
