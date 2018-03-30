@@ -1,13 +1,29 @@
 import React from 'react';
-import {createStore} from 'redux';
+import {createStore, applyMiddleware} from 'redux';
 import {connect, Provider} from 'react-redux';
 import {Col, Row, Grid, Button} from 'react-bootstrap';
 import styled from 'styled-components';
 import FontAwesome from 'react-fontawesome';
 import Snackbar from 'material-ui/Snackbar';
 import TextField from 'material-ui/TextField';
+import Paper from 'material-ui/Paper';
+import {composeWithDevTools} from 'redux-devtools-extension';
+import thunk from 'redux-thunk';
+import {getCookie} from '../../cookies';
+import {removeFromWishList, getWishList} from '../../actions/asyncactions';
+import axios from 'axios';
 
 const StyledWishListItem = styled.div`
+  margin: 40px 0;
+  padding: 40px 15px;
+  box-shadow: 0px 1px 3px 0px rgba(0, 0, 0, 0.2),
+    0px 1px 1px 0px rgba(0, 0, 0, 0.14), 0px 2px 1px -1px rgba(0, 0, 0, 0.12);
+  :hover {
+    box-shadow: rgba(0, 0, 0, 0.19) 0px 10px 30px,
+      rgba(0, 0, 0, 0.23) 0px 6px 10px;
+    transform: translate(0, 3px);
+  }
+  transition: all 0.3s ease;
   div.address {
     font-size: 30px;
     text-transform: capitalize;
@@ -18,14 +34,14 @@ const StyledImageWrap = styled.div`
   position: relative;
   width: 100%;
   overflow: hidden;
-  height: 250px;
+  height: 200px;
   img {
     width: 100%;
   }
 `;
 
 const StyledAdvantage = styled.div`
-  margin: 10px 0;
+  margin: 5px 0;
   span.fa {
     margin-right: 10px;
   }
@@ -38,7 +54,7 @@ const AdvantageList = ({advantages}) => (
 const Advantage = ({advantage}) => (
   <Col md={6}>
     <StyledAdvantage>
-      <FontAwesome name="times" />
+      <FontAwesome name="check" />
       {advantage}
     </StyledAdvantage>
   </Col>
@@ -75,7 +91,7 @@ const wishList = (state = {visibleItems: [], trash: []}, action) => {
 };
 
 const WishListItem = ({id, description, address, image, advantages}) => (
-  <li key={id}>
+  <a href={`about/${id}`} style={{color: '#000', textDecoration: 'none'}}>
     <StyledWishListItem>
       <Row>
         <Col md={3}>
@@ -93,11 +109,18 @@ const WishListItem = ({id, description, address, image, advantages}) => (
         </Col>
       </Row>
     </StyledWishListItem>
-  </li>
+  </a>
 );
 
 let RemoveButton = ({id, dispatch}) => (
-  <Button onClick={() => dispatch({type: 'remove_to_trash', id})}>
+  <Button
+    block
+    style={{height: '100%'}}
+    onClick={e => {
+      e.preventDefault();
+      dispatch({type: 'remove_to_trash', id});
+    }}
+  >
     remove
   </Button>
 );
@@ -106,41 +129,9 @@ RemoveButton = connect()(RemoveButton);
 class WishList extends React.Component {
   constructor(props) {
     super(props);
-    const data = [
-      {
-        id: 12231231,
-        description:
-          'Lorem ipsum dolor sit amet consectetur adipisicing elit. Amet laudantium ex inventore voluptatem sint sequi.',
-        address: 'minsk, jukovskogo 15',
-        image:
-          'https://www.jqueryscript.net/images/Simplest-Responsive-jQuery-Image-Lightbox-Plugin-simple-lightbox.jpg',
-        advantages: ['super view from the window', 'two tvs', 'ps4', 'bathroom']
-      },
-      {
-        id: 123451231,
-        description:
-          'Lorem ipsum dolor sit amet consectetur adipisicing elit. Amet laudantium ex inventore voluptatem sint sequi.',
-        address: 'minsk, jukovskogo 15',
-        image:
-          'https://www.jqueryscript.net/images/Simplest-Responsive-jQuery-Image-Lightbox-Plugin-simple-lightbox.jpg',
-        advantages: ['super view from the window', 'two tvs', 'ps4', 'bathroom']
-      },
-      {
-        id: 1231231,
-        description:
-          'Lorem ipsum dolor sit amet consectetur adipisicing elit. Amet laudantium ex inventore voluptatem sint sequi.',
-        address: 'minsk, jukovskogo 15',
-        image:
-          'https://www.jqueryscript.net/images/Simplest-Responsive-jQuery-Image-Lightbox-Plugin-simple-lightbox.jpg',
-        advantages: ['super view from the window', 'two tvs', 'ps4', 'bathroom']
-      }
-    ];
-    this.props.dispatch({type: 'data_loaded', data});
-    console.log(this.props);
+    this.props.onLoad(getCookie('userid'));
   }
-  componentDidMount() {
-    //makeRequest();
-  }
+  componentDidMount() {}
   render() {
     return (
       <Grid>
@@ -153,19 +144,28 @@ class WishList extends React.Component {
   }
 }
 
-let Undo = ({dispatch, id}) => (
+let Undo = ({onClose, restore, removeCompletely, id}) => (
   <Snackbar
     open={true}
     message={`to restore ${id} click undo`}
-    action={<div onClick={() => dispatch({type: 'restore', id})}>undo</div>}
-    autoHideDuration={4000}
-    onClose={() => dispatch({type: 'remove_completely', id})}
+    action={
+      <div style={{color: '#D19A58', cursor: 'pointer'}} onClick={restore}>
+        undo
+      </div>
+    }
+    autoHideDuration={1000}
+    onClose={removeCompletely}
   />
 );
-Undo = connect()(Undo);
+Undo = connect(null, (dispatch, ownProps) => {
+  return {
+    removeCompletely: () => dispatch(removeFromWishList(ownProps.id)),
+    restore: () => dispatch({type: 'restore', id: ownProps.id})
+  };
+})(Undo);
 
 let UndoList = ({undos}) => (
-  <ul>
+  <ul style={{listStyle: 'none'}}>
     {undos.map((undo, index) => (
       <li key={index}>
         <Undo id={undo.id} />
@@ -179,14 +179,26 @@ UndoList = connect(state => {
   };
 })(UndoList);
 
-const WishListContainer = connect(state => {
-  return {
-    data: state
-  };
-})(WishList);
+const WishListContainer = connect(
+  state => {
+    return {
+      data: state
+    };
+  },
+  dispatch => {
+    return {
+      onLoad: () => dispatch(getWishList(getCookie('userid')))
+    };
+  }
+)(WishList);
+
+const store = createStore(
+  wishList,
+  composeWithDevTools(applyMiddleware(thunk))
+);
 
 const WishListComponent = () => (
-  <Provider store={createStore(wishList)}>
+  <Provider store={store}>
     <div>
       <WishListContainer />
       <UndoList />

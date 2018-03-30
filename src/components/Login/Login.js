@@ -6,6 +6,7 @@ import {Button} from 'react-bootstrap';
 import SignIn from './SignIn';
 import SignUp from './SignUp';
 import axios from 'axios';
+import {CenterRow} from '../Styled';
 import {getCookie, setCookie, deleteCookie} from '../../cookies';
 
 const authType = (state = 'sign_in', action) => {
@@ -19,9 +20,11 @@ const authType = (state = 'sign_in', action) => {
 };
 
 let ToggleButton = ({onClick, authType}) => (
-  <Button style={{margin: 'auto'}} onClick={() => onClick()}>
-    {authType.split('_').join(' ')}
-  </Button>
+  <CenterRow>
+    <Button style={{margin: 'auto'}} onClick={onClick}>
+      {authType.split('_').join(' ')}
+    </Button>
+  </CenterRow>
 );
 
 ToggleButton = connect(
@@ -40,7 +43,8 @@ const onSignIn = values => {
   axios
     .post('http://localhost:3030/signin', values)
     .then(res => {
-      switch (res) {
+      console.log(res);
+      switch (res.status) {
         case 'incorrect_pair':
           store.dispatch({
             type: 'change_signin_status',
@@ -48,7 +52,9 @@ const onSignIn = values => {
           });
           break;
         default:
+          setCookie('userid', res.data.session.user);
           store.dispatch({type: 'change_signin_status', status: 'success'});
+          window.location.replace('/');
           break;
       }
     })
@@ -108,7 +114,7 @@ const store = createStore(rootReducer);
 
 const Login = () => (
   <Provider store={store}>
-    <div>
+    <div style={{marginTop: '10%'}}>
       <ToggleButton />
       <Authorization />
     </div>

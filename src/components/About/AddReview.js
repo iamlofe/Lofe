@@ -7,12 +7,13 @@ import {
   StyledTextArea,
   StyledError,
   CenterRow,
-  Rating
+  Rating,
+  Status
 } from '../Styled';
 import {Row, Col, Button} from 'react-bootstrap';
 import axios from 'axios';
-import {CircularProgress} from 'material-ui/Progress';
 import {getCookie} from '../../cookies';
+import {addReview} from '../../actions/asyncactions';
 
 const Review = ({input, meta: {touched, error}}) => (
   <div>
@@ -32,34 +33,6 @@ const Point = ({placeholder, input, meta: {touched, error}}) => (
     {touched && error && <StyledError>{error}</StyledError>}
   </div>
 );
-
-let Status = ({status}) => {
-  switch (status) {
-    case 'normal':
-      return (
-        <Button type="submit" bsStyle="primary">
-          add review
-        </Button>
-      );
-    case 'pending':
-      return <CircularProgress />;
-    case 'success':
-      return (
-        <Button type="submit" disabled={true} bsStyle="success">
-          your review added
-        </Button>
-      );
-    default:
-      return (
-        <Button type="submit" bsStyle="danger">
-          {status.split('_').join(' ')}
-        </Button>
-      );
-  }
-};
-Status = connect(({status}) => {
-  return {status};
-})(Status);
 
 let Form = ({handleSubmit, submitting}) => (
   <form onSubmit={handleSubmit}>
@@ -84,7 +57,7 @@ let Form = ({handleSubmit, submitting}) => (
             />
           </Col>
           <Col md={12}>
-            <Status />
+            <Status normalMessage="add review" />
           </Col>
         </Row>
       </Col>
@@ -110,7 +83,12 @@ Form = reduxForm({
 })(Form);
 
 let FormRating = ({onChange, rating}) => (
-  <Rating isSelectable={true} rating={rating} onChange={onChange} />
+  <Rating
+    isSelectable={true}
+    rating={rating}
+    centered={true}
+    onChange={onChange}
+  />
 );
 FormRating = connect(
   ({rating}) => {
@@ -126,44 +104,29 @@ let AddReview = ({id, addReview, rating, askToPickRating, dispatch}) => (
     <FormRating />
     <Form
       onSubmit={values => {
-        if (rating) addReview(values, id, rating);
+        if (rating) addReview({review: values, id, rating});
         else askToPickRating();
       }}
     />
   </div>
 );
+
 AddReview = connect(
   ({about, rating}) => {
     return {rating, id: about.id, formDisabled: about.formDisabled};
   },
   dispatch => {
     return {
-      addReview: (review, id, rating) => {
-        const session = getCookie('userid');
-        if (session) {
-          dispatch({type: 'change_status', status: 'pending'});
-          axios.get('http://localhost:3030/userExists?session');
-          axios
-            .post('http://localhost:3030/', {
-              ...review,
-              id,
-              rating
-            })
-            .then(res => {
-              if (res.status === 200) {
-                dispatch({type: 'add_review', review});
-                dispatch({type: 'change_status', status: 'success'});
-              }
-            })
-            .catch(() => {
-              console.log(review, id);
-              dispatch({type: 'add_review', review: {...review, rating}});
-              dispatch({type: 'change_status', status: 'fail'});
-              dispatch({type: 'disable_form'});
-            });
-        } else {
-          window.location.replace('http://localhost:3000');
-        }
+      addReview: ({review, rating, id}) => {
+        if (getCookie('userid')) {
+          const params = {
+            userid: getCookie('userid'),
+            review,
+            rating,
+            id
+          };
+          dispatch(addReview(params));
+        } else window.location.replace('http://localhost:3000/login');
       },
       askToPickRating: () =>
         dispatch({type: 'change_status', status: 'pick_the_rating'}),

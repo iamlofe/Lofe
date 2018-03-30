@@ -1,7 +1,13 @@
 import React from 'react';
 import {reducer as reduxFormReducer} from 'redux-form';
 import {Field, FieldArray, reduxForm} from 'redux-form';
-import {StyledError, StyledInput, CenterRow, StyledTextArea} from '../Styled';
+import {
+  StyledError,
+  StyledInput,
+  CenterRow,
+  StyledTextArea,
+  Status
+} from '../Styled';
 import {Button, Grid, Row, Col} from 'react-bootstrap';
 import FontAwesome from 'react-fontawesome';
 import styled from 'styled-components';
@@ -89,36 +95,6 @@ const Description = ({input, meta: {touched, error}}) => (
   </div>
 );
 
-let Status = ({status}) => {
-  switch (status) {
-    case 'normal':
-      return (
-        <Button type="submit" bsStyle="primary">
-          add house
-        </Button>
-      );
-    case 'pending':
-      return <CircularProgress />;
-    case 'success':
-      return (
-        <Button type="submit" disabled={true} bsStyle="success">
-          your successfully added your house
-        </Button>
-      );
-    case 'network_error':
-      return (
-        <Button type="submit" bsStyle="danger">
-          error occured. try again
-        </Button>
-      );
-    default:
-      return null;
-  }
-};
-Status = connect(({status}) => {
-  return {status};
-})(Status);
-
 const status = (state = 'normal', action) => {
   switch (action.type) {
     case 'change_status':
@@ -145,7 +121,7 @@ let AddHouseForm = props => {
         </Row>
         <Row>
           <CenterRow>
-            <Status />
+            <Status normalMessage="add house" />
           </CenterRow>
         </Row>
       </Grid>

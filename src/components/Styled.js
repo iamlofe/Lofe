@@ -2,6 +2,10 @@ import React from 'react';
 import styled from 'styled-components';
 import StarRatings from 'react-star-ratings';
 import FontAwesome from 'react-fontawesome';
+import {Button, Col} from 'react-bootstrap';
+import {connect} from 'react-redux';
+import {CircularProgress} from 'material-ui/Progress';
+import Drawer from 'material-ui/Drawer';
 
 const CenterRow = styled.div`
   display: flex;
@@ -11,7 +15,8 @@ const CenterRow = styled.div`
 `;
 
 const StyledRating = styled.div`
-  display: inline-block;
+  display: ${props => (!props.centered ? 'flex' : 'inline-block')};
+  justify-content: ${props => (!props.centered ? 'center' : null)};
   line-height: 0;
 `;
 
@@ -22,6 +27,59 @@ const Center = styled.div`
   flex-direction: column;
   justify-content: center;
 `;
+
+let Menu = ({opened, menuItems, toggle}) => (
+  <div>
+    <Button onClick={toggle}>toggle</Button>
+    <Drawer docked={false + ''} width={200} open={opened} onClose={toggle}>
+      {menuItems.map((menuItem, index) => (
+        <a href={`/${menuItem.path}`}>{menuItem.name}</a>
+      ))}
+    </Drawer>
+  </div>
+);
+Menu = connect(
+  ({menu: {opened, menuItems}}) => {
+    return {
+      opened,
+      menuItems
+    };
+  },
+  dispatch => {
+    return {
+      toggle: () => dispatch({type: 'toggle_opened'}),
+      dispatch
+    };
+  }
+)(Menu);
+
+let Status = ({normalMessage, status}) => {
+  switch (status) {
+    case 'normal':
+      return (
+        <Button type="submit" bsStyle="primary">
+          {normalMessage}
+        </Button>
+      );
+    case 'pending':
+      return <CircularProgress />;
+    case 'success':
+      return (
+        <Button type="submit" disabled={true} bsStyle="success">
+          your review added
+        </Button>
+      );
+    default:
+      return (
+        <Button type="submit" bsStyle="danger">
+          {status.split('_').join(' ')}
+        </Button>
+      );
+  }
+};
+Status = connect(({status}) => {
+  return {status};
+})(Status);
 
 const Point = ({input, remove, label, type, meta: {touched, error}}) => (
   <div>
@@ -43,8 +101,8 @@ const Point = ({input, remove, label, type, meta: {touched, error}}) => (
 
 <StarRatings />;
 
-const Rating = ({rating, onChange, isSelectable}) => (
-  <StyledRating>
+const Rating = ({centered, rating, onChange, isSelectable}) => (
+  <StyledRating centered={centered}>
     <StarRatings
       rating={rating}
       isSelectable={isSelectable || 'false'}
@@ -105,5 +163,7 @@ export {
   CenterRow,
   Rating,
   Price,
-  Point
+  Point,
+  Status,
+  Menu
 };
