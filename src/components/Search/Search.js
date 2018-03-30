@@ -33,13 +33,23 @@ const makeRequest = () => {
       return data;
     })
     .then(data => data.map(item => item.id))
-    .then(ids => console.log({ids}))
-    .then(ids => axios.post('http://localhost:3030/getFilteredWishList', {ids}))
-    .catch(error => console.log(error))
-    .then(({data}) => data)
-    .then(likedIds =>
-      likedIds.forEach(id => store.dispatch({type: 'toggle_liked', id}))
+    .then(ids =>
+      axios
+        .post('http://localhost:3030/getFilteredWishList', {
+          session: getCookie('userid'),
+          ids
+        })
+        .then(({data}) => data)
+        .then(likedIds => {
+          likedIds.forEach(id => {
+            console.log(id);
+            store.dispatch({type: 'toggle_liked_flag', id});
+          });
+          console.log(store.getState());
+        })
     )
+    .catch(error => console.log(error))
+
     //.then(data => {})
     // const ids = data.map(item => item.id);
     //      axios
