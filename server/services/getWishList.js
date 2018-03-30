@@ -8,9 +8,11 @@ export default async (req, res) => {
 	try {
 		wishList = await User.findOne({ _id }, { email: 0, password: 0, username: 0, __v: 0, _id: 0 });
 
-		houses = await House.find({"_id": wishList.wishList}, {images:0})
-		houses = houses.map(house => {return {...house, image: house.images[0]}});
-		houses = houses.map(house => {return{image: house.image, ...house._doc}});
+		houses = await House.find({"_id": wishList.wishList});
+		// houses.images.pop();
+		
+		// houses = houses.map(house => {return {...house, image: house.images[0]}});
+		// houses = houses.map(house => {return{image: house.image, ...house._doc}});
 		res.send(houses)
 	} catch ({ message }) {
 		return next({

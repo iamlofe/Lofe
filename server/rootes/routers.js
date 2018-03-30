@@ -13,6 +13,7 @@ import getUser from '../services/getUser';
 import checkUser from '../services/checkUser';
 import addToWishList from '../services/addToWishList';
 import getWishList from '../services//getWishList';
+import getFilteredWishList from '../services/getFilterWishList'
 
 //
 import userF from '../services/getF';
@@ -36,6 +37,8 @@ router.post('/addToWishList', addToWishList);
 
 //Get WishList
 router.post('/getWishList', getWishList);
+
+router.post('/getFilteredWishList', getFilteredWishList)
 
 //Get user
 router.post('/get', userF);
