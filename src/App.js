@@ -46,7 +46,7 @@ class App extends Component {
             component={props => <AboutRedux id={props.match.params.id} />}
           />
           <Route path="/login" component={Login} />
-          <Route path="/wish-list" component={WishListComponent} />
+          <Route path="/wishList" component={WishListComponent} />
           <Route path="/home" component={Home} />
           <Route
             path="/generate"

@@ -118,6 +118,7 @@ let RemoveButton = ({id, dispatch}) => (
     style={{height: '100%'}}
     onClick={e => {
       e.preventDefault();
+      console.log(id);
       dispatch({type: 'remove_to_trash', id});
     }}
   >
@@ -153,7 +154,7 @@ let Undo = ({onClose, restore, removeCompletely, id}) => (
         undo
       </div>
     }
-    autoHideDuration={1000}
+    autoHideDuration={4000}
     onClose={removeCompletely}
   />
 );

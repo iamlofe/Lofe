@@ -44,10 +44,16 @@ export const addReview = ({review, userid, id, rating}) => {
 };
 
 export const getWishList = session => {
+  console.log(session);
   return dispatch => {
     axios
       .post('http://localhost:3030/getWishList', {session})
-      .then(({data}) => dispatch({type: 'data_loaded', data}))
+      .then(({data}) =>
+        data.map(item => {
+          return {...item, id: item._id};
+        })
+      )
+      .then(data => dispatch({type: 'data_loaded', data}))
       .catch(() =>
         dispatch({type: 'add_error', error: 'no internet connection'})
       );
