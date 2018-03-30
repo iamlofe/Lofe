@@ -4,6 +4,8 @@ import {Button} from 'react-bootstrap';
 import {connect} from 'react-redux';
 import Drawer from 'material-ui/Drawer';
 import styled from 'styled-components';
+import FontAwesome from 'react-fontawesome';
+import {Center} from '../Styled';
 
 const MenuItem = ({href, name}) => (
   <StyledMenuItem>
@@ -11,11 +13,12 @@ const MenuItem = ({href, name}) => (
   </StyledMenuItem>
 );
 const StyledMenuItem = styled.div`
-  margin: 40px 20px;
+  margin: 20px 80px;
+  text-align: center;
 `;
 
 let LoginButton = ({onClick, text, loggedIn}) => (
-  <Button block style={{height: '100%'}} onClick={() => onClick(loggedIn)}>
+  <Button style={{margin: '0 auto'}} onClick={() => onClick(loggedIn)}>
     {text}
   </Button>
 );
@@ -39,22 +42,47 @@ LoginButton = connect(
   }
 )(LoginButton);
 
+let ToggleButton = ({toggle}) => (
+  <FontAwesome
+    style={{margin: 'auto', cursor: 'pointer'}}
+    size="2x"
+    name="bars"
+    onClick={toggle}
+  />
+);
+ToggleButton = connect(null, dispatch => {
+  return {
+    toggle: () => dispatch({type: 'toggle_opened'})
+  };
+})(ToggleButton);
+
 let Menu = ({toggle, opened, loggedIn}) => (
-  <div>
-    <Button onClick={toggle}>toggle</Button>
-    <Drawer docked={false + ''} width={200} open={opened} onClose={toggle}>
-      <MenuItem href="http://localhost:3030/" name="search" />
-      {loggedIn ? (
-        <div>
-          <MenuItem href="http://localhost:3030/wishList" name="wish list" />
-          <MenuItem href="http://localhost:3030/add-house" name="add house">
-            add house
-          </MenuItem>
-        </div>
-      ) : null}
-      <LoginButton />
+  <Center height="100%">
+    <ToggleButton />
+    <Drawer
+      anchor="right"
+      docked={false + ''}
+      width={200}
+      open={opened}
+      onClose={toggle}
+    >
+      <Center height="100%">
+        {loggedIn ? (
+          <div>
+            <MenuItem href="http://localhost:3000/" name="search" />
+
+            <MenuItem href="http://localhost:3000/wishList" name="wish list" />
+            <MenuItem href="http://localhost:3000/add-house" name="add house">
+              add house
+            </MenuItem>
+          </div>
+        ) : (
+          <MenuItem href="http://localhost:3000/" name="search" />
+        )}
+        <LoginButton />
+      </Center>
     </Drawer>
-  </div>
+  </Center>
 );
 Menu = connect(
   ({menu, session}) => {
