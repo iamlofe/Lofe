@@ -29,10 +29,10 @@ export default async (req, res, next) => {
         session: req.session
       });
     }
-  } catch (e) {
+  } catch ({message}) {
     return next({
       status: 401,
-      message: 'error send'
+      message
     });
   }
 
