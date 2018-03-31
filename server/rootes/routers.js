@@ -44,7 +44,7 @@ router.post('/getWishList', getWishList);
 router.post('/removeFromWishList', removeFromWishList);
 
 //Get filter wishlist
-router.post('/getFilteredWishList', getFilterWishList);
+router.post('/getFilteredWishList', getFilteredWishList);
 
 //Get user
 router.post('/get', userF);

@@ -14,7 +14,7 @@ const userScheme = new Schema({
 		index: { unique: true }
 	},
 	password: { type: String },
-	wishList: { type: Array},
+	wishList: { type: Array },
 
 });
 
