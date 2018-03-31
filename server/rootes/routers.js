@@ -13,8 +13,9 @@ import getUser from '../services/getUser';
 import checkUser from '../services/checkUser';
 import addToWishList from '../services/addToWishList';
 import getWishList from '../services//getWishList';
-<<<<<<< HEAD
 import removeFromWishList from '../services/removeFromWishList';
+import img from '../services/img';
+import getFilterWishList from '../services/getFilterWishList';
 
 //
 import userF from '../services/getF';
@@ -40,10 +41,16 @@ router.post('/addToWishList', addToWishList);
 router.post('/getWishList', getWishList);
 
 //Remove from wishList
-router.post('/removeFromWishList', removeFromWishList)
+router.post('/removeFromWishList', removeFromWishList);
+
+//Get filter wishlist
+router.post('/getFilterWishList', getFilterWishList);
 
 //Get user
 router.post('/get', userF);
+
+//Add images!!!!!!
+router.post('/img', img)
 
 //Router for get pages
 router.get('/about', getHouse);
