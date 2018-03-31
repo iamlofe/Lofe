@@ -10,6 +10,7 @@ export default async (req, res, next) => {
     if (user) {
       req.session.authorized = true;
       req.session.user = user._id;
+      console.log(user)
       res.send({
         status: 'success',
         session: req.session
@@ -21,4 +22,5 @@ export default async (req, res, next) => {
       message
     });
   }
+
 };

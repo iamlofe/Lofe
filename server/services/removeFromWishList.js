@@ -12,5 +12,5 @@ export default async (req, res) => {
 			status: 231
 		});
 	}
-	res.send(user);
+	res.send('success');
 };

@@ -5,7 +5,7 @@ export default async (req, res) => {
 	console.log(req.body);
 	let user;
 	try {
-		await User.updateOne({ _id: session }, { $push: { wishList: houseId } });
+		await User.updateOne({ _id: session },{ $push: { wishList: houseId, unique: true } });
 	} catch ({ message }) {
 		return next({
 			message: 'ddw',

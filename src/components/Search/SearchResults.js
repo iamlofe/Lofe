@@ -54,22 +54,30 @@ const ImageWrap = ({img, isLiked, id}) => (
   </StyledImageWrap>
 );
 
-let Like = ({username, dispatch, id, isLiked}) => (
+let Like = ({loggedIn, username, dispatch, id, isLiked}) => (
   <StyledLike
     isLiked={isLiked}
     onClick={e => {
       e.preventDefault();
-      const data = {session: getCookie('userid'), houseId: id};
-      console.log(data);
-      axios.post('http://localhost:3030/addToWishList', data).then(() => {
-        dispatch({type: 'toggle_liked_flag', id});
-      });
+      if (loggedIn) {
+        const data = {session: getCookie('userid'), houseId: id};
+        console.log(data);
+        axios
+          .post('http://localhost:3030/addToWishList', data)
+          .then(({data}) => {
+            console.log(data);
+            if (data === 'succes') dispatch({type: 'toggle_liked_flag', id});
+          });
+      } else {
+        window.location.replace('http://localhost:3000/login');
+      }
     }}
   />
 );
 Like = connect(state => {
   return {
-    username: state.session.username
+    username: state.session.username,
+    loggedIn: state.session.loggedIn
   };
 })(Like);
 

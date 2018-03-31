@@ -13,7 +13,8 @@ import getUser from '../services/getUser';
 import checkUser from '../services/checkUser';
 import addToWishList from '../services/addToWishList';
 import getWishList from '../services//getWishList';
-import removeFromWishList from '../services/removeFromWishList'
+<<<<<<< HEAD
+import removeFromWishList from '../services/removeFromWishList';
 
 //
 import userF from '../services/getF';

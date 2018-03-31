@@ -21,14 +21,44 @@ const makeRequest = () => {
       }&maxprice=${price.max}&minrating=${rating.min}&maxrating=${rating.max}`
     )
     .then(data => {
-      if (data.status === 200)
-        store.dispatch({type: 'change_list', results: data.data});
-      else
-        store.dispatch({
-          type: 'change_list',
-          results: []
+      if (data.status === 200) {
+        return data.data.map(item => {
+          return {...item, isLiked: false, id: item._id};
         });
+      }
     })
+    .then(data => {
+      store.dispatch({type: 'change_list', results: data});
+      if (!getCookie('userid')) Promise.reject('not logged in');
+      return data;
+    })
+    .then(data => data.map(item => item.id))
+    .then(ids =>
+      axios
+        .post('http://localhost:3030/getFilteredWishList', {
+          session: getCookie('userid'),
+          ids
+        })
+        .then(({data}) => data)
+        .then(likedIds => {
+          likedIds.forEach(id => {
+            console.log(id);
+            store.dispatch({type: 'toggle_liked_flag', id});
+          });
+          console.log(store.getState());
+        })
+    )
+    .catch(error => console.log(error))
+
+    //.then(data => {})
+    // const ids = data.map(item => item.id);
+    //      axios
+    //      .post('http://localhost:3030/getFilteredWishList', {ids})
+    //    .then(({data}) => data)
+    //  .then(likedItems => {
+    //  likedItemIds.forEach(id => dispatch({type: 'toggle_liked_flag', id}));
+    //});
+    //})
     .catch(error => console.log(error));
 };
 
@@ -87,6 +117,7 @@ const filterReducer = (
 const resultsReducer = (state = [], action) => {
   switch (action.type) {
     case 'toggle_liked_flag':
+      console.log(action.id);
       console.log(state);
       return state.map(
         result =>
@@ -127,12 +158,12 @@ const store = createStore(
 );
 class Search extends React.Component {
   componentDidMount() {
-    makeRequest();
     const userid = getCookie('userid');
     if (userid)
       axios.get('http://localhost:3030/getUser?_id=' + userid).then(res => {
         store.dispatch({type: 'login', username: res.data.username});
       });
+    makeRequest();
   }
 
   render() {

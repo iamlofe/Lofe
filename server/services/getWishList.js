@@ -7,12 +7,13 @@ export default async (req, res) => {
 	let wishList, houses;
 	try {
 		wishList = await User.findOne({ _id }, { email: 0, password: 0, username: 0, __v: 0, _id: 0 });
-		// const arraId = wishList.wishList;
-		// for (let i = 0; i < arrayId.length; i++) {
-		// 	houses[0] = await House.find({ "_id": arraId[0] });
-		// }
-		// res.send(houses);
-		res.send(wishList)
+
+		houses = await House.find({"_id": wishList.wishList});
+		// houses.images.pop();
+		
+		// houses = houses.map(house => {return {...house, image: house.images[0]}});
+		// houses = houses.map(house => {return{image: house.image, ...house._doc}});
+		res.send(houses)
 	} catch ({ message }) {
 		return next({
 			status: 402,
