@@ -12,7 +12,7 @@ import createComment from '../services/addComment';
 import getUser from '../services/getUser';
 import checkUser from '../services/checkUser';
 import addToWishList from '../services/addToWishList';
-import getWishList from '../services//getWishList';
+import getWishList from '../services/getWishList';
 import removeFromWishList from '../services/removeFromWishList';
 import img from '../services/img';
 import getFilterWishList from '../services/getFilterWishList';
