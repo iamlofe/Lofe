@@ -15,7 +15,7 @@ import addToWishList from '../services/addToWishList';
 import getWishList from '../services/getWishList';
 import removeFromWishList from '../services/removeFromWishList';
 import img from '../services/img';
-import getFilterWishList from '../services/getFilterWishList';
+import getFilteredWishList from '../services/getFilterWishList';
 
 //
 import userF from '../services/getF';
@@ -44,7 +44,7 @@ router.post('/getWishList', getWishList);
 router.post('/removeFromWishList', removeFromWishList);
 
 //Get filter wishlist
-router.post('/getFilterWishList', getFilterWishList);
+router.post('/getFilteredWishList', getFilterWishList);
 
 //Get user
 router.post('/get', userF);
