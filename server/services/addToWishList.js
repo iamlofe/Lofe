@@ -5,12 +5,12 @@ export default async (req, res) => {
 	console.log(req.body);
 	let user;
 	try {
-		await User.updateOne({ _id: session },{ $push: { wishList: houseId, unique: true } });
+		await User.updateOne({ _id: session }, { $push: { wishList: houseId, unique: true } });
 	} catch ({ message }) {
 		return next({
 			message: 'ddw',
 			status: 231
 		});
 	}
-	res.send('succes');
+	res.send('success');
 };
