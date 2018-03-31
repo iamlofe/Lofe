@@ -61,13 +61,20 @@ let Like = ({loggedIn, username, dispatch, id, isLiked}) => (
       e.preventDefault();
       if (loggedIn) {
         const data = {session: getCookie('userid'), houseId: id};
-        console.log(data);
-        axios
-          .post('http://localhost:3030/addToWishList', data)
-          .then(({data}) => {
-            console.log(data);
-            if (data === 'succes') dispatch({type: 'toggle_liked_flag', id});
-          });
+        if (isLiked) {
+          axios
+            .post('http://localhost:3030/removeFromWishList', data)
+            .then(({data}) => {
+              console.log(data);
+              if (data === 'success') dispatch({type: 'toggle_liked_flag', id});
+            });
+        } else {
+          axios
+            .post('http://localhost:3030/addToWishList', data)
+            .then(({data}) => {
+              if (data === 'success') dispatch({type: 'toggle_liked_flag', id});
+            });
+        }
       } else {
         window.location.replace('http://localhost:3000/login');
       }
@@ -156,7 +163,7 @@ let SearchResults = ({results}) =>
     </Row>
   ) : null;
 
-export default (SearchResults = connect(({results}) => {
+export default (SearchResults = connect(({results, ...rest}) => {
   //connected
-  return {results};
+  return {rest, results};
 }, null)(SearchResults));

@@ -5,7 +5,6 @@ import FontAwesome from 'react-fontawesome';
 import {Button, Col} from 'react-bootstrap';
 import {connect} from 'react-redux';
 import {CircularProgress} from 'material-ui/Progress';
-import Drawer from 'material-ui/Drawer';
 
 const CenterRow = styled.div`
   display: flex;
@@ -27,31 +26,6 @@ const Center = styled.div`
   flex-direction: column;
   justify-content: center;
 `;
-
-let Menu = ({opened, menuItems, toggle}) => (
-  <div>
-    <Button onClick={toggle}>toggle</Button>
-    <Drawer docked={false + ''} width={200} open={opened} onClose={toggle}>
-      {menuItems.map((menuItem, index) => (
-        <a href={`/${menuItem.path}`}>{menuItem.name}</a>
-      ))}
-    </Drawer>
-  </div>
-);
-Menu = connect(
-  ({menu: {opened, menuItems}}) => {
-    return {
-      opened,
-      menuItems
-    };
-  },
-  dispatch => {
-    return {
-      toggle: () => dispatch({type: 'toggle_opened'}),
-      dispatch
-    };
-  }
-)(Menu);
 
 let Status = ({normalMessage, status}) => {
   switch (status) {
@@ -164,6 +138,5 @@ export {
   Rating,
   Price,
   Point,
-  Status,
-  Menu
+  Status
 };

@@ -13,7 +13,6 @@ export const addReview = ({review, userid, id, rating}) => {
           rating,
           username
         };
-        console.log(object);
         axios
           .post('http://localhost:3030/createComment', {
             ...review,
@@ -44,7 +43,6 @@ export const addReview = ({review, userid, id, rating}) => {
 };
 
 export const getWishList = session => {
-  console.log(session);
   return dispatch => {
     axios
       .post('http://localhost:3030/getWishList', {session})
@@ -62,18 +60,17 @@ export const getWishList = session => {
 
 export const removeFromWishList = id => {
   return dispatch => {
-    console.log(id);
     axios
       .post('http://localhost:3030/removeFromWishList', {
         houseId: id,
         session: getCookie('userid')
       })
       .then(() => dispatch({type: 'remove_completely', id}))
-      .catch(() => dispatch({type: 'remove_completely', id}));
+      .catch(e => console.log(e));
   };
 };
 
-export const getHouses = ({request, price, rating}) => dispatch => {
+export const getHouses = ({request, price, rating, session}) => dispatch => {
   axios
     .get(
       `http://localhost:3030/search?q=${request}&minprice=${
@@ -81,12 +78,34 @@ export const getHouses = ({request, price, rating}) => dispatch => {
       }&maxprice=${price.max}&minrating=${rating.min}&maxrating=${rating.max}`
     )
     .then(data => {
-      if (data.status === 200)
-        dispatch({type: 'change_list', results: data.data});
-      else
-        dispatch({
-          type: 'change_list',
-          results: []
+      if (data.status === 200) {
+        return data.data.map(item => {
+          return {...item, image: item.images[0], isLiked: false, id: item._id};
+        });
+      }
+    })
+    .then(data => {
+      if (!session) {
+        dispatch({type: 'change_list', results: data});
+        return new Promise((res, rej) => rej('not logged in'));
+      }
+      return data;
+    })
+    .then(data => {
+      const ids = data.map(item => item.id);
+      console.log(ids);
+      axios
+        .post('http://localhost:3030/getFilteredWishList', {
+          session,
+          ids
+        })
+        .then(({data}) => data)
+        .then(likedIds => {
+          const filteredData = data.map(
+            item =>
+              likedIds.includes(item.id) ? {...item, isLiked: true} : item
+          );
+          dispatch({type: 'change_list', results: filteredData});
         });
     })
     .catch(error => console.log(error));
