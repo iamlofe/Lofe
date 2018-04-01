@@ -5,6 +5,7 @@ export default async (req, res) => {
 
 	let comments
 	try {
+
 		comments = Comments.find({ _id: arr });
 		res.send(comments)
 	} catch ({ message }) {
