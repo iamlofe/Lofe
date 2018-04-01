@@ -2,11 +2,12 @@ import Comment from '../models/comments';
 import House from '../models/house'
 
 export default async (req, res, next) => {
-	const { username, description, advantages, disadvantages, rating, houseId } = req.body;
+	const data = req.body;
+	let houseId = req.body.houseId;
 
 	let comment, house;
 	try {
-		comment = await Comment.create(username, description, advantages, disadvantages, rating);
+		comment = await Comment.create(data);
 		house = await House.updateOne({ _id: houseId }, { $push: { commentsId: comment._id } });
 	} catch ({ message }) {
 		return next({
@@ -14,6 +15,6 @@ export default async (req, res, next) => {
 			message
 		});
 	}
-	console.log(house);
+	console.log(comment);
 	res.send('success');
 };

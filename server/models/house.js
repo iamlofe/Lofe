@@ -13,7 +13,6 @@ const houseSchem = new Schema({
 	},
 	userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
 	rating: { type: Number, default: 0 },
-	reviews: { type: Array },
 	coordinates: { type: String },
 	commentsId: { type: Array }
 });
