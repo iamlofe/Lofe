@@ -14,7 +14,7 @@ const houseSchem = new Schema({
 	userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
 	rating: { type: Number, default: 0 },
 	coordinates: { type: String },
-	commentsId: { type: Array }
+	reviews: { type: Array }
 });
 
 export default mongoose.model('House', houseSchem);

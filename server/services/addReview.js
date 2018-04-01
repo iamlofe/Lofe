@@ -8,7 +8,7 @@ export default async (req, res, next) => {
 	let comment, house;
 	try {
 		comment = await Comment.create(data);
-		house = await House.updateOne({ _id: houseId }, { $push: { commentsId: comment._id } });
+		house = await House.updateOne({ _id: houseId }, { $push: { reviews: comment._id } });
 	} catch ({ message }) {
 		return next({
 			status: 301,
