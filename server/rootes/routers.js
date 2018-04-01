@@ -8,7 +8,6 @@ import signup from '../services/signup';
 import createHouse from '../services/createHouse';
 import getHouse from '../services/getHouse';
 import search from '../services/search';
-import createComment from '../services/addComment';
 import getUser from '../services/getUser';
 import checkUser from '../services/checkUser';
 import addToWishList from '../services/addToWishList';
