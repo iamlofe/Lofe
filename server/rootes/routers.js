@@ -32,9 +32,6 @@ router.post('/signup', signup);
 //Router for create pages
 router.post('/add-house', createHouse);
 
-//Create comment
-router.post('/createComment', createComment);
-
 //Add to wish list
 router.post('/addToWishList', addToWishList);
 
