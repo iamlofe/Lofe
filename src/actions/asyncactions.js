@@ -126,8 +126,7 @@ export const getAbout = id => dispatch => {
   axios
     .get('http://localhost:3030/about?_id=' + id)
     .then(res => {
-      if (res.status === 200)
-        dispatch({type: 'data_loaded', data: res.data.house});
+      if (res.status === 200) dispatch({type: 'data_loaded', data: res.data});
       else
         dispatch({
           type: 'add_error',
