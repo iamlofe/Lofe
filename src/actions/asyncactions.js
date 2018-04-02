@@ -9,17 +9,12 @@ export const addReview = ({review, userid, id, rating}) => {
         const {username} = data;
         const object = {
           ...review,
-          id,
+          houseId: id,
           rating,
           username
         };
         axios
-          .post('http://localhost:3030/createComment', {
-            ...review,
-            id,
-            rating,
-            username
-          })
+          .post('http://localhost:3030/addReview', object)
           .then(res => {
             if (res.status === 200) {
               dispatch({type: 'add_review', review});
@@ -29,10 +24,6 @@ export const addReview = ({review, userid, id, rating}) => {
             }
           })
           .catch(() => {
-            dispatch({
-              type: 'add_review',
-              review: {...review, rating, username}
-            });
             dispatch({type: 'change_status', status: 'fail'});
           });
       })
@@ -48,7 +39,7 @@ export const getWishList = session => {
       .post('http://localhost:3030/getWishList', {session})
       .then(({data}) =>
         data.map(item => {
-          return {...item, id: item._id};
+          return {...item, image: item.images[0], id: item._id};
         })
       )
       .then(data => dispatch({type: 'data_loaded', data}))
@@ -77,6 +68,13 @@ export const getHouses = ({request, price, rating, session}) => dispatch => {
         price.min
       }&maxprice=${price.max}&minrating=${rating.min}&maxrating=${rating.max}`
     )
+    .catch(() =>
+      dispatch({
+        type: 'change_status',
+        status: 'show_message',
+        message: 'server error'
+      })
+    )
     .then(data => {
       if (data.status === 200) {
         return data.data.map(item => {
@@ -85,15 +83,27 @@ export const getHouses = ({request, price, rating, session}) => dispatch => {
       }
     })
     .then(data => {
+      if (!data.length) {
+        console.log('it is here');
+        dispatch({
+          type: 'change_status',
+          status: 'show_message',
+          message: 'No matches. Try another request'
+        });
+        return new Promise((res, rej) => rej('no matches'));
+      }
+      return data;
+    })
+    .then(data => {
       if (!session) {
         dispatch({type: 'change_list', results: data});
+        dispatch({type: 'change_status', status: 'display'});
         return new Promise((res, rej) => rej('not logged in'));
       }
       return data;
     })
     .then(data => {
       const ids = data.map(item => item.id);
-      console.log(ids);
       axios
         .post('http://localhost:3030/getFilteredWishList', {
           session,
@@ -106,7 +116,38 @@ export const getHouses = ({request, price, rating, session}) => dispatch => {
               likedIds.includes(item.id) ? {...item, isLiked: true} : item
           );
           dispatch({type: 'change_list', results: filteredData});
+          dispatch({type: 'change_status', status: 'display'});
         });
     })
     .catch(error => console.log(error));
+};
+
+export const getAbout = id => dispatch => {
+  axios
+    .get('http://localhost:3030/about?_id=' + id)
+    .then(res => {
+      if (res.status === 200)
+        dispatch({type: 'data_loaded', data: res.data.house});
+      else
+        dispatch({
+          type: 'add_error',
+          error: (res.data && res.data.status) || 'other error'
+        });
+    })
+    .catch(error => console.log(error));
+};
+
+export const like = ({session, id, isLiked}) => dispatch => {
+  const data = {session, houseId: id};
+  if (isLiked) {
+    axios
+      .post('http://localhost:3030/removeFromWishList', data)
+      .then(({data}) => {
+        if (data === 'success') dispatch({type: 'toggle_liked_flag', id});
+      });
+  } else {
+    axios.post('http://localhost:3030/addToWishList', data).then(({data}) => {
+      if (data === 'success') dispatch({type: 'toggle_liked_flag', id});
+    });
+  }
 };

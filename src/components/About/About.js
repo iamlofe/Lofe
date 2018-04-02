@@ -8,7 +8,6 @@ import Description from './Description';
 import Advantages from './Advantages';
 import Reviews from './Review';
 import AddReview from './AddReview';
-import FourOFour from './404';
 import axios from 'axios';
 const Top = styled.div`
   padding: 30px 0;
@@ -55,52 +54,50 @@ class About extends React.Component {
       currency
     } = this.state.data;
     const {review} = this.state;
-    if (this.state.data.error === 'not found') return <FourOFour />;
-    else
-      return this.state.data && images ? (
-        <div>
-          <Top>
-            <Grid>
-              <Row>
-                <Col md={6} style={{margin: 0, padding: 0}}>
-                  <Center>
-                    <ImageCarousel images={images} />
-                  </Center>
-                </Col>
-                <Col md={6}>
-                  <Center>
-                    <Description
-                      description={description}
-                      price={price}
-                      rating={rating}
-                      currency={currency}
-                    />
-                  </Center>
-                </Col>
-              </Row>
-            </Grid>
-          </Top>
-          <Bottom>
-            <Grid>
-              <Row>
-                <Col md={6}>
-                  <Center>
-                    <Advantages advantages={advantages} />
-                  </Center>
-                </Col>
-                <Col md={6} style={{margin: 0, padding: 0}}>
-                  <Center>
-                    <Map coords={coords} />
-                  </Center>
-                </Col>
-              </Row>
+    return this.state.data && images ? (
+      <div>
+        <Top>
+          <Grid>
+            <Row>
+              <Col md={6} style={{margin: 0, padding: 0}}>
+                <Center>
+                  <ImageCarousel images={images} />
+                </Center>
+              </Col>
+              <Col md={6}>
+                <Center>
+                  <Description
+                    description={description}
+                    price={price}
+                    rating={rating}
+                    currency={currency}
+                  />
+                </Center>
+              </Col>
+            </Row>
+          </Grid>
+        </Top>
+        <Bottom>
+          <Grid>
+            <Row>
+              <Col md={6}>
+                <Center>
+                  <Advantages advantages={advantages} />
+                </Center>
+              </Col>
+              <Col md={6} style={{margin: 0, padding: 0}}>
+                <Center>
+                  <Map coords={coords} />
+                </Center>
+              </Col>
+            </Row>
 
-              <Reviews reviews={[review, review]} />
-              <AddReview id={this.id} />
-            </Grid>
-          </Bottom>
-        </div>
-      ) : null;
+            <Reviews reviews={[review, review]} />
+            <AddReview id={this.id} />
+          </Grid>
+        </Bottom>
+      </div>
+    ) : null;
   }
 }
 

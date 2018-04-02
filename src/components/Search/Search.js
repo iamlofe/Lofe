@@ -6,14 +6,10 @@ import {composeWithDevTools} from 'redux-devtools-extension';
 import {Provider} from 'react-redux';
 import {menu} from '../../reducer/menu';
 
-const error = (state = '', action) => {
-  switch (action.type) {
-    case 'error_occured':
-      return action.error;
-    default:
-      return state;
-  }
-};
+const status = (state = {status: 'pending', message: ''}, action) =>
+  action.type === 'change_status'
+    ? {status: action.status, message: action.message}
+    : state;
 
 const filterReducer = (
   state = {
@@ -89,7 +85,7 @@ const superReducer = combineReducers({
   results: resultsReducer,
   filter: filterReducer,
   session,
-  error
+  status
 });
 const store = createStore(
   superReducer,

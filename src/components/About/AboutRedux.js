@@ -8,13 +8,13 @@ import Description from './Description';
 import Advantages from './Advantages';
 import Reviews from './Review';
 import AddReview from './AddReview';
-import FourOFour from './404';
 import axios from 'axios';
 import {Provider, connect} from 'react-redux';
 import {createStore, combineReducers, applyMiddleware} from 'redux';
 import {composeWithDevTools} from 'redux-devtools-extension';
 import {reducer as reduxFormReducer} from 'redux-form';
 import thunk from 'redux-thunk';
+import {getAbout} from '../../actions/asyncactions';
 
 const Top = styled.div`
   padding: 30px 0;
@@ -63,30 +63,15 @@ let ReviewsContainer = connect(({about}) => {
 })(Reviews);
 
 class About extends React.Component {
-  makeRequest() {
-    axios
-      .get('http://localhost:3030/about?_id=' + this.props.id)
-      .then(res => {
-        if (res.status === 200)
-          this.props.dispatch({type: 'data_loaded', data: res.data});
-        else
-          this.props.dispatch({
-            type: 'add_error',
-            error: (res.data && res.data.status) || 'other error'
-          });
-      })
-      .catch(error => console.log(error)); //todo
-  }
   constructor(props) {
     super(props);
     this.props.dispatch({type: 'change_id', id: this.props.id});
   }
   componentDidMount() {
-    this.makeRequest();
+    this.props.makeRequest(this.props.id);
   }
   render() {
-    if (this.props.error === 'not found') return <FourOFour />;
-    else if (
+    if (
       this.props.state &&
       this.props.state.about &&
       this.props.state.about.description
@@ -134,9 +119,17 @@ class About extends React.Component {
   }
 }
 
-const AboutContainer = connect((state, ownProps) => {
-  return {state, error: state.about.error};
-})(About);
+const AboutContainer = connect(
+  state => {
+    return {state, error: state.about.error};
+  },
+  dispatch => {
+    return {
+      makeRequest: id => dispatch(getAbout(id)),
+      dispatch
+    };
+  }
+)(About);
 
 const status = (state = 'normal', action) => {
   switch (action.type) {

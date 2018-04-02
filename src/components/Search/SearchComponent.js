@@ -11,6 +11,32 @@ import axios from 'axios';
 import {getCookie} from '../../cookies';
 import {menu} from '../../reducer/menu';
 import {getHouses} from '../../actions/asyncactions';
+import Error from '../Error';
+import {CircularProgress} from 'material-ui/Progress';
+import {Center, CenterRow} from '../Styled';
+
+const Status = ({status, message}) => {
+  switch (status) {
+    case 'pending':
+      return (
+        <Center height="90vh">
+          <CenterRow justifyContent="center">
+            <CircularProgress size={120} thickness={2} />
+          </CenterRow>
+        </Center>
+      );
+    case 'show_message':
+      return (
+        <Center height="90vh">
+          <CenterRow justifyContent="center">
+            <h1>{message}</h1>
+          </CenterRow>
+        </Center>
+      );
+    default:
+      return null;
+  }
+};
 
 class SearchComponent extends React.Component {
   componentDidMount() {
@@ -24,14 +50,21 @@ class SearchComponent extends React.Component {
     return (
       <Grid>
         <SearchBar />
-        <SearchResults />
+        {this.props.status.status === 'display' ? (
+          <SearchResults />
+        ) : (
+          <Status
+            status={this.props.status.status}
+            message={this.props.status.message}
+          />
+        )}
       </Grid>
     );
   }
 }
 const Search = connect(
-  ({filter}) => {
-    return {filter};
+  ({filter, status}) => {
+    return {filter, status};
   },
   dispatch => {
     return {
