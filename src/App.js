@@ -11,6 +11,7 @@ import WishListComponent from './components/WishList/WishList';
 import Generator from './components/generator';
 import Home from './components/Home/Home';
 import axios from 'axios';
+import component from './components/Notifications/Notifications';
 
 class UploadFile extends React.Component {
   constructor(props) {
@@ -52,6 +53,7 @@ class App extends Component {
             path="/generate"
             component={() => <Generator number={100} />}
           />
+          <Route path="/test" component={component} />
         </Switch>
       </BrowserRouter>
     );
