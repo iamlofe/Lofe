@@ -8,12 +8,14 @@ import signup from '../services/signup';
 import createHouse from '../services/createHouse';
 import getHouse from '../services/getHouse';
 import search from '../services/search';
-import createComment from '../services/addComment';
 import getUser from '../services/getUser';
 import checkUser from '../services/checkUser';
 import addToWishList from '../services/addToWishList';
-import getWishList from '../services//getWishList';
-import getFilteredWishList from '../services/getFilterWishList'
+import getWishList from '../services/getWishList';
+import removeFromWishList from '../services/removeFromWishList';
+import img from '../services/img';
+import getFilteredWishList from '../services/getFilterWishList';
+import addReview from '../services/addReview'
 
 //
 import userF from '../services/getF';
@@ -29,19 +31,26 @@ router.post('/signup', signup);
 //Router for create pages
 router.post('/add-house', createHouse);
 
-//Create comment
-router.post('/createComment', createComment);
-
 //Add to wish list
 router.post('/addToWishList', addToWishList);
 
 //Get WishList
 router.post('/getWishList', getWishList);
 
-router.post('/getFilteredWishList', getFilteredWishList)
+//Remove from wishList
+router.post('/removeFromWishList', removeFromWishList);
+
+//Get filter wishlist
+router.post('/getFilteredWishList', getFilteredWishList);
+
+//Add comments
+router.post('/addReview', addReview);
 
 //Get user
 router.post('/get', userF);
+
+//Add images!!!!!!
+router.post('/img', img);
 
 //Router for get pages
 router.get('/about', getHouse);

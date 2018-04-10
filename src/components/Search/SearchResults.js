@@ -5,6 +5,7 @@ import styled from 'styled-components';
 import {Rating, Price} from '../Styled';
 import {getCookie} from '../../cookies';
 import axios from 'axios';
+import {like} from '../../actions/asyncactions';
 
 const StyledDescriptionText = styled.p`
   text-overflow: ellipsis;
@@ -54,32 +55,32 @@ const ImageWrap = ({img, isLiked, id}) => (
   </StyledImageWrap>
 );
 
-let Like = ({loggedIn, username, dispatch, id, isLiked}) => (
+let Like = ({loggedIn, id, isLiked, like}) => (
   <StyledLike
     isLiked={isLiked}
     onClick={e => {
       e.preventDefault();
       if (loggedIn) {
-        const data = {session: getCookie('userid'), houseId: id};
-        console.log(data);
-        axios
-          .post('http://localhost:3030/addToWishList', data)
-          .then(({data}) => {
-            console.log(data);
-            if (data === 'succes') dispatch({type: 'toggle_liked_flag', id});
-          });
+        like({session: getCookie('userid'), id, loggedIn});
       } else {
         window.location.replace('http://localhost:3000/login');
       }
     }}
   />
 );
-Like = connect(state => {
-  return {
-    username: state.session.username,
-    loggedIn: state.session.loggedIn
-  };
-})(Like);
+Like = connect(
+  state => {
+    return {
+      username: state.session.username,
+      loggedIn: state.session.loggedIn
+    };
+  },
+  dispatch => {
+    return {
+      like: data => dispatch(like(data))
+    };
+  }
+)(Like);
 
 const DescriptionText = ({description}) => (
   <StyledDescriptionText>{description}</StyledDescriptionText>
@@ -156,7 +157,7 @@ let SearchResults = ({results}) =>
     </Row>
   ) : null;
 
-export default (SearchResults = connect(({results}) => {
+export default (SearchResults = connect(({results, ...rest}) => {
   //connected
-  return {results};
+  return {rest, results};
 }, null)(SearchResults));

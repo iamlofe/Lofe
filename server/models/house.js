@@ -11,10 +11,18 @@ const houseSchem = new Schema({
     default:
       'https://www.google.by/search?q=photos&tbm=isch&source=iu&ictx=1&fir=8Yzq_mUke5UEwM%253A%252CfD4CS8xZrXkeVM%252C_&usg=__nHyLPKGlbWcTLuSjYVyWd6Z3b5E%3D&sa=X&ved=0ahUKEwjPl8Wz-YLaAhWEEywKHZ5rAMUQ9QEIOjAF#imgrc=MHkGQLGnKUWv2M:'
   },
-  userId: {type: mongoose.Schema.Types.ObjectId, ref: 'User'},
+  ovnerId: {type: mongoose.Schema.Types.ObjectId, ref: 'User'},
   rating: {type: Number, default: 0},
+  coordinates: {type: String},
   reviews: {type: Array},
-  coordinates: {type: String}
+  coords: {
+    lat: {type: String},
+    lng: {type: String}
+  },
+  averageRating: {type: Number},
+  reviewsNumber: {type: Number},
+  status: {type: String},
+  time: {type: Date, default: Date.now()}
 });
 
 export default mongoose.model('House', houseSchem);

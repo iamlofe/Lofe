@@ -36,6 +36,7 @@ LoginButton = connect(
         else {
           deleteCookie('userid');
           dispatch({type: 'logout'});
+          window.location.reload();
         }
       }
     };

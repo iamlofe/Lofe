@@ -7,10 +7,11 @@ import ExpansionPanel, {
   ExpansionPanelSummary,
   ExpansionPanelDetails
 } from 'material-ui/ExpansionPanel';
-import {deleteCookie} from '../../cookies';
+import {deleteCookie, getCookie} from '../../cookies';
 import styled from 'styled-components';
 import Menu from '../Menu/Menu';
 import Input from 'material-ui/Input';
+import {getHouses} from '../../actions/asyncactions';
 
 function MyHandle({style, ...passProps}) {
   return (
@@ -36,18 +37,29 @@ class LabeledSlider extends React.Component {
     super(props);
 
     this.state = {
-      values: props.values || [0]
+      values: props.values || [0],
+      isAvailableForRequest: true
     };
 
     this.updateValue = this.updateValue.bind(this);
   }
 
   updateValue(sliderState) {
-    this.props.dispatch({
-      type: `change_${this.props.type}`,
-      min: sliderState.values[0],
-      max: sliderState.values[1]
-    });
+    if (this.state.isAvailableForRequest) {
+      this.setState({...this.state, isAvailableForRequest: false});
+      setTimeout(() => {
+        this.props.dispatch({
+          type: `change_${this.props.type}`,
+          min: this.state.values[0],
+          max: this.state.values[1]
+        });
+        this.setState({...this.state, isAvailableForRequest: true});
+        this.props.makeRequest({
+          ...this.props.filter,
+          session: getCookie('userid')
+        });
+      }, 500);
+    }
     this.setState({
       values: sliderState.values
     });
@@ -76,27 +88,77 @@ class LabeledSlider extends React.Component {
   }
 }
 
-const Slider = connect()(LabeledSlider);
+const Slider = connect(
+  ({filter}) => {
+    return {filter};
+  },
+  dispatch => {
+    return {
+      makeRequest: args => dispatch(getHouses(args)),
+      dispatch
+    };
+  }
+)(LabeledSlider);
 const StyledSearchBar = styled.div`
   padding: 30px 0;
 `;
 
-let SmartInput = ({dispatch}) => (
-  <Input
-    label="search"
-    autoFocus={true}
-    fullWidth={true}
-    onChange={e => dispatch({type: 'change_request', request: e.target.value})}
-    placeholder="search"
-  />
-);
-SmartInput = connect()(SmartInput);
+class SmartInput extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      text: '',
+      isAvailableForRequest: true
+    };
+  }
+  onChange(e) {
+    if (this.state.isAvailableForRequest) {
+      this.setState({isAvailableForRequest: false});
+      setTimeout(() => {
+        this.props.dispatch({
+          type: `change_request`,
+          request: this.state.text
+        });
+        this.setState({...this.state, isAvailableForRequest: true});
+        this.props.makeRequest({
+          ...this.props.filter,
+          session: getCookie('userid')
+        });
+      }, 500);
+    }
+    this.setState({
+      text: e.target.value
+    });
+  }
+  render() {
+    return (
+      <Input
+        label="search"
+        autoFocus={true}
+        fullWidth={true}
+        onChange={this.onChange.bind(this)}
+        placeholder="search"
+      />
+    );
+  }
+}
+const SmartInputComponent = connect(
+  ({filter}) => {
+    return {filter};
+  },
+  dispatch => {
+    return {
+      makeRequest: args => dispatch(getHouses(args)),
+      dispatch
+    };
+  }
+)(SmartInput);
 
 const SearchBar = () => (
   <StyledSearchBar>
     <Row>
       <Col md={6}>
-        <SmartInput />
+        <SmartInputComponent />
       </Col>
 
       <Col md={2}>
@@ -114,7 +176,6 @@ const SearchBar = () => (
           </ExpansionPanelDetails>
         </ExpansionPanel>
       </Col>
-
       <Col md={2}>
         <ExpansionPanel>
           <ExpansionPanelSummary>Rating</ExpansionPanelSummary>
@@ -136,5 +197,4 @@ const SearchBar = () => (
     </Row>
   </StyledSearchBar>
 );
-
 export default SearchBar;

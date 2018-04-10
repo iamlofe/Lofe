@@ -1,16 +1,20 @@
 import Comment from '../models/comments';
+import House from '../models/house'
 
 export default async (req, res, next) => {
 	const data = req.body;
-	let comment;
+	let houseId = req.body.houseId;
+
+	let comment, house;
 	try {
 		comment = await Comment.create(data);
+		house = await House.updateOne({ _id: houseId }, { $push: { reviews: comment._id } });
 	} catch ({ message }) {
 		return next({
 			status: 301,
 			message
 		});
 	}
-	console.log(house);
+	console.log(comment);
 	res.send('success');
 };
