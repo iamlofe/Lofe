@@ -17,7 +17,9 @@ import img from '../services/img';
 import getFilteredWishList from '../services/getFilterWishList';
 import addReview from '../services/addReview';
 import reviews from '../services/reviews';
-import order from '../services/order'
+import order from '../services/order';
+import isLoggedIn from '../services/isLoggedIn';
+import aboutUser from '../services/aboutUser'
 
 import multer from "multer"
 
@@ -27,10 +29,10 @@ import userF from '../services/getF';
 const router = express.Router();
 
 // Router fro signin
-router.post('/signin', signin);
+router.post('/user/signin', signin);
 
 // Router for signup
-router.post('/signup', signup);
+router.post('/user/signup', signup);
 
 //Router for create pages
 router.post('/add-house', createHouse);
@@ -50,12 +52,8 @@ router.post('/getFilteredWishList', getFilteredWishList);
 //Add comments
 router.post('/house/:houseId/addReview', addReview);
 
-//Get user
-router.post('/get', userF);
-
-//Add images!!!!!!
-// const upload = multer({ storage });
-// router.post('/img', upload.single('file'), img);
+// //Get user
+// router.post('/get', userF);
 
 //Router for get pages
 router.get('/house/:houseId', getHouse);
@@ -74,6 +72,13 @@ router.get('/house/:houseId/reviews', reviews);
 
 //Take order
 router.post('/house/:houseId/order', order)
+
+//Add reviews
+router.post('/user/isLoggedIn', isLoggedIn);
+
+//
+router.get('/user/:userId', aboutUser)
+
 
 
 export default router;
