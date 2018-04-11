@@ -108,7 +108,6 @@ app.get('/uploads', (req, res) => {
 			})
 		}
 		res.send({ files })
-
 	})
 });
 

@@ -23,7 +23,7 @@ import aboutUser from '../services/aboutUser'
 
 import multer from "multer"
 
-//
+////
 import userF from '../services/getF';
 
 const router = express.Router();
@@ -76,7 +76,7 @@ router.post('/house/:houseId/order', order)
 //Add reviews
 router.post('/user/isLoggedIn', isLoggedIn);
 
-//
+//About user
 router.get('/user/:userId', aboutUser)
 
 
