@@ -7,6 +7,7 @@ export default async (req, res, next) => {
 	let house, comments;
 	try {
 		house = await House.findOne({ _id }, { __v: 0 });
+		comments = await Comment.find({ _id: house.reviews })
 		res.send({ reviews: comments });
 	} catch ({ message }) {
 		return next({

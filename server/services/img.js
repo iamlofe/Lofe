@@ -2,21 +2,44 @@ import mongoose, { Schema } from "mongoose";
 import Grid from "gridfs-stream";
 import fs from "fs";
 import Img from "../models/img"
+import config from "../config/config"
+
+let gfs;
+let conn = mongoose.connection;
 
 
-export default async (req, res) => {
 
-	let imgPath = req.files.file.path;
-	console.log(req.file)
+export default (req, res) => {
+	// res.json({ file: req.file });
+	res.json({ file: req.file });
+	res.redirect('/');
+};
 
-	var img = new Img;
-	img.img.data = fs.readFileSync(imgPath);
-	img.img.contentType = 'image/png';
-	img.save(function (err, a) {
-		if (err) throw err;
-		console.error('saved img to mongo');
-	})
-}
+	// gfs = Grid(config, conn);
+	// let part = req.file;
+	// console.log(part)
+	// let writeStream = gfs.createWriteStream({
+	// 	filename: 'img_' + part.name,
+	// 	mode: 'w',
+	// 	content_type: part.mimetype
+	// });
+
+	// writeStream.on('close', (file) => {
+	// 	// checking for file
+	// 	if (!file) {
+	// 		res.status(400).send('No file received');
+	// 	}
+	// 	return res.status(200).send({
+	// 		message: 'Success',
+	// 		file: file
+	// 	});
+	// });
+	// // using callbacks is important !
+	// // writeStream should end the operation once all data is written to the DB 
+	// writeStream.write(part.data, () => {
+	// 	writeStream.end();
+	// });
+
 
 // //Constants
 // var TARGET_PATH = path.resolve(__dirname, '../writable/');

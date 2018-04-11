@@ -15,7 +15,11 @@ import getWishList from '../services/getWishList';
 import removeFromWishList from '../services/removeFromWishList';
 import img from '../services/img';
 import getFilteredWishList from '../services/getFilterWishList';
-import addReview from '../services/addReview'
+import addReview from '../services/addReview';
+import reviews from '../services/reviews';
+import order from '../services/order'
+
+import multer from "multer"
 
 //
 import userF from '../services/getF';
@@ -44,16 +48,17 @@ router.post('/removeFromWishList', removeFromWishList);
 router.post('/getFilteredWishList', getFilteredWishList);
 
 //Add comments
-router.post('/addReview', addReview);
+router.post('/house/:houseId/addReview', addReview);
 
 //Get user
 router.post('/get', userF);
 
 //Add images!!!!!!
-router.post('/img', img);
+// const upload = multer({ storage });
+// router.post('/img', upload.single('file'), img);
 
 //Router for get pages
-router.get('/about', getHouse);
+router.get('/house/:houseId', getHouse);
 
 //Search
 router.get('/search', search);
@@ -63,5 +68,12 @@ router.get('/getUser', getUser);
 
 //Check user
 router.get('/checkUser', checkUser);
+
+//Show reviews
+router.get('/house/:houseId/reviews', reviews);
+
+//Take order
+router.post('/house/:houseId/order', order)
+
 
 export default router;

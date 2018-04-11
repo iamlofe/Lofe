@@ -1,7 +1,10 @@
 import mongoose, { Schema } from "mongoose";
 
 const imgShema = new Schema({
-	img: { data: Buffer, contentType: String }
+	originalname: { type: String },
+	mimetype: { type: String },
+	buffer: { type: Buffer },
+	size: { type: Number }
 });
 
 export default mongoose.model('Img', imgShema);

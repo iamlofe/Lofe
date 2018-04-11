@@ -3,18 +3,18 @@ import House from '../models/house'
 
 export default async (req, res, next) => {
 	const data = req.body;
-	let houseId = req.body.houseId;
+	let houseId = req.params.houseId;
+	console.log(data)
 
 	let comment, house;
 	try {
 		comment = await Comment.create(data);
 		house = await House.updateOne({ _id: houseId }, { $push: { reviews: comment._id } });
-	} catch ({ message }) {
+	} catch (e) {
 		return next({
 			status: 301,
-			message
+			message: "Can't create a comment. " + e,
 		});
 	}
-	console.log(comment);
 	res.send('success');
 };
