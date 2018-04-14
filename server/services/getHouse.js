@@ -1,17 +1,16 @@
-import House from '../models/house';
-import Comment from '../models/comments'
+import House from "../models/house";
 
-export default async (req, res, next) => {
-	let _id = req.params.houseId;
-	console.log(_id)
-	let house, comments;
+export default async (req, res) => {
+	let house;
+	const _id = req.params.houseId;
+
 	try {
-		house = await House.findOne({ _id }, { __v: 0 });
-		res.send({ reviews: comments });
+		house = await House.find({ _id }, { reviews: 0 })
+		res.send(house)
 	} catch ({ message }) {
 		return next({
-			message: "Can't get all pages",
-			status: 302
-		});
+			status: 401,
+			message
+		})
 	}
-};
+}

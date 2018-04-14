@@ -6,7 +6,6 @@ import House from '../models/house';
 import signin from '../services/signin';
 import signup from '../services/signup';
 import createHouse from '../services/createHouse';
-import getHouse from '../services/getHouse';
 import search from '../services/search';
 import getUser from '../services/getUser';
 import checkUser from '../services/checkUser';
@@ -19,7 +18,8 @@ import addReview from '../services/addReview';
 import reviews from '../services/reviews';
 import order from '../services/order';
 import isLoggedIn from '../services/isLoggedIn';
-import aboutUser from '../services/aboutUser'
+import aboutUser from '../services/aboutUser';
+import getHouse from '../services/getHouse'
 
 import multer from "multer"
 
@@ -55,7 +55,7 @@ router.post('/house/:houseId/addReview', addReview);
 // //Get user
 // router.post('/get', userF);
 
-//Router for get pages
+//Router for get comments
 router.get('/house/:houseId', getHouse);
 
 //Search
