@@ -5,7 +5,7 @@ export default (req, res, next) => {
 	let houses;
 	let wishList;
 	let user;
-	let session = req.body.session;
+	let session = req.session;
 	let search = req.query;
 	//
 	try {
