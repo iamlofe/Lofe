@@ -24,6 +24,7 @@ export default async (req, res, next) => {
 		} else {
 			req.session.authorized = true;
 			req.session.user = user._id;
+			console.log(req.session)
 			User.updateOne({ _id: req.session }, { $set: { isLogged: true } });
 			res.send({
 				status: 'success',
