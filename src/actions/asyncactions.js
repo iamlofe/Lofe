@@ -62,8 +62,6 @@ export const removeFromWishList = id => {
 export const getHouses = ({request, price, rating, session}) => dispatch => {
   axios
     .post(urls.house.post.search({q: request, price, rating}))
-    .then(data => console.log(data))
-    .catch(e => console.log(e))
     .catch(() =>
       dispatch({
         type: 'change_status',
@@ -71,13 +69,7 @@ export const getHouses = ({request, price, rating, session}) => dispatch => {
         message: 'server error'
       })
     )
-    .then(data => {
-      if (data.status === 200) {
-        return data.data.map(item => {
-          return {...item, image: item.images[0], isLiked: false, id: item._id};
-        });
-      }
-    })
+    .then(({data}) => data)
     .then(data => {
       if (!data.length) {
         console.log('it is here');
@@ -91,29 +83,8 @@ export const getHouses = ({request, price, rating, session}) => dispatch => {
       return data;
     })
     .then(data => {
-      if (!session) {
-        dispatch({type: 'change_list', results: data});
-        dispatch({type: 'change_status', status: 'display'});
-        return new Promise((res, rej) => rej('not logged in'));
-      }
-      return data;
-    })
-    .then(data => {
-      const ids = data.map(item => item.id);
-      axios
-        .post('http://localhost:3030/getFilteredWishList', {
-          session,
-          ids
-        })
-        .then(({data}) => data)
-        .then(likedIds => {
-          const filteredData = data.map(
-            item =>
-              likedIds.includes(item.id) ? {...item, isLiked: true} : item
-          );
-          dispatch({type: 'change_list', results: filteredData});
-          dispatch({type: 'change_status', status: 'display'});
-        });
+      dispatch({type: 'change_list', results: data});
+      dispatch({type: 'change_status', status: 'display'});
     })
     .catch(error => console.log(error));
 };
@@ -134,10 +105,12 @@ export const getAbout = id => dispatch => {
 
 export const like = ({id, isLiked}) => dispatch => {
   if (isLiked) {
+    console.log(urls.user.post.removeFromWishList());
     axios.post(urls.user.post.removeFromWishList(), {id}).then(({data}) => {
       if (data === 'success') dispatch({type: 'toggle_liked_flag', id});
     });
   } else {
+    console.log(urls.user.post.addToWishList());
     axios.post(urls.user.post.addToWishList(), {id}).then(({data}) => {
       if (data === 'success') dispatch({type: 'toggle_liked_flag', id});
     });
