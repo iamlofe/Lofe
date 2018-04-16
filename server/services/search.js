@@ -5,6 +5,7 @@ export default async (req, res, next) => {
 	let wishList;
 	let session = req.session;
 	let search = req.query;
+	//
 	try {
 		await House.find({
 			address: { $regex: search.q, $options: 'i' },
