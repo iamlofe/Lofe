@@ -37,11 +37,4 @@ export default async (req, res, next) => {
 			message
 		});
 	}
-
-	// const token = jwt.sign({ _id: user._id }, config.secretKey);
-	// req.session.user = user._id;
-	// let answer = {
-	// 	status: "succes",
-	// 	session: req.session,
-	// }
 };
