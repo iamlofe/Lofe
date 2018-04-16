@@ -59,7 +59,7 @@ router.post('/house/:houseId/addReview', addReview);
 router.get('/house/:houseId', getHouse);
 
 //Search
-router.get('/search', search);
+router.post('/house/search', search);
 
 //Get user
 router.get('/getUser', getUser);
