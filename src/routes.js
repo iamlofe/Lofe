@@ -14,7 +14,7 @@ const urls = {
           price.max
         }&minrating=${rating.min}&maxrating=${rating.max}`,
       addReview: houseId => `${housePrefix}/addReview`,
-      order: houseID => `${housePrefix}/${houseId}/order`,
+      order: houseId => `${housePrefix}/${houseId}/order`,
       addToWishList: houseId => `${housePrefix}/${houseId}/addToWishList`
     }
   },

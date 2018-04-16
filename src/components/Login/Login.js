@@ -8,6 +8,7 @@ import SignUp from './SignUp';
 import axios from 'axios';
 import {CenterRow} from '../Styled';
 import {getCookie, setCookie, deleteCookie} from '../../cookies';
+import urls from '../../routes';
 
 const authType = (state = 'sign_in', action) => {
   // make normal understandable names
@@ -40,8 +41,9 @@ ToggleButton = connect(
 
 const onSignIn = values => {
   store.dispatch({type: 'change_signin_status', status: 'pending'});
+  console.log(values);
   axios
-    .post('http://localhost:3030/signin', values)
+    .post(urls.user.post.signin(), values)
     .then(res => {
       console.log(res);
       switch (res.status) {
@@ -64,9 +66,10 @@ const onSignIn = values => {
 };
 
 const onSignUp = values => {
+  console.log(urls.user.post.signup());
   store.dispatch({type: 'change_signup_status', status: 'pending'});
   axios
-    .post('http://localhost:3030/signup', values)
+    .post(urls.user.post.signup(), values)
     .then(res => {
       switch (res.data.status) {
         case 'user_already_exists':

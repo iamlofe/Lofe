@@ -1,10 +1,11 @@
 import axios from 'axios';
 import {getCookie} from '../cookies';
+import urls from '../routes';
 
 export const addReview = ({review, userid, id, rating}) => {
   return dispatch => {
     axios
-      .get(`http://localhost:3030/getUser?_id=${userid}`)
+      .get(urls.user.get.userBasicInfo(userid))
       .then(({data}) => {
         const {username} = data;
         const object = {
@@ -14,7 +15,7 @@ export const addReview = ({review, userid, id, rating}) => {
           username
         };
         axios
-          .post('http://localhost:3030/addReview', object)
+          .post(urls.house.post.addReview(), object)
           .then(res => {
             if (res.status === 200) {
               dispatch({type: 'add_review', review});
@@ -36,7 +37,7 @@ export const addReview = ({review, userid, id, rating}) => {
 export const getWishList = session => {
   return dispatch => {
     axios
-      .post('http://localhost:3030/getWishList', {session})
+      .post(urls.user.post.wishList(), {session})
       .then(({data}) =>
         data.map(item => {
           return {...item, image: item.images[0], id: item._id};
@@ -52,10 +53,7 @@ export const getWishList = session => {
 export const removeFromWishList = id => {
   return dispatch => {
     axios
-      .post('http://localhost:3030/removeFromWishList', {
-        houseId: id,
-        session: getCookie('userid')
-      })
+      .post(urls.user.post.removeFromWishList(), {id})
       .then(() => dispatch({type: 'remove_completely', id}))
       .catch(e => console.log(e));
   };
@@ -63,11 +61,9 @@ export const removeFromWishList = id => {
 
 export const getHouses = ({request, price, rating, session}) => dispatch => {
   axios
-    .get(
-      `http://localhost:3030/search?q=${request}&minprice=${
-        price.min
-      }&maxprice=${price.max}&minrating=${rating.min}&maxrating=${rating.max}`
-    )
+    .post(urls.house.post.search({q: request, price, rating}))
+    .then(data => console.log(data))
+    .catch(e => console.log(e))
     .catch(() =>
       dispatch({
         type: 'change_status',
@@ -124,7 +120,7 @@ export const getHouses = ({request, price, rating, session}) => dispatch => {
 
 export const getAbout = id => dispatch => {
   axios
-    .get('http://localhost:3030/about?_id=' + id)
+    .get(urls.house.get.houseBasicInfo(id))
     .then(res => {
       if (res.status === 200) dispatch({type: 'data_loaded', data: res.data});
       else
@@ -136,16 +132,13 @@ export const getAbout = id => dispatch => {
     .catch(error => console.log(error));
 };
 
-export const like = ({session, id, isLiked}) => dispatch => {
-  const data = {session, houseId: id};
+export const like = ({id, isLiked}) => dispatch => {
   if (isLiked) {
-    axios
-      .post('http://localhost:3030/removeFromWishList', data)
-      .then(({data}) => {
-        if (data === 'success') dispatch({type: 'toggle_liked_flag', id});
-      });
+    axios.post(urls.user.post.removeFromWishList(), {id}).then(({data}) => {
+      if (data === 'success') dispatch({type: 'toggle_liked_flag', id});
+    });
   } else {
-    axios.post('http://localhost:3030/addToWishList', data).then(({data}) => {
+    axios.post(urls.user.post.addToWishList(), {id}).then(({data}) => {
       if (data === 'success') dispatch({type: 'toggle_liked_flag', id});
     });
   }
