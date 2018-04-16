@@ -20,7 +20,7 @@ export default (req, res, next) => {
         houses = results.map(result => {
           return {
             isLiked: false,
-            address: result.adress,
+            address: result.address,
             price: result.price,
             id: result._id,
             rating: result.rating,
