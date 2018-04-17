@@ -122,7 +122,7 @@ const SearchResult = ({
   image,
   _id
 }) => (
-  <Col md={4}>
+  <Col lg={4} md={6} sm={6}>
     <StyledSearchResult>
       <a
         href={`/about/${_id}`}

@@ -6,7 +6,8 @@ import {
   StyledInput,
   CenterRow,
   StyledTextArea,
-  Status
+  Status,
+  Error
 } from '../Styled';
 import {Button, Grid, Row, Col} from 'react-bootstrap';
 import FontAwesome from 'react-fontawesome';
@@ -29,19 +30,17 @@ const Ul = styled.ul`
 
 const Advantage = ({input, remove, label, type, meta: {touched, error}}) => (
   <div>
-    <div>
-      <CenterRow>
-        <StyledInput
-          width="80%"
-          margin="10px 0"
-          placeholder={label}
-          {...input}
-          type={type}
-        />
-        <FontAwesome style={{margin: 'auto'}} name="times" onClick={remove} />
-      </CenterRow>
-      {touched && error && <StyledError>{error}</StyledError>}
-    </div>
+    <CenterRow>
+      <StyledInput
+        width="80%"
+        margin="4px 0"
+        placeholder={label}
+        {...input}
+        type={type}
+      />
+      <FontAwesome style={{margin: 'auto'}} name="times" onClick={remove} />
+    </CenterRow>
+    {touched && error && <Error error={error} />}
   </div>
 );
 
@@ -55,7 +54,7 @@ const Advantages = ({fields, meta: {error}}) => (
             type="text"
             component={Advantage}
             remove={() => fields.remove(index)}
-            label={`Advantage #${index + 1}`}
+            label={`advantage #${index + 1}`}
           />
         </li>
       ))}
@@ -70,28 +69,28 @@ const Advantages = ({fields, meta: {error}}) => (
         </Button>
       </CenterRow>
     </li>
-    {error && <StyledError>{error}</StyledError>}
+    {error && <Error error={error} />}
   </Ul>
 );
 
 const PriceAndCurrency = ({input, meta: {touched, error}}) => (
   <div>
-    <StyledInput margin="10px 0" placeholder="price" {...input} />
-    {touched && error && <StyledError>{error}</StyledError>}
+    <StyledInput margin="4px 0" placeholder="price" {...input} />
+    {touched && error && <Error error={error} />}
   </div>
 );
 
 const Address = ({input, meta: {touched, error}}) => (
   <div>
-    <StyledInput margin="10px 0" placeholder="address" {...input} />
-    {touched && error && <StyledError>{error}</StyledError>}
+    <StyledInput margin="8px 0" placeholder="address" {...input} />
+    {touched && error && <Error error={error} />}
   </div>
 );
 
 const Description = ({input, meta: {touched, error}}) => (
   <div>
     <StyledTextArea margin="10px 0" placeholder="description" {...input} />
-    {touched && error && <StyledError>{error}</StyledError>}
+    {touched && error && <Error error={error} />}
   </div>
 );
 
@@ -108,23 +107,36 @@ let AddHouseForm = props => {
   const {handleSubmit, submitting} = props;
   return (
     <form onSubmit={handleSubmit}>
+      <h1 style={{textAlign: 'center', margin: '40px 0'}}>
+        Here you can add your house
+      </h1>
       <Grid>
-        <Row>
-          <Col md={6}>
-            <Field name="price" component={PriceAndCurrency} />
-            <Field name="address" component={Address} />
-            <Field name="description" component={Description} />
-          </Col>
-          <Col md={6}>
-            <FieldArray name="advantages" component={Advantages} />
-          </Col>
-        </Row>
-        <Row>
-          <CenterRow>
-            <Status normalMessage="add house" />
-          </CenterRow>
-        </Row>
+        <div
+          style={{
+            padding: '30px 40px',
+            boxShadow: 'rgba(0, 0, 0, 0.19) 0px 10px 30px'
+          }}
+        >
+          <Row>
+            <Col md={6}>
+              <Field name="price" component={PriceAndCurrency} />
+              <Field name="address" component={Address} />
+              <Field name="description" component={Description} />
+            </Col>
+            <Col md={6}>
+              <FieldArray name="advantages" component={Advantages} />
+            </Col>
+          </Row>
+          <Row>
+            <Col md={12}>
+              <CenterRow>
+                <Status normalMessage="add house" />
+              </CenterRow>
+            </Col>
+          </Row>
+        </div>
       </Grid>
+      <div style={{margin: '30px 0'}} />
     </form>
   );
 };

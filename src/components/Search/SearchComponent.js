@@ -14,6 +14,7 @@ import {getHouses} from '../../actions/asyncactions';
 import Error from '../Error';
 import {CircularProgress} from 'material-ui/Progress';
 import {Center, CenterRow} from '../Styled';
+import ReactPaginate from 'react-paginate';
 
 const Status = ({status, message}) => {
   switch (status) {
@@ -38,6 +39,29 @@ const Status = ({status, message}) => {
   }
 };
 
+let Navigation = ({dispatch, currentPage, totalCount = 20}) =>
+  totalCount && (
+    <ReactPaginate
+      pageCount={10}
+      pageRangeDisplayed={5}
+      marginPagesDisplayed={2}
+      onPageChange={page => console.log(page)}
+    />
+  );
+Navigation = connect(
+  state => {
+    return {
+      currentPage: state.filter.page,
+      totalCount: 20
+    };
+  },
+  dispatch => {
+    return {
+      dispatch
+    };
+  }
+)(Navigation);
+
 class SearchComponent extends React.Component {
   componentDidMount() {
     const session = getCookie('userid');
@@ -51,7 +75,10 @@ class SearchComponent extends React.Component {
       <Grid>
         <SearchBar />
         {this.props.status.status === 'display' ? (
-          <SearchResults />
+          <div>
+            <SearchResults />
+            <Navigation />
+          </div>
         ) : (
           <Status
             status={this.props.status.status}
