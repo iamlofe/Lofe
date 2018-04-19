@@ -9,10 +9,10 @@ const urls = {
       houseReviews: houseId => `${housePrefix}/${houseId}/reviews`
     },
     post: {
-      search: ({q, rating, price}) =>
+      search: ({q, rating, price, page}) =>
         `${housePrefix}/search?q=${q}&minprice=${price.min}&maxprice=${
           price.max
-        }&minrating=${rating.min}&maxrating=${rating.max}`,
+        }&minrating=${rating.min}&maxrating=${rating.max}&page=${page}`,
       addReview: houseId => `${housePrefix}/addReview`,
       order: houseId => `${housePrefix}/${houseId}/order`,
       addToWishList: houseId => `${housePrefix}/${houseId}/addToWishList`

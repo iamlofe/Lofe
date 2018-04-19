@@ -121,9 +121,9 @@ let AddHouseForm = props => {
             <Col md={6}>
               <Field name="price" component={PriceAndCurrency} />
               <Field name="address" component={Address} />
-              <Field name="description" component={Description} />
             </Col>
             <Col md={6}>
+              <Field name="description" component={Description} />
               <FieldArray name="advantages" component={Advantages} />
             </Col>
           </Row>

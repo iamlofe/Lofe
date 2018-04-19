@@ -40,7 +40,7 @@ const Status = ({status, message}) => {
   }
 };
 
-let Navigation = ({dispatch, currentPage}) => (
+let Navigation = ({onChange, filter, currentPage}) => (
   <Pagination
     activePage={currentPage}
     initialPage={1}
@@ -49,22 +49,20 @@ let Navigation = ({dispatch, currentPage}) => (
     totalItemsCount={40}
     containerClassName="navigation"
     pageClassName="page"
-    onChange={page => {
-      dispatch({type: 'change_page', page});
-      console.log(page);
-    }}
+    onChange={page => onChange({page, ...filter})}
   />
 );
 Navigation = connect(
   state => {
     return {
       currentPage: state.filter.page,
-      totalCount: 20
+      totalCount: 20,
+      filter: state.filter
     };
   },
   dispatch => {
     return {
-      dispatch
+      onChange: data => getHouses(data)
     };
   }
 )(Navigation);

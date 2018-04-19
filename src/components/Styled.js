@@ -138,7 +138,7 @@ const StyledTextArea = styled.textarea`
   border: 1px solid #888;
   width: 100%;
   padding: 10px 30px;
-  height: 300px;
+  height: 200px;
   margin: ${props => props.margin || '0 0 0 0'};
 `;
 
