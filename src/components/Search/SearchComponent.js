@@ -14,7 +14,8 @@ import {getHouses} from '../../actions/asyncactions';
 import Error from '../Error';
 import {CircularProgress} from 'material-ui/Progress';
 import {Center, CenterRow} from '../Styled';
-import ReactPaginate from 'react-paginate';
+import Pagination from 'react-js-pagination';
+import './nav.css';
 
 const Status = ({status, message}) => {
   switch (status) {
@@ -39,15 +40,21 @@ const Status = ({status, message}) => {
   }
 };
 
-let Navigation = ({dispatch, currentPage, totalCount = 20}) =>
-  totalCount && (
-    <ReactPaginate
-      pageCount={10}
-      pageRangeDisplayed={5}
-      marginPagesDisplayed={2}
-      onPageChange={page => console.log(page)}
-    />
-  );
+let Navigation = ({dispatch, currentPage}) => (
+  <Pagination
+    activePage={currentPage}
+    initialPage={1}
+    pageRangeDisplayed={5}
+    itemsCountPerPage={1}
+    totalItemsCount={40}
+    containerClassName="navigation"
+    pageClassName="page"
+    onChange={page => {
+      dispatch({type: 'change_page', page});
+      console.log(page);
+    }}
+  />
+);
 Navigation = connect(
   state => {
     return {
