@@ -7,16 +7,19 @@ import {Provider, connect} from 'react-redux';
 import {Field, FieldArray, reduxForm} from 'redux-form';
 import {reducer as reduxFormReducer} from 'redux-form';
 import Input from 'material-ui';
+import {Error} from '../Styled';
 
 const StyledInput = styled.input``;
 
 const StyledLine = styled.div`
   margin: 10px 0;
   .fa {
-    color: ${props => (props.disabled ? '#aaa' : '#000')};
+    margin: auto;
+    color: ${props => (props.disabled ? '#000' : '#aaa')};
     float: right;
   }
   input {
+    margin: auto;
     border-radius: 1px;
     display: inline-block;
     width: 70%;
@@ -29,17 +32,17 @@ const StyledLine = styled.div`
       box-shadow: rgba(0, 0, 0, 0.12) 0px 1px 6px,
         rgba(0, 0, 0, 0.12) 0px 1px 4px;
     }
-    border: 1px solid #eee;
+    border: 1px solid #fff;
     border-color: ${props => (props.disabled ? '' : '#aaa')};
     background-color: #fff;
   }
 `;
 
 class InputLine extends React.Component {
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
     this.state = {
-      disabled: true
+      disabled: props.initialValue ? true : false
     };
   }
   render() {
@@ -47,18 +50,31 @@ class InputLine extends React.Component {
     const {
       label,
       input,
+      initialValue,
       meta: {touched, error}
     } = this.props;
     return (
       <StyledLine disabled={disabled}>
         <Row>
-          <Col md={4}>{label}: </Col>
-          <Col md={8}>
-            <input {...input} />
-            <FontAwesome
-              name="cog"
-              onClick={() => this.setState({disabled: !this.state.disabled})}
-            />
+          <Col md={3}>
+            <div style={{display: 'flex', height: '100%'}}>
+              <div style={{margin: 'auto 0'}}>{label}:</div>{' '}
+            </div>
+          </Col>
+          <Col md={9}>
+            <div style={{display: 'flex'}}>
+              <input
+                {...input}
+                disabled={disabled}
+                value={input.value || initialValue}
+                placeholder={disabled ? '' : 'fill it, please'}
+              />
+              <FontAwesome
+                name="cog"
+                onClick={() => this.setState({disabled: !this.state.disabled})}
+              />
+            </div>
+            {input.value && touched && error && <Error error={error} />}
           </Col>
         </Row>
       </StyledLine>
@@ -68,6 +84,13 @@ class InputLine extends React.Component {
 
 let ProfileForm = props => {
   const {handleSubmit, submitting} = props;
+  const {
+    initialName,
+    initialDate,
+    initialPhone,
+    initialEmail,
+    initialInstagram
+  } = props;
   return (
     <form onSubmit={handleSubmit}>
       <h1 style={{textAlign: 'center', margin: '40px 0'}}>
@@ -76,13 +99,38 @@ let ProfileForm = props => {
       <Grid>
         <Row>
           <Col md={6}>
-            <Field name="name" label="name" component={InputLine} />
-            <Field name="date" label="date" component={InputLine} />
+            <Field
+              name="name"
+              label="name"
+              initialValue={initialName}
+              component={InputLine}
+            />
+            <Field
+              name="date"
+              label="date"
+              initialValue={initialDate}
+              component={InputLine}
+            />
           </Col>
           <Col md={6}>
-            <Field name="phone" label="phone" component={InputLine} />
-            <Field name="email" label="email" component={InputLine} />
-            <Field name="instagram" label="instagram" component={InputLine} />
+            <Field
+              name="phone"
+              label="phone"
+              initialValue={initialPhone}
+              component={InputLine}
+            />
+            <Field
+              name="email"
+              label="email"
+              initialValue={initialEmail}
+              component={InputLine}
+            />
+            <Field
+              name="instagram"
+              label="instagram"
+              initialValue={initialInstagram}
+              component={InputLine}
+            />
           </Col>
         </Row>
         <Button type="submit" disabled={submitting} bsStyle="success">
@@ -94,8 +142,20 @@ let ProfileForm = props => {
   );
 };
 
+const validate = ({name, date, phone, email, instagram}) => {
+  const errors = {};
+  if (date && new Date(date) + '' === 'Invalid Date')
+    errors.date = 'invalid date';
+  if (phone && !/\(?([0-9]{3})\)?([ .-]?)([0-9]{3})\2([0-9]{4})/.test(phone))
+    errors.phone = 'invalid number';
+  if (!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(email))
+    errors.email = 'invalid email';
+  return errors;
+};
+
 ProfileForm = reduxForm({
-  form: 'profile'
+  form: 'profile',
+  validate
 })(ProfileForm);
 
 const rootReducer = combineReducers({
@@ -121,7 +181,11 @@ store.subscribe(() => console.log(store.getState()));
 
 const component = () => (
   <Provider store={store}>
-    <ProfileForm onSubmit={values => console.log(values)} />
+    <ProfileForm
+      initialName="antarid"
+      initialInstagram="annayatsuta"
+      onSubmit={values => console.log(values)}
+    />
   </Provider>
 );
 
