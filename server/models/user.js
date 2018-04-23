@@ -16,25 +16,20 @@ const userScheme = new Schema({
     email: {type: String},
     name: {type: String}
   },
-  firstName: {type: String},
-  lastName: {type: String},
+  name: {type: String},
   password: {type: String},
   wishList: {type: Array},
-  facebookId: {type: String},
   contacts: {
-    email: {type: String},
-    numberPhone: [
-      {
-        type: Number
-      }
-    ],
-    skype: {type: String, default: 'Not indicated'},
-    viber: {type: String, default: 'Not indicated'},
-    telegram: {type: String, default: 'Not indicated'},
-    vk: {type: String, default: 'Not indicated'},
-    facebook: {type: String, default: 'Not indicated'}
+    phone: {type: Number, default: ''},
+    instagram: {type: String, default: ''},
+    skype: {type: String, default: ''},
+    viber: {type: String, default: ''},
+    telegram: {type: String, default: ''},
+    vk: {type: String, default: ''},
+    facebook: {type: String, default: ''}
   },
   housesIds: {type: Array},
+  reviewIds: {type: Array},
   visitedIds: {type: Array},
   notifications: {
     all: {type: Array},

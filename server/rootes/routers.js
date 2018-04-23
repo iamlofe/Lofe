@@ -7,7 +7,6 @@ import signin from '../services/signin';
 import signup from '../services/signup';
 import createHouse from '../services/createHouse';
 import search from '../services/search';
-import getUser from '../services/getUser';
 import checkUser from '../services/checkUser';
 import addToWishList from '../services/addToWishList';
 import getWishList from '../services/getWishList';
@@ -24,6 +23,8 @@ import passport from 'passport';
 import multer from 'multer';
 import authFacebook from '../services/authFacebook';
 import authGoogle from '../services/authGoogle';
+import changeProfile from '../services/setProfile';
+import showreview from '../services/showreview';
 
 const router = express.Router();
 
@@ -40,6 +41,7 @@ router.post('/add-house', createHouse);
 //Add to wish list
 router.post('/user/addToWishList', addToWishList);
 
+router.post('/user/changeProfile', changeProfile);
 //Get WishList
 router.post('/user/getWishList', getWishList);
 
@@ -77,8 +79,8 @@ router.get('/house/:houseId', getHouse);
 //Search
 router.post('/house/search', search);
 
-//Get user
-router.get('/getUser', getUser);
+//
+router.get('/review/:reviewId', showreview);
 
 //Check user
 router.get('/checkUser', checkUser);

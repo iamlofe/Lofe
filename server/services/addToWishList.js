@@ -2,7 +2,7 @@ import User from '../models/user';
 
 export default async (req, res) => {
   const {houseId} = req.body;
-  let session = req.session.user;
+  let session = req.session;
   console.log('houseId' + houseId);
   console.log('session' + session);
   let user;
