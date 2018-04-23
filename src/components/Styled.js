@@ -6,6 +6,7 @@ import {Button, Col} from 'react-bootstrap';
 import {connect} from 'react-redux';
 import {CircularProgress} from 'material-ui/Progress';
 import Zoom from 'material-ui/transitions/Zoom';
+import urls from '../routes';
 
 const CenterRow = styled.div`
   display: flex;
@@ -150,6 +151,41 @@ const Error = ({error}) => (
   </StyledError>
 );
 
+const StyledGithubButton = styled.div`
+  display: flex;
+  align-content: center;
+  margin: 40px auto;
+  cursor: pointer;
+  text-align: center;
+  border: 1px solid transparent;
+  padding: 15px 30px;
+  border-radius: 0.25rem;
+  font-size: 1rem;
+  color: #fff;
+  background-color: #353535;
+  span.fab {
+    font-size: 1.5em;
+    margin: 0 10px;
+  }
+`;
+
+const GithubButton = ({type}) =>
+  type === 'signin' ? (
+    <a href={'http:localhost:3030/auth/github'}>
+      <StyledGithubButton>
+        <span className="fab fa-github" />
+        <span>sign in via github</span>
+      </StyledGithubButton>
+    </a>
+  ) : (
+    <a href={'http:localhost:3030/auth/github'}>
+      <StyledGithubButton>
+        <span className="fab fa-github" />
+        <span>sign up via github</span>
+      </StyledGithubButton>
+    </a>
+  );
+
 export {
   StyledError,
   Center,
@@ -160,5 +196,6 @@ export {
   Price,
   Point,
   Status,
-  Error
+  Error,
+  GithubButton
 };

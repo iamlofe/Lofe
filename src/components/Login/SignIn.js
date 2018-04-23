@@ -1,9 +1,17 @@
 import React from 'react';
 import {Field, reduxForm} from 'redux-form';
-import {StyledError, StyledInput, Center, CenterRow} from '../Styled';
+import {
+  StyledError,
+  StyledInput,
+  Center,
+  CenterRow,
+  GithubButton
+} from '../Styled';
 import {Grid, Row, Col, Button} from 'react-bootstrap';
 import {CircularProgress} from 'material-ui/Progress';
+import FontAwesome from 'react-fontawesome';
 import {connect} from 'react-redux';
+import styled from 'styled-components';
 
 const renderField = ({input, label, type, meta: {touched, error, warning}}) => (
   <div>
@@ -97,6 +105,10 @@ let SignIn = props => {
                   <Status />
                 </CenterRow>
               </Col>
+              <Col md={12}>
+                <CenterRow justifyContent="center" />
+              </Col>
+              <GithubButton type="signin" />
             </Row>
           </Col>
         </Row>

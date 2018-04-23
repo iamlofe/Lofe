@@ -11,7 +11,7 @@ import WishListComponent from './components/WishList/WishList';
 import Generator from './components/generator';
 import Home from './components/Home/Home';
 import axios from 'axios';
-import component from './components/Profile/Profileview';
+import Profile from './components/Profile/Profileview';
 
 class UploadFile extends React.Component {
   constructor(props) {
@@ -53,7 +53,10 @@ class App extends Component {
             path="/generate"
             component={() => <Generator number={100} />}
           />
-          <Route path="/test" component={component} />
+          <Route
+            path="/user/:userId"
+            component={props => <Profile id={props.match.params.userId} />}
+          />
         </Switch>
       </BrowserRouter>
     );

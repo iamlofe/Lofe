@@ -1,5 +1,5 @@
 import React from 'react';
-import {Grid, Col, Row} from 'react-bootstrap';
+import {Grid, Col, Row, Button} from 'react-bootstrap';
 import styled from 'styled-components';
 import FontAwesome from 'react-fontawesome';
 import Reviews from '../About/Review';
@@ -15,7 +15,15 @@ const StyledInfo = styled.div`
     font-size: 0.8em;
   }
   .name {
-    font-size: 1.3em;
+    line-height: 1;
+    font-size: 1.5em;
+    margin-bottom: 15px;
+  }
+  .fa,
+  .fab {
+    margin-top: 5px;
+    margin-right: 10px;
+    font-size: 1.2em;
   }
 `;
 
@@ -74,7 +82,10 @@ const StyledAdvantage = styled.div`
 `;
 
 const House = ({id, description, address, image, advantages}) => (
-  <a href={`about/${id}`} style={{color: '#000', textDecoration: 'none'}}>
+  <a
+    href={`http://localhost:3000/about/${id}`}
+    style={{color: '#000', textDecoration: 'none'}}
+  >
     <StyledWishListItem>
       <Row>
         <Col md={3}>
@@ -82,7 +93,7 @@ const House = ({id, description, address, image, advantages}) => (
             <img src={image} alt="" />
           </StyledImageWrap1>
         </Col>
-        <Col md={7}>
+        <Col md={9}>
           <div className="address">{address}</div>
           <div className="description">{description}</div>
           <AdvantageList advantages={advantages} />
@@ -92,7 +103,13 @@ const House = ({id, description, address, image, advantages}) => (
   </a>
 );
 
-const Header = ({img, username, name, phone, instagram}) => (
+const Header = ({
+  img = 'https://az334034.vo.msecnd.net/images-8/black-suprematic-square-kazimir-malevich-1915-d0cce7dd.png',
+  username,
+  name = 'Andrei Taranov',
+  phone = '+37529393693',
+  instagram = 'antarid'
+}) => (
   <Row>
     <Col md={2}>
       <StyledImageWrap>
@@ -103,29 +120,37 @@ const Header = ({img, username, name, phone, instagram}) => (
       <StyledInfo>
         <div className="username">{username}</div>
         <div className="name">{name}</div>
-        {phone && (
-          <div className="phone">
-            <FontAwesome name="phone" />
-            {phone}
-          </div>
-        )}
-        {instagram && <div className="instagram">instagram:{instagram}</div>}
+
+        <div className="phone">
+          <FontAwesome name="phone" />
+          {phone || '+375293936932'}
+        </div>
+
+        <div>
+          <span className="fab fa-instagram" /> <span>{instagram + ''}</span>
+        </div>
       </StyledInfo>
     </Col>
   </Row>
 );
 
+const Container = styled.div`
+  background-color: #fafafa;
+  padding: 20px 0;
+`;
+
 class Profile extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
+      active: 'reviews',
       data: {},
       reviews: [],
       houses: []
     };
   }
   componentDidMount() {
-    const id = '5addc3c3f6502d1f6c3a0470';
+    const {id} = this.props; //5addc3c3f6502d1f6c3a0470
     axios
       .get(urls.user.get.userBasicInfo(id))
       .then(
@@ -164,30 +189,71 @@ class Profile extends React.Component {
     const {image, username, contacts} = this.state.data;
     const {houses, reviews} = this.state;
     return (
-      <Grid>
-        <Row>
-          <Col md={12}>
-            {contacts && (
-              <Header
-                img={image}
-                phone={contacts.phone}
-                instagram={contacts.instagram}
-                name={contacts.name}
-                username={username}
-              />
+      <div>
+        <Container>
+          <Grid>
+            <Row>
+              <Col md={12}>
+                {contacts && (
+                  <Header
+                    img={image}
+                    phone={contacts.phone}
+                    name={contacts.name}
+                    username={username}
+                  />
+                )}
+              </Col>
+            </Row>
+          </Grid>
+        </Container>
+        <Grid>
+          <Row>
+            <Col className="offset-md-3" md={2}>
+              <Button
+                bsStyle={this.state.active === 'houses' ? 'success' : 'default'}
+                onClick={() => {
+                  if (this.state.active === 'reviews')
+                    this.setState({active: 'houses'});
+                }}
+              >{`${username}'s houses`}</Button>
+            </Col>
+            <Col md={2} className="offset-md-1">
+              <Button
+                bsStyle={
+                  this.state.active === 'reviews' ? 'success' : 'default'
+                }
+                onClick={() => {
+                  if (this.state.active === 'houses')
+                    this.setState({active: 'reviews'});
+                }}
+              >{`${username}'s reviews`}</Button>
+            </Col>
+          </Row>
+          <Row>
+            {this.state.active && this.state.active === 'reviews' ? (
+              <Col md={12}>
+                {reviews[0] ? (
+                  <Reviews reviews={reviews} />
+                ) : (
+                  <div>{`${username} has no reviews`}</div>
+                )}
+              </Col>
+            ) : (
+              <Col md={12}>
+                {houses[0] ? (
+                  houses.map((house, index) => (
+                    <House id={house._id} {...house} />
+                  ))
+                ) : (
+                  <div>{`${username} has no houses`}</div>
+                )}
+              </Col>
             )}
-          </Col>
-          <Col md={5}>{reviews[0] && <Reviews reviews={reviews} />}</Col>
-
-          <Col md={7}>
-            {houses[0] && houses.map(house => <House {...house} />)}
-          </Col>
-        </Row>
-      </Grid>
+          </Row>
+        </Grid>
+      </div>
     );
   }
 }
 
-const component = () => <Profile />;
-
-export default component;
+export default Profile;
