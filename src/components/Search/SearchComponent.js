@@ -14,6 +14,8 @@ import {getHouses} from '../../actions/asyncactions';
 import Error from '../Error';
 import {CircularProgress} from 'material-ui/Progress';
 import {Center, CenterRow} from '../Styled';
+import Pagination from 'react-js-pagination';
+import './nav.css';
 
 const Status = ({status, message}) => {
   switch (status) {
@@ -38,6 +40,33 @@ const Status = ({status, message}) => {
   }
 };
 
+let Navigation = ({onChange, filter, currentPage}) => (
+  <Pagination
+    activePage={currentPage}
+    initialPage={1}
+    pageRangeDisplayed={5}
+    itemsCountPerPage={1}
+    totalItemsCount={40}
+    containerClassName="navigation"
+    pageClassName="page"
+    onChange={page => onChange({page, ...filter})}
+  />
+);
+Navigation = connect(
+  state => {
+    return {
+      currentPage: state.filter.page,
+      totalCount: 20,
+      filter: state.filter
+    };
+  },
+  dispatch => {
+    return {
+      onChange: data => getHouses(data)
+    };
+  }
+)(Navigation);
+
 class SearchComponent extends React.Component {
   componentDidMount() {
     const session = getCookie('userid');
@@ -51,7 +80,10 @@ class SearchComponent extends React.Component {
       <Grid>
         <SearchBar />
         {this.props.status.status === 'display' ? (
-          <SearchResults />
+          <div>
+            <SearchResults />
+            <Navigation />
+          </div>
         ) : (
           <Status
             status={this.props.status.status}

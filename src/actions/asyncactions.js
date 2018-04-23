@@ -59,9 +59,9 @@ export const removeFromWishList = id => {
   };
 };
 
-export const getHouses = ({request, price, rating, session}) => dispatch => {
+export const getHouses = ({request, price, rating, page}) => dispatch => {
   axios
-    .post(urls.house.post.search({q: request, price, rating}))
+    .post(urls.house.post.search({q: request, price, rating, page}))
     .catch(() =>
       dispatch({
         type: 'change_status',
@@ -84,6 +84,7 @@ export const getHouses = ({request, price, rating, session}) => dispatch => {
     })
     .then(data => {
       dispatch({type: 'change_list', results: data});
+      dispatch({type: 'change_page', page});
       dispatch({type: 'change_status', status: 'display'});
     })
     .catch(error => console.log(error));

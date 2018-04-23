@@ -1,0 +1,18 @@
+.pagination {
+  display: flex;
+  justify-content: center;
+}
+
+.pagination li {
+  padding: 0 10px;
+}
+
+.pagination li.active {
+  background-color: #284397;
+  transition: all 0.3s ease;
+}
+
+.pagination li.active a {
+  color: #fff;
+  transition: all 0.3s ease;
+}

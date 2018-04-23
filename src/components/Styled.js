@@ -5,6 +5,7 @@ import FontAwesome from 'react-fontawesome';
 import {Button, Col} from 'react-bootstrap';
 import {connect} from 'react-redux';
 import {CircularProgress} from 'material-ui/Progress';
+import Zoom from 'material-ui/transitions/Zoom';
 
 const CenterRow = styled.div`
   display: flex;
@@ -95,10 +96,16 @@ const StyledError = styled.div`
 `;
 
 const StyledInput = styled.input`
-  border-radius: 3px;
+  border-radius: 1px;
   display: block;
   padding: 10px 30px;
   border: 1px solid #888;
+  transition: all 0.3s ease;
+  :focus {
+    outline: none;
+    transform: translate(0, 1px);
+    box-shadow: rgba(0, 0, 0, 0.12) 0px 1px 6px, rgba(0, 0, 0, 0.12) 0px 1px 4px;
+  }
   height: ${props => props.height || 'auto'};
   width: ${props => props.width || '100%'};
   margin: ${props => props.margin || '0 0 0 0'};
@@ -121,13 +128,27 @@ const Price = ({price, currency}) => (
 );
 
 const StyledTextArea = styled.textarea`
-  border-radius: 3px;
+  border-radius: 1px;
+  transition: all 0.3s ease;
+  :focus {
+    outline: none;
+    transform: translate(0, 1px);
+    box-shadow: rgba(0, 0, 0, 0.12) 0px 1px 6px, rgba(0, 0, 0, 0.12) 0px 1px 4px;
+  }
   border: 1px solid #888;
   width: 100%;
   padding: 10px 30px;
-  height: 300px;
+  height: 200px;
   margin: ${props => props.margin || '0 0 0 0'};
 `;
+
+const Error = ({error}) => (
+  <StyledError>
+    <Zoom in={true}>
+      <div>{error}</div>
+    </Zoom>
+  </StyledError>
+);
 
 export {
   StyledError,
@@ -138,5 +159,6 @@ export {
   Rating,
   Price,
   Point,
-  Status
+  Status,
+  Error
 };

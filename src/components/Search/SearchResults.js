@@ -20,9 +20,10 @@ const StyledImageWrap = styled.div`
   width: 100%;
   overflow: hidden;
   height: 250px;
-  img {
-    width: 100%;
-  }
+  background-image: url(${props => props.img});
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
 `;
 
 const StyledLike = styled.div`
@@ -49,9 +50,8 @@ const Flex = styled.div`
 `;
 
 const ImageWrap = ({img, isLiked, id}) => (
-  <StyledImageWrap>
+  <StyledImageWrap img={img}>
     <Like isLiked={isLiked} id={id} />
-    <img src={img} alt="test" />
   </StyledImageWrap>
 );
 
@@ -122,7 +122,7 @@ const SearchResult = ({
   image,
   _id
 }) => (
-  <Col md={4}>
+  <Col lg={4} md={6} sm={6}>
     <StyledSearchResult>
       <a
         href={`/about/${_id}`}

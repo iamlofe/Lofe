@@ -13,6 +13,8 @@ const status = (state = {status: 'pending', message: ''}, action) =>
 
 const filterReducer = (
   state = {
+    page: 1,
+    totalPages: 0,
     request: '',
     price: {
       min: 0,
@@ -45,7 +47,10 @@ const filterReducer = (
 
     case 'change_request':
       return {...state, request: action.request};
-
+    case 'change_page':
+      return {...state, page: action.page};
+    case 'change_total_pages':
+      return {...state, totalPages: action.totalPages};
     default:
       return state;
   }
