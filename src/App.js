@@ -11,7 +11,7 @@ import WishListComponent from './components/WishList/WishList';
 import Generator from './components/generator';
 import Home from './components/Home/Home';
 import axios from 'axios';
-import component from './components/Profile/Profile';
+import component from './components/Profile/Profileview';
 
 class UploadFile extends React.Component {
   constructor(props) {
