@@ -1,20 +1,22 @@
 import House from '../models/house';
 import User from '../models/user';
 
-export default (req, res, next) => {
+export default async (req, res, next) => {
   let houses;
   let wishList;
   let user;
-  let session = req.session.user;
+  let session = req.cookie;
+  console.log(session);
   let search = req.query;
   //
   try {
-    House.find()
+    await House.find()
       .where({
         address: {$regex: search.q, $options: 'i'},
         price: {$gt: search.minprice, $lt: search.maxprice},
         rating: {$lt: search.maxrating, $gt: search.minrating}
       })
+      .skip(search.count)
       .limit(15)
       .exec(function(err, results) {
         houses = results.map(result => {
@@ -28,8 +30,8 @@ export default (req, res, next) => {
           };
         });
         if (session) {
-          console.log(session);
-          user = User.findOne({_id: session}).exec(function(err, user) {
+          console.log(session + 'dd1d');
+          User.findOne({_id: session}).exec(function(err, user) {
             houses = houses.map(house => {
               return {
                 ...houses,

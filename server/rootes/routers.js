@@ -19,29 +19,29 @@ import reviews from '../services/reviews';
 import order from '../services/order';
 import isLoggedIn from '../services/isLoggedIn';
 import aboutUser from '../services/aboutUser';
-import getHouse from '../services/getHouse'
-
-import multer from "multer"
-
-////
-import userF from '../services/getF';
+import getHouse from '../services/getHouse';
+import passport from 'passport';
+import multer from 'multer';
+import authFacebook from '../services/authFacebook';
+import authGoogle from '../services/authGoogle';
 
 const router = express.Router();
 
 // Router fro signin
-router.post('/user/signin', signin);
 
 // Router for signup
 router.post('/user/signup', signup);
+
+router.post('/user/signin', signin);
 
 //Router for create pages
 router.post('/add-house', createHouse);
 
 //Add to wish list
-router.post('/addToWishList', addToWishList);
+router.post('/user/addToWishList', addToWishList);
 
 //Get WishList
-router.post('/getWishList', getWishList);
+router.post('/user/getWishList', getWishList);
 
 //Remove from wishList
 router.post('/removeFromWishList', removeFromWishList);
@@ -52,8 +52,24 @@ router.post('/getFilteredWishList', getFilteredWishList);
 //Add comments
 router.post('/house/:houseId/addReview', addReview);
 
-// //Get user
-// router.post('/get', userF);
+//Auth facebook
+router.get('/auth/facebook', authFacebook);
+
+//Auth google
+router.get(
+  '/auth/google',
+  passport.authenticate('google', {scope: ['profile']})
+);
+
+router.get(
+  '/auth/google/redirect',
+  passport.authenticate('google'),
+  (req, res, next) => {
+    res.send(req.user);
+  }
+);
+
+// router.get('/auth/google/redirect', authGoogle);
 
 //Router for get comments
 router.get('/house/:houseId', getHouse);
@@ -71,14 +87,12 @@ router.get('/checkUser', checkUser);
 router.get('/house/:houseId/reviews', reviews);
 
 //Take order
-router.post('/house/:houseId/order', order)
+router.post('/house/:houseId/order', order);
 
 //Add reviews
 router.post('/user/isLoggedIn', isLoggedIn);
 
 //About user
-router.get('/user/:userId', aboutUser)
-
-
+router.get('/user/:userId', aboutUser);
 
 export default router;

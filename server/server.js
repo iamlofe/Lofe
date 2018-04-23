@@ -2,8 +2,8 @@ import express from 'express';
 import mongoose from 'mongoose';
 import bodyParser from 'body-parser';
 import morgan from 'morgan';
-import session from 'express-session';
-import { Schema } from 'mongoose';
+// import session from 'express-session';
+import {Schema} from 'mongoose';
 import bluebird from 'bluebird';
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcryptjs';
@@ -27,28 +27,53 @@ import imagesUpload from 'images-upload-middleware';
 import router from './rootes/routers';
 import config from './config/config';
 import handler from './middlewares/errorHandler';
+//Cokie
+// import mongoStore from 'connect-mongodb@0.1.1';
+
+import passport from 'passport';
+import session from 'express-session';
+const RedisStore = require('connect-redis')(session);
+// import User from '../models/user';
+import flash from 'connect-flash';
 
 //Create app
 const app = express();
+mongoose.Promise = bluebird;
+
+import clientSessions from 'client-sessions';
 
 //Connect to modules
-app.use(cors({ origin: '*' }));
-app.use(morgan('dev'));
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
-app.use(cookieParser());
+//Passport and session
+
+//
 app.use(
-	session({
-		// resave: true,
-		// saveUninitialized: true,
-		secret: config.secretKey
-	})
+  session({
+    cookie: {maxAge: 60000},
+    secret: config.secretKey,
+    resave: false,
+    saveUninitialized: false
+  })
 );
-app.use(express.json({ limit: '50mb' }));
-app.use(express.urlencoded({ limit: '50mb' }));
-app.use(bodyParser.json({ limit: '50mb' }));
+//Flash for info
+app.use(flash());
+//Img
+app.use(cors({origin: '*'}));
+app.use(morgan('dev'));
+
 app.use(
-	bodyParser.urlencoded({ limit: '50mb', extended: true, parameterLimit: 50000 })
+  clientSessions({
+    secret: '0GBlJZ9EKBt2Zbi2flRPvztczCewBxXK' // set this to a long random string!
+  })
+);
+
+//
+app.use(bodyParser.json());
+app.use(cookieParser());
+app.use(express.json({limit: '50mb'}));
+app.use(express.urlencoded({limit: '50mb'}));
+app.use(bodyParser.json({limit: '50mb'}));
+app.use(
+  bodyParser.urlencoded({limit: '50mb', extended: true, parameterLimit: 50000})
 );
 
 //Img
@@ -56,30 +81,31 @@ app.use(methodOverride('_method'));
 const conn = mongoose.createConnection(config.dataBase);
 let gfs;
 conn.once('open', () => {
-	// Init stream
-	gfs = Grid(conn.db, mongoose.mongo);
-	gfs.collection('uploads');
+  // Init stream
+  console.log('connected to Mongo');
+  gfs = Grid(conn.db, mongoose.mongo);
+  gfs.collection('uploads');
 });
 
 const storage = new GridFsStorage({
-	url: config.dataBase,
-	file: (req, file) => {
-		return new Promise((resolve, reject) => {
-			crypto.randomBytes(16, (err, buf) => {
-				if (err) {
-					return reject(err);
-				}
-				const filename = buf.toString('hex') + path.extname(file.originalname);
-				const fileInfo = {
-					filename: filename,
-					bucketName: 'uploads'
-				};
-				resolve(fileInfo);
-			});
-		});
-	}
+  url: config.dataBase,
+  file: (req, file) => {
+    return new Promise((resolve, reject) => {
+      crypto.randomBytes(16, (err, buf) => {
+        if (err) {
+          return reject(err);
+        }
+        const filename = buf.toString('hex') + path.extname(file.originalname);
+        const fileInfo = {
+          filename: filename,
+          bucketName: 'uploads'
+        };
+        resolve(fileInfo);
+      });
+    });
+  }
 });
-const upload = multer({ storage });
+const upload = multer({storage});
 
 /////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -102,7 +128,6 @@ const upload = multer({ storage });
 // 	console.error(err);
 // 	res.sendStatus(400);
 // }
-
 
 // function saveFile1(tempPath, savePath, servePath, fileName) {
 // 	var copyToPath = savePath + '/' + fileName;
@@ -152,7 +177,6 @@ const upload = multer({ storage });
 // 							var _saveFile = saveFile1(tempPath, localSavePath, localServePath, fileName),
 // 								error = _saveFile.error,
 // 								path = _saveFile.path;
-
 // 							if (error) {
 // 								throw error;
 // 							}
@@ -167,7 +191,6 @@ const upload = multer({ storage });
 // 					var _files$imageFiles$ = files.imageFiles[0],
 // 						tempPath = _files$imageFiles$.path,
 // 						originalFilename = _files$imageFiles$.originalFilename;
-
 
 // 					var fileName = originalFilename;
 // 					if (notRename !== false) {
@@ -229,6 +252,14 @@ const upload = multer({ storage });
 
 //IMGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG
 app.use('/static', express.static('./static'));
+app.use(
+  session({
+    secret: config.secretKey,
+    resave: true,
+    saveUninitialized: true,
+    cookie: {secure: true}
+  })
+);
 
 app.use(corsPrefetch);
 
@@ -247,21 +278,28 @@ app.use(corsPrefetch);
 // );
 
 //Create mongoose and connection with server
-mongoose.Promise = bluebird;
 mongoose.connect(config.dataBase, err => {
-	if (err) throw err;
-	console.log('Mongo has connected');
+  if (err) throw err;
+  console.log('Mongo has connected');
 });
 
 //Start server
 app.listen(config.port, err => {
-	if (err) throw err;
-	console.log(`server listening on port ${config.port}`);
+  if (err) throw err;
+  console.log(`server listening on port ${config.port}`);
 });
+
+//Passport
+
+app.use(passport.initialize());
+app.use(passport.session());
+require('./config/passport')(passport);
+require('./config/authfacebook')(passport);
+require('./config/authGoogle')(passport);
 
 //Main page
 app.get('/', (req, res) => {
-	res.json('Main');
+  res.json('Main');
 });
 //Router
 app.use('', router);
