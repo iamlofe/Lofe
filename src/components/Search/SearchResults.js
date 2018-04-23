@@ -120,12 +120,12 @@ const SearchResult = ({
   rating,
   isLiked,
   image,
-  _id
+  id
 }) => (
   <Col lg={4} md={6} sm={6}>
     <StyledSearchResult>
       <a
-        href={`/about/${_id}`}
+        href={`/about/${id}`}
         style={{
           color: '#000',
           textDecoration: 'none'
@@ -137,7 +137,7 @@ const SearchResult = ({
             'http://www.joshuacasper.com/contents/uploads/joshua-casper-samples-free.jpg'
           }
           isLiked={isLiked || false}
-          id={_id}
+          id={id}
         />
         <Description
           description={address}

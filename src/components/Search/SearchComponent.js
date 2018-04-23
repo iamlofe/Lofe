@@ -102,15 +102,7 @@ const Search = connect(
     return {
       makeRequest: ({session, rating, price, request}) =>
         dispatch(getHouses({session, rating, price, request})),
-      checkLogin: session => {
-        if (session)
-          axios
-            .get('http://localhost:3030/getUser?_id=' + session)
-            .then(res => {
-              dispatch({type: 'login', username: res.data.username});
-            })
-            .catch(() => console.log('user is not logged in'));
-      }
+      checkLogin: session => console.log(session)
     };
   }
 )(SearchComponent);

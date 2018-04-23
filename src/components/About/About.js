@@ -25,6 +25,7 @@ const Center = styled.div`
 class About extends React.Component {
   makeRequest() {
     if (this.id) {
+      console.log('it is here');
       axios
         .get('http://localhost:3030/about?_id=' + this.id)
         .then(data => this.setState({data}))

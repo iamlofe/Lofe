@@ -94,8 +94,10 @@ export const getAbout = id => dispatch => {
   axios
     .get(urls.house.get.houseBasicInfo(id))
     .then(res => {
-      if (res.status === 200) dispatch({type: 'data_loaded', data: res.data});
-      else
+      if (res.status === 200) {
+        console.log(res.data);
+        dispatch({type: 'data_loaded', data: res.data[0]});
+      } else
         dispatch({
           type: 'add_error',
           error: (res.data && res.data.status) || 'other error'

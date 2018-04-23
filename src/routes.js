@@ -1,6 +1,7 @@
 const baseUrl = 'http://localhost:3030';
 const userPrefix = baseUrl + '/user';
 const housePrefix = baseUrl + '/house';
+const reviewPrefix = baseUrl + '/review';
 
 const urls = {
   house: {
@@ -18,6 +19,11 @@ const urls = {
       addToWishList: houseId => `${housePrefix}/${houseId}/addToWishList`
     }
   },
+  review: {
+    get: {
+      reviewBasicInfo: reviewId => `${reviewPrefix}/${reviewId}`
+    }
+  },
   user: {
     get: {
       userBasicInfo: userId => `${userPrefix}/${userId}`,
@@ -26,6 +32,7 @@ const urls = {
       emailExists: email => `${userPrefix}/emailExists?email=${email}`
     },
     post: {
+      changeProfile: () => `${userPrefix}/changeProfile`,
       wishList: () => `${userPrefix}/getWishList`,
       addToWishList: () => `${userPrefix}/addToWishList`,
       removeFromWishList: () => `${userPrefix}/removeFromWishList`,
