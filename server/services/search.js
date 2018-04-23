@@ -5,8 +5,10 @@ export default async (req, res, next) => {
   let houses;
   let wishList;
   let user;
-  let session = req.cookie;
-  console.log(session);
+  // let session = req.session;
+  // console.log(session);
+  // console.log(req.cookies);
+
   let search = req.query;
   //
   try {
@@ -29,20 +31,19 @@ export default async (req, res, next) => {
             image: result.images[0]
           };
         });
-        if (session) {
-          console.log(session + 'dd1d');
-          User.findOne({_id: session}).exec(function(err, user) {
-            houses = houses.map(house => {
-              return {
-                ...houses,
-                isLiked: user.wishList.indexOf(house.id) === -1 ? false : true
-              };
-            });
-            res.send(houses);
-          });
-        } else {
-          res.send(houses);
-        }
+        //   if (session) {
+        //     User.findOne({_id: session}).exec(function(err, user) {
+        //       houses = houses.map(house => {
+        //         return {
+        //           ...houses,
+        //           isLiked: user.wishList.indexOf(house.id) === -1 ? false : true
+        //         };
+        //       });
+        //       res.send(houses);
+        //     });
+        //   } else {
+        res.send(houses);
+        //   }
       });
   } catch ({message}) {
     return next({

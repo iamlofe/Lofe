@@ -12,6 +12,13 @@ export default function(req, res, next) {
         message: info.message
       });
     } else {
+      req.logIn(user, function(err) {
+        if (err)
+          return next({
+            message: err
+          });
+      });
+      // console.log(req.session);
       res.send({user});
     }
   })(req, res, next);

@@ -25,6 +25,9 @@ import authFacebook from '../services/authFacebook';
 import authGoogle from '../services/authGoogle';
 import changeProfile from '../services/setProfile';
 import showreview from '../services/showreview';
+import logout from '../services/logout';
+
+import mustAuthenticatedMw from '../services/mustAuthenticatedMw';
 
 const router = express.Router();
 
@@ -34,6 +37,10 @@ const router = express.Router();
 router.post('/user/signup', signup);
 
 router.post('/user/signin', signin);
+
+router.get('/user/logout', logout);
+
+// router.get('/user.logout', passport.authenticate('google', {scope: ['profile']})
 
 //Router for create pages
 router.post('/add-house', createHouse);
