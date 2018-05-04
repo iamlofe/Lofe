@@ -2,9 +2,9 @@ import {Strategy as LocalStrategy} from 'passport-local';
 import User from '../models/user';
 import bcrypt from 'bcryptjs';
 
-module.exports = function(passport) {
+export default function(passport) {
   passport.use(
-    new LocalStrategy(function(username, password, done) {
+    new LocalStrategy('local', function(username, password, done) {
       User.findOne({username}, (err, user) => {
         if (err)
           return next({
@@ -32,4 +32,4 @@ module.exports = function(passport) {
       done(err, user);
     });
   });
-};
+}

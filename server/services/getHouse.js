@@ -1,6 +1,6 @@
 import House from '../models/house';
 
-export default async (req, res) => {
+export default async (req, res, next) => {
   let house;
   const _id = req.params.houseId;
 

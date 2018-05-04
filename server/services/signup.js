@@ -3,6 +3,7 @@ import bcrypt from 'bcrypt';
 import flash from 'connect-flash';
 
 export default (req, res, next) => {
+  console.log(111111111111);
   const data = req.body;
 
   let objUser;
@@ -18,7 +19,7 @@ export default (req, res, next) => {
       if (err) {
         return next({
           status: 401,
-          message
+          message: err
         });
       }
       objUser.password = hash;

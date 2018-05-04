@@ -26,6 +26,7 @@ import authGoogle from '../services/authGoogle';
 import changeProfile from '../services/setProfile';
 import showreview from '../services/showreview';
 import logout from '../services/logout';
+import searcha from '../services/searcha';
 
 import mustAuthenticatedMw from '../services/mustAuthenticatedMw';
 
@@ -84,7 +85,9 @@ router.get(
 router.get('/house/:houseId', getHouse);
 
 //Search
-router.post('/house/search', search);
+// router.get('/house/search', search);
+
+// router.get('/house/searcha', searcha);
 
 //
 router.get('/review/:reviewId', showreview);
