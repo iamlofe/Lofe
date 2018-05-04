@@ -7,13 +7,13 @@ const urls = {
   house: {
     get: {
       houseBasicInfo: houseId => `${housePrefix}/${houseId}`,
-      houseReviews: houseId => `${housePrefix}/${houseId}/reviews`
-    },
-    post: {
       search: ({q, rating, price, page}) =>
         `${housePrefix}/search?q=${q}&minprice=${price.min}&maxprice=${
           price.max
         }&minrating=${rating.min}&maxrating=${rating.max}&page=${page}`,
+      houseReviews: houseId => `${housePrefix}/${houseId}/reviews`
+    },
+    post: {
       addReview: houseId => `${housePrefix}/addReview`,
       order: houseId => `${housePrefix}/${houseId}/order`,
       addToWishList: houseId => `${housePrefix}/${houseId}/addToWishList`

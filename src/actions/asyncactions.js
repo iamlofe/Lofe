@@ -50,10 +50,10 @@ export const getWishList = session => {
   };
 };
 
-export const removeFromWishList = id => {
+export const removeFromWishList = ({id, session}) => {
   return dispatch => {
     axios
-      .post(urls.user.post.removeFromWishList(), {id})
+      .post(urls.user.post.removeFromWishList(), {id, session})
       .then(() => dispatch({type: 'remove_completely', id}))
       .catch(e => console.log(e));
   };
@@ -61,7 +61,7 @@ export const removeFromWishList = id => {
 
 export const getHouses = ({request, price, rating, page}) => dispatch => {
   axios
-    .post(urls.house.post.search({q: request, price, rating, page}))
+    .get(urls.house.get.search({q: request, price, rating, page}))
     .catch(() =>
       dispatch({
         type: 'change_status',
@@ -106,15 +106,17 @@ export const getAbout = id => dispatch => {
     .catch(error => console.log(error));
 };
 
-export const like = ({id, isLiked}) => dispatch => {
+export const like = ({id, isLiked, session}) => dispatch => {
   if (isLiked) {
     console.log(urls.user.post.removeFromWishList());
-    axios.post(urls.user.post.removeFromWishList(), {id}).then(({data}) => {
-      if (data === 'success') dispatch({type: 'toggle_liked_flag', id});
-    });
+    axios
+      .post(urls.user.post.removeFromWishList(), {id, session})
+      .then(({data}) => {
+        if (data === 'success') dispatch({type: 'toggle_liked_flag', id});
+      });
   } else {
     console.log(urls.user.post.addToWishList());
-    axios.post(urls.user.post.addToWishList(), {id}).then(({data}) => {
+    axios.post(urls.user.post.addToWishList(), {id, session}).then(({data}) => {
       if (data === 'success') dispatch({type: 'toggle_liked_flag', id});
     });
   }

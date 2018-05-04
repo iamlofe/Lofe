@@ -12,9 +12,9 @@ import axios from 'axios';
 import {Provider, connect} from 'react-redux';
 import {createStore, combineReducers, applyMiddleware} from 'redux';
 import {composeWithDevTools} from 'redux-devtools-extension';
-import {reducer as reduxFormReducer} from 'redux-form';
 import thunk from 'redux-thunk';
 import {getAbout} from '../../actions/asyncactions';
+import rootReducer from '../../reducers/about';
 
 const Top = styled.div`
   padding: 30px 0;
@@ -130,45 +130,6 @@ const AboutContainer = connect(
     };
   }
 )(About);
-
-const status = (state = 'normal', action) => {
-  switch (action.type) {
-    case 'change_status':
-      return action.status;
-    default:
-      return state;
-  }
-};
-
-const about = (
-  state = {error: '', reviews: [], id: '', formDisabled: false},
-  action
-) => {
-  switch (action.type) {
-    case 'add_review':
-      return {...state, reviews: [...state.reviews, action.review]};
-    case 'data_loaded':
-      return {...state, ...action.data};
-    case 'change_id':
-      return {...state, id: action.id};
-    case 'disable_form':
-      return {...state, formDisabled: true};
-    case 'add_error':
-      return {...state, error: action.error};
-    default:
-      return state;
-  }
-};
-
-const rating = (state = 0, action) =>
-  action.type === 'change_rating' ? action.rating : state;
-
-const rootReducer = combineReducers({
-  rating,
-  form: reduxFormReducer,
-  status,
-  about
-});
 
 const store = createStore(
   rootReducer,
