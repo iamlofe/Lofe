@@ -10,10 +10,11 @@ import {
   Rating,
   Status
 } from '../Styled';
+import {getRating} from '../../reducers/about';
 import {Row, Col, Button} from 'react-bootstrap';
 import axios from 'axios';
 import {getCookie} from '../../cookies';
-import {addReview} from '../../actions/asyncactions';
+import urls from '../../routes';
 
 const Review = ({input, meta: {touched, error}}) => (
   <div>
@@ -82,57 +83,57 @@ Form = reduxForm({
   validate
 })(Form);
 
-let FormRating = ({onChange, rating}) => (
+const chageRating = rating => ({
+  type: 'CHANGE_RATING',
+  rating
+});
+
+let FormRating = ({chageRating, rating}) => (
   <Rating
     isSelectable={true}
     rating={rating}
     centered={true}
-    onChange={onChange}
+    onChange={chageRating}
   />
 );
 FormRating = connect(
-  ({rating}) => {
-    return {rating};
-  },
-  dispatch => {
-    return {onChange: rating => dispatch({type: 'change_rating', rating})};
-  }
+  state => ({
+    rating: getRating(state)
+  }),
+  dispatch => ({
+    chageRating: rating => dispatch(chageRating(rating))
+  })
 )(Rating);
 
-let AddReview = ({id, addReview, rating, askToPickRating, dispatch}) => (
+let AddReview = ({onSubmit}) => (
   <div>
     <FormRating />
-    <Form
-      onSubmit={values => {
-        if (rating) addReview({review: values, id, rating});
-        else askToPickRating();
-      }}
-    />
+    <Form onSubmit={onSubmit} />
   </div>
 );
 
-AddReview = connect(
-  ({about, rating}) => {
-    return {rating, id: about.id, formDisabled: about.formDisabled};
-  },
-  dispatch => {
-    return {
-      addReview: ({review, rating, id}) => {
-        if (getCookie('userid')) {
-          const params = {
-            userid: getCookie('userid'),
-            review,
-            rating,
-            id
-          };
-          dispatch(addReview(params));
-        } else window.location.replace('http://localhost:3000/login');
-      },
-      askToPickRating: () =>
-        dispatch({type: 'change_status', status: 'pick_the_rating'}),
-      dispatch
-    };
-  }
-)(AddReview);
+const addReview = review => ({
+  type: 'ADD_REVIEW',
+  review
+});
+
+AddReview = connect(null, (dispatch, ownProps) => {
+  return {
+    onSubmit: values => (dispatch, getState) => {
+      const rating = getRating(getState());
+      if (rating === 0) return;
+      const data = {
+        ...values,
+        houseId: ownProps.match.params.id,
+        rating,
+        session: getCookie('userid')
+      };
+      console.log(data);
+      axios
+        .post(urls.review.post.createReview(data))
+        .then(review => dispatch(addReview(review)));
+    }
+  };
+})(AddReview);
 
 export default AddReview;

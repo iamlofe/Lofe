@@ -4,13 +4,14 @@ const initialInfoState = {
   description: '',
   advantages: [],
   price: '',
-  coords: {}
+  coords: {},
+  reviewIds: []
 };
 
 const info = (state = initialInfoState, action) => {
   switch (action.type) {
     case RECIEVE_INFO:
-      return action.response;
+      return {...action.response, reviewIds: action.response.reviews};
     default:
       return state;
   }
@@ -18,6 +19,8 @@ const info = (state = initialInfoState, action) => {
 
 const reviews = (state = [], action) => {
   switch (action.type) {
+    case 'FETCH_REVIEWS_SUCCESS':
+      return action.response;
     case ADD_REVIEW:
       return [...state, action.review];
     default:
@@ -31,5 +34,6 @@ const content = combineReducers({
 });
 
 export default content;
+export const getReviewIds = state => state.info.reviewIds;
 export const getReviews = state => state.reviews;
 export const getInfo = state => state.info;

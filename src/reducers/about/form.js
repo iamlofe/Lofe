@@ -3,7 +3,7 @@ import {reducer as reduxFormReducer} from 'redux-form';
 import {DISABLE_FORM, ENABLE_FORM} from '../../actions/actionTypes';
 
 const rating = (state = 0, action) =>
-  action.type === 'change_rating' ? action.rating : state;
+  action.type === 'CHANGE_RATING' ? action.rating : state;
 
 const formStatus = (state = true, action) => {
   switch (action.type) {
@@ -16,10 +16,6 @@ const formStatus = (state = true, action) => {
   }
 };
 
-const form = combineReducers({
-  values: reduxFormReducer,
-  status: formStatus,
-  rating
-});
+export default reduxFormReducer;
 
-export default form;
+export const getRating = state => state.rating;

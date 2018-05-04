@@ -22,6 +22,10 @@ const urls = {
   review: {
     get: {
       reviewBasicInfo: reviewId => `${reviewPrefix}/${reviewId}`
+    },
+    post: {
+      createReview: ({session, advantages, disadvantages, description}) =>
+        `${reviewPrefix}/create`
     }
   },
   user: {

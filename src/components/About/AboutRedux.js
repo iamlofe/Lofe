@@ -15,7 +15,9 @@ import {composeWithDevTools} from 'redux-devtools-extension';
 import thunk from 'redux-thunk';
 import {getAbout} from '../../actions/asyncactions';
 import rootReducer from '../../reducers/about';
-
+import {withRouter} from 'react-router-dom';
+import urls from '../../routes';
+import {getReviewIds, getReviews, getInfo} from '../../reducers/about';
 const Top = styled.div`
   padding: 30px 0;
 `;
@@ -29,115 +31,112 @@ const Center = styled.div`
   justify-content: center;
 `;
 
-let AdvantagesContainer = ({advantages}) => (
-  <Advantages advantages={advantages} />
-);
-AdvantagesContainer = connect(({about}) => {
-  return {advantages: about.advantages};
-})(AdvantagesContainer);
-
-let MapContainer = ({coords}) => <Map coords={coords} />;
-MapContainer = connect(({about}) => {
-  return {coords: about.coords};
-})(MapContainer);
-
-let ImageContainer = ({images}) => <ImageCarousel images={images} />;
-ImageContainer = connect(({about}) => {
-  return {images: about.images};
-})(ImageContainer);
-
-let DescriptionContainer = ({description, price, rating, currency}) => (
-  <Description
-    description={description}
-    price={price}
-    rating={rating}
-    currency={currency}
-  />
-);
-DescriptionContainer = connect(({about}) => {
-  return {...about};
-})(DescriptionContainer);
-
-let ReviewsContainer = connect(({about}) => {
-  return {reviews: about.reviews};
-})(Reviews);
-
 class About extends React.Component {
-  constructor(props) {
-    super(props);
-    this.props.dispatch({type: 'change_id', id: this.props.id});
+  fetch() {
+    const {fetchInfo, fetchReviews} = this.props;
+    const houseId = this.props.match.params.id;
+    fetchInfo(houseId).then(fetchReviews);
   }
   componentDidMount() {
-    this.props.makeRequest(this.props.id);
+    this.fetch();
   }
   render() {
-    if (
-      this.props.state &&
-      this.props.state.about &&
-      this.props.state.about.description
-    )
-      return (
-        <div>
-          <Top>
-            <Grid>
-              <Row>
-                <Col md={6} style={{margin: 0, padding: 0}}>
-                  <Center>
-                    <ImageContainer />
-                  </Center>
-                </Col>
-                <Col md={6}>
-                  <Center>
-                    <DescriptionContainer />
-                  </Center>
-                </Col>
-              </Row>
-            </Grid>
-          </Top>
-          <Bottom>
-            <Grid>
-              <Row>
-                <Col md={6}>
-                  <Center>
-                    <AdvantagesContainer />
-                  </Center>
-                </Col>
-                <Col md={6} style={{margin: 0, padding: 0}}>
-                  <Center>
-                    <MapContainer />
-                  </Center>
-                </Col>
-              </Row>
-
-              <ReviewsContainer />
-              <AddReview />
-            </Grid>
-          </Bottom>
-        </div>
-      );
-    else return null;
+    const {reviews, info} = this.props;
+    const {
+      coords,
+      advantages,
+      description,
+      images,
+      price,
+      rating,
+      currency
+    } = info;
+    return (
+      <div>
+        <Top>
+          <Grid>
+            <Row>
+              <Col md={6} style={{margin: 0, padding: 0}}>
+                <Center>
+                  <ImageCarousel images={images} />
+                </Center>
+              </Col>
+              <Col md={6}>
+                <Center>
+                  <Description
+                    description={description}
+                    price={price}
+                    rating={rating}
+                    currency={currency || 'usd'}
+                  />
+                </Center>
+              </Col>
+            </Row>
+          </Grid>
+        </Top>
+        <Bottom>
+          <Grid>
+            <Row>
+              <Col md={6}>
+                <Center>
+                  <Advantages advantages={advantages} />
+                </Center>
+              </Col>
+              <Col md={6} style={{margin: 0, padding: 0}}>
+                <Center>
+                  <Map coords={coords} />
+                </Center>
+              </Col>
+            </Row>
+            <Reviews reviews={reviews} />
+            <AddReview />
+          </Grid>
+        </Bottom>
+      </div>
+    );
   }
 }
 
-const AboutContainer = connect(
-  state => {
-    return {state, error: state.about.error};
-  },
-  dispatch => {
-    return {
-      makeRequest: id => dispatch(getAbout(id)),
-      dispatch
-    };
+const actions = {
+  fetchInfo: id => (dispatch, getState) =>
+    axios
+      .get(urls.house.get.houseBasicInfo(id))
+      .then(response => response.data[0])
+      .then(response => dispatch({type: 'RECIEVE_INFO', response})),
+  fetchReviews: () => (dispatch, getState) => {
+    const reviewIds = getReviewIds(getState());
+    const reviewPromises = reviewIds.map(id =>
+      axios.get(urls.review.get.reviewBasicInfo(id))
+    );
+    Promise.all(reviewPromises)
+      .then(response => response.map(review => review.data))
+      .then(response =>
+        dispatch({
+          type: 'FETCH_REVIEWS_SUCCESS',
+          response
+        })
+      )
+      .then(() => console.log(getState()));
   }
-)(About);
+};
+
+About = withRouter(
+  connect(
+    state => ({
+      reviews: getReviews(state),
+      info: getInfo(state)
+    }),
+    actions
+  )(About)
+);
 
 const store = createStore(
   rootReducer,
   composeWithDevTools(applyMiddleware(thunk))
 );
-const AboutRedux = ({id}) => (
+const AboutRedux = () => (
   <Provider store={store}>
-    <AboutContainer id={id} />
+    <About />
   </Provider>
 );
 export default AboutRedux;

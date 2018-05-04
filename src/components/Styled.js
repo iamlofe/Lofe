@@ -29,7 +29,7 @@ const Center = styled.div`
   justify-content: center;
 `;
 
-let Status = ({normalMessage, status}) => {
+let Status = ({normalMessage, status = 'normal'}) => {
   switch (status) {
     case 'normal':
       return (
