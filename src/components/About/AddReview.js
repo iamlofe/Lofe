@@ -1,7 +1,5 @@
 import React from 'react';
 import {reducer as reduxFormReducer, Field, reduxForm} from 'redux-form';
-import {createStore, combineReducers} from 'redux';
-import {Provider, connect} from 'react-redux';
 import {
   StyledInput,
   StyledTextArea,
@@ -10,13 +8,18 @@ import {
   Rating,
   Status
 } from '../Styled';
-import {getRating} from '../../reducers/about';
 import {Row, Col, Button} from 'react-bootstrap';
-import axios from 'axios';
-import {getCookie} from '../../cookies';
-import urls from '../../routes';
 
-const Review = ({input, meta: {touched, error}}) => (
+const FormRating = ({onRatingChange, rating}) => (
+  <Rating
+    isSelectable={true}
+    rating={rating}
+    centered={true}
+    onChange={onRatingChange}
+  />
+);
+
+const Description = ({input, meta: {touched, error}}) => (
   <div>
     <StyledTextArea margin="10px 0" placeholder="review" {...input} />
     {touched && error && <StyledError>{error}</StyledError>}
@@ -41,7 +44,7 @@ let Form = ({handleSubmit, submitting}) => (
       <Col md={10} className="offset-md-1">
         <Row>
           <Col md={12}>
-            <Field name="description" component={Review} />
+            <Field name="description" component={Description} />
           </Col>
           <Col md={6}>
             <Field
@@ -58,7 +61,7 @@ let Form = ({handleSubmit, submitting}) => (
             />
           </Col>
           <Col md={12}>
-            <Status normalMessage="add review" />
+            <Button type="submit">hello</Button>
           </Col>
         </Row>
       </Col>
@@ -83,57 +86,11 @@ Form = reduxForm({
   validate
 })(Form);
 
-const chageRating = rating => ({
-  type: 'CHANGE_RATING',
-  rating
-});
-
-let FormRating = ({chageRating, rating}) => (
-  <Rating
-    isSelectable={true}
-    rating={rating}
-    centered={true}
-    onChange={chageRating}
-  />
-);
-FormRating = connect(
-  state => ({
-    rating: getRating(state)
-  }),
-  dispatch => ({
-    chageRating: rating => dispatch(chageRating(rating))
-  })
-)(Rating);
-
-let AddReview = ({onSubmit}) => (
+const AddReview = props => (
   <div>
-    <FormRating />
-    <Form onSubmit={onSubmit} />
+    <FormRating {...props} />
+    <Form {...props} />
   </div>
 );
-
-const addReview = review => ({
-  type: 'ADD_REVIEW',
-  review
-});
-
-AddReview = connect(null, (dispatch, ownProps) => {
-  return {
-    onSubmit: values => (dispatch, getState) => {
-      const rating = getRating(getState());
-      if (rating === 0) return;
-      const data = {
-        ...values,
-        houseId: ownProps.match.params.id,
-        rating,
-        session: getCookie('userid')
-      };
-      console.log(data);
-      axios
-        .post(urls.review.post.createReview(data))
-        .then(review => dispatch(addReview(review)));
-    }
-  };
-})(AddReview);
 
 export default AddReview;

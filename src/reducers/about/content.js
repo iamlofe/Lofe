@@ -10,8 +10,15 @@ const initialInfoState = {
 
 const info = (state = initialInfoState, action) => {
   switch (action.type) {
-    case RECIEVE_INFO:
-      return {...action.response, reviewIds: action.response.reviews};
+    case 'FETCH_INFO_SUCCESS':
+      return {
+        ...action.response,
+        reviewIds: action.response.reviews,
+        coords: {
+          lat: action.response.coords.lat - '',
+          lng: action.response.coords.lng - ''
+        }
+      };
     default:
       return state;
   }
