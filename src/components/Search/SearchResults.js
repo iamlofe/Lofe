@@ -3,9 +3,6 @@ import {connect} from 'react-redux';
 import {Row, Col} from 'react-bootstrap';
 import styled from 'styled-components';
 import {Rating, Price} from '../Styled';
-import {getCookie} from '../../cookies';
-import axios from 'axios';
-import {like} from '../../actions/asyncactions';
 
 const StyledDescriptionText = styled.p`
   text-overflow: ellipsis;
@@ -49,46 +46,15 @@ const Flex = styled.div`
   padding: 10px 0;
 `;
 
-const ImageWrap = ({img, isLiked, id}) => (
+const ImageWrap = ({img, isLiked, onLikeClick}) => (
   <StyledImageWrap img={img}>
-    <Like isLiked={isLiked} id={id} />
+    <Like isLiked={isLiked} onClick={onLikeClick} />
   </StyledImageWrap>
-);
-
-let Like = ({loggedIn, id, isLiked, like}) => (
-  <StyledLike
-    isLiked={isLiked}
-    onClick={e => {
-      e.preventDefault();
-      if (loggedIn) {
-        like({session: getCookie('userid'), id, loggedIn});
-      } else {
-        window.location.replace('http://localhost:3000/login');
-      }
-    }}
-  />
-);
-Like = connect(
-  state => {
-    return {
-      username: state.session.username,
-      loggedIn: state.session.loggedIn
-    };
-  },
-  dispatch => {
-    return {
-      like: data => dispatch(like(data))
-    };
-  }
-)(Like);
-
-const DescriptionText = ({description}) => (
-  <StyledDescriptionText>{description}</StyledDescriptionText>
 );
 
 const Description = ({price, description, rating, currency}) => (
   <StyledDescription>
-    <DescriptionText description={description} />
+    <StyledDescriptionText>{description}</StyledDescriptionText>
     <Flex>
       <Rating rating={rating} />
       <Price currency={currency} price={price} />
@@ -120,7 +86,8 @@ const SearchResult = ({
   rating,
   isLiked,
   image,
-  id
+  id,
+  onLikeClick
 }) => (
   <Col lg={4} md={6} sm={6}>
     <StyledSearchResult>
@@ -132,6 +99,7 @@ const SearchResult = ({
         }}
       >
         <ImageWrap
+          onLikeClick={onLikeClick}
           img={
             image ||
             'http://www.joshuacasper.com/contents/uploads/joshua-casper-samples-free.jpg'
@@ -149,15 +117,3 @@ const SearchResult = ({
     </StyledSearchResult>
   </Col>
 );
-
-let SearchResults = ({results}) =>
-  results ? (
-    <Row>
-      {results.map(result => <SearchResult key={result.id} {...result} />)}
-    </Row>
-  ) : null;
-
-export default (SearchResults = connect(({results, ...rest}) => {
-  //connected
-  return {rest, results};
-}, null)(SearchResults));

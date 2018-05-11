@@ -1,200 +1,121 @@
 import React from 'react';
 import Rheostat from 'rheostat';
-import '../../rheostat.css';
-import {Row, Col, Button} from 'react-bootstrap';
+import './rheostat.css';
+import './nav.css';
+import {Row, Col, Button, Grid} from 'react-bootstrap';
 import {connect} from 'react-redux';
 import ExpansionPanel, {
   ExpansionPanelSummary,
   ExpansionPanelDetails
 } from 'material-ui/ExpansionPanel';
+import Input from 'material-ui/Input';
 import {deleteCookie, getCookie} from '../../cookies';
 import styled from 'styled-components';
 import Menu from '../Menu/Menu';
-import Input from 'material-ui/Input';
 import {getHouses} from '../../actions/asyncactions';
+import {getSetup, getValues} from '../../reducers/search';
+import {makeRequest} from '../../actions/search';
+import {DebounceInput} from 'react-debounce-input';
 
-function MyHandle({style, ...passProps}) {
-  return (
-    <div
-      {...passProps}
-      style={{
-        ...style,
-        backgroundColor: '#efefef',
-        border: '1px solid #888',
-        borderRadius: 4,
-        cursor: 'ew-resize',
-        marginLeft: -13,
-        height: 24,
-        width: 24,
-        zIndex: 3
-      }}
-    />
-  );
-}
-
-class LabeledSlider extends React.Component {
-  constructor(props) {
-    super(props);
-
-    this.state = {
-      values: props.values || [0],
-      isAvailableForRequest: true
-    };
-
-    this.updateValue = this.updateValue.bind(this);
-  }
-
-  updateValue(sliderState) {
-    if (this.state.isAvailableForRequest) {
-      this.setState({...this.state, isAvailableForRequest: false});
-      setTimeout(() => {
-        this.props.dispatch({
-          type: `change_${this.props.type}`,
-          min: this.state.values[0],
-          max: this.state.values[1]
-        });
-        this.setState({...this.state, isAvailableForRequest: true});
-        this.props.makeRequest({
-          ...this.props.filter,
-          session: getCookie('userid')
-        });
-      }, 500);
-    }
-    this.setState({
-      values: sliderState.values
-    });
-  }
-
-  render() {
-    return (
-      <div
-        style={{
-          margin: '0 10% 10% 10%',
-          width: '100%'
-        }}
-      >
-        <div style={{textAlign: 'center', marginBottom: '10px'}}>
-          {`${this.state.values[0]} - ${this.state.values[1]} ${
-            this.props.metrics
-          }`}
-        </div>
-        <Rheostat
-          {...this.props}
-          onValuesUpdated={this.updateValue}
-          values={this.state.values}
-        />
-      </div>
-    );
-  }
-}
-
-const Slider = connect(
-  ({filter}) => {
-    return {filter};
-  },
-  dispatch => {
-    return {
-      makeRequest: args => dispatch(getHouses(args)),
-      dispatch
-    };
-  }
-)(LabeledSlider);
 const StyledSearchBar = styled.div`
   padding: 30px 0;
 `;
 
-class SmartInput extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      text: '',
-      isAvailableForRequest: true
-    };
-  }
-  onChange(e) {
-    if (this.state.isAvailableForRequest) {
-      this.setState({isAvailableForRequest: false});
-      setTimeout(() => {
-        this.props.dispatch({
-          type: `change_request`,
-          request: this.state.text
-        });
-        this.setState({...this.state, isAvailableForRequest: true});
-        this.props.makeRequest({
-          ...this.props.filter,
-          session: getCookie('userid')
-        });
-      }, 500);
-    }
-    this.setState({
-      text: e.target.value
-    });
-  }
-  render() {
-    return (
-      <Input
-        label="search"
-        autoFocus={true}
-        fullWidth={true}
-        onChange={this.onChange.bind(this)}
-        placeholder="search"
-      />
-    );
-  }
-}
-const SmartInputComponent = connect(
-  ({filter}) => {
-    return {filter};
-  },
-  dispatch => {
-    return {
-      makeRequest: args => dispatch(getHouses(args)),
-      dispatch
-    };
-  }
-)(SmartInput);
+const Slider = ({setup, values, onChange, type, makeRequest}) => {
+  const customOnChange = ({values}) =>
+    onChange(type, values.map(value => value * setup.step));
+  const propsToRheostat = {
+    min: parseInt(setup.min / setup.step),
+    max: parseInt(setup.max / setup.step),
+    values: values.map(value => parseInt(value / setup.step))
+  };
+  return (
+    <ExpansionPanel>
+      <ExpansionPanelSummary>{type}</ExpansionPanelSummary>
+      <ExpansionPanelDetails>
+        <div style={{width: '100%'}}>
+          <p style={{textAlign: 'center'}}>{`${values[0]} - ${values[1]}`}</p>
+          <Rheostat
+            onValuesUpdated={customOnChange}
+            {...propsToRheostat}
+            onChange={makeRequest}
+          />
+        </div>
+      </ExpansionPanelDetails>
+    </ExpansionPanel>
+  );
+};
 
-const SearchBar = () => (
-  <StyledSearchBar>
-    <Row>
-      <Col md={6}>
-        <SmartInputComponent />
-      </Col>
-
-      <Col md={2}>
-        <ExpansionPanel>
-          <ExpansionPanelSummary>Price</ExpansionPanelSummary>
-          <ExpansionPanelDetails>
+let SearchBar = ({
+  priceSetup,
+  priceValues,
+  ratingSetup,
+  ratingValues,
+  query,
+  onChange,
+  makeRequest
+}) => {
+  return (
+    <Grid>
+      <StyledSearchBar>
+        <Row>
+          <Col md={6}>
+            <DebounceInput
+              style={{width: '100%'}}
+              element={Input}
+              debounceTimeout={500}
+              onChange={e => {
+                onChange('query', e.target.value);
+                makeRequest();
+              }}
+            />
+          </Col>
+          <Col md={2}>
             <Slider
               type="price"
-              handle={MyHandle}
-              min={0}
-              max={2000}
-              values={[0, 2000]}
-              metrics="usd"
+              setup={priceSetup}
+              values={priceValues}
+              onChange={onChange}
+              makeRequest={makeRequest}
             />
-          </ExpansionPanelDetails>
-        </ExpansionPanel>
-      </Col>
-      <Col md={2}>
-        <ExpansionPanel>
-          <ExpansionPanelSummary>Rating</ExpansionPanelSummary>
-          <ExpansionPanelDetails>
+          </Col>
+          <Col md={2}>
             <Slider
               type="rating"
-              handle={MyHandle}
-              min={0}
-              max={5}
-              values={[0, 5]}
-              metrics="stars"
+              setup={ratingSetup}
+              values={ratingValues}
+              onChange={onChange}
+              makeRequest={makeRequest}
             />
-          </ExpansionPanelDetails>
-        </ExpansionPanel>
-      </Col>
-      <Col md={2}>
+          </Col>
+        </Row>
+      </StyledSearchBar>
+    </Grid>
+  );
+};
+
+/*
+<Col md={2}>
         <Menu active="search" />
       </Col>
-    </Row>
-  </StyledSearchBar>
-);
+*/
+SearchBar = connect(
+  state => ({
+    priceSetup: getSetup(state, 'price'),
+    ratingSetup: getSetup(state, 'rating'),
+    priceValues: getValues(state, 'price'),
+    ratingValues: getValues(state, 'rating'),
+    query: getValues(state, 'query')
+  }),
+  dispatch => ({
+    onChange: (filter, value) => dispatch(changeFilterValue(filter, value)),
+    makeRequest: () => dispatch(makeRequest())
+  })
+)(SearchBar);
+
+const changeFilterValue = (filter, values) => ({
+  type: `CHANGE_${filter.toUpperCase()}_FILTER_VALUES`,
+  values
+});
+
 export default SearchBar;

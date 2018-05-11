@@ -1,8 +1,6 @@
 import React from 'react';
 import {createStore, combineReducers, applyMiddleware} from 'redux';
-import thunk from 'redux-thunk';
-import {composeWithDevTools} from 'redux-devtools-extension';
-import {Provider, connect} from 'react-redux';
+
 import {Grid} from 'react-bootstrap';
 import faker from 'faker';
 import SearchResults from './SearchResults';
