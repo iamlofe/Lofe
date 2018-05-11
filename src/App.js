@@ -1,17 +1,17 @@
 import React, {Component} from 'react';
-import Search from './components/Search/Search';
+import Search from './components/Search';
 import AddHouse from './components/AddHouse/AddHouse';
 import {BrowserRouter, Route, Switch} from 'react-router-dom';
-import About from './components/About/About';
 import Login from './components/Login/Login';
 import {Grid, Col, Row} from 'react-bootstrap';
 import {Provider} from 'react-redux';
-import AboutRedux from './components/About/AboutRedux';
+import AboutRedux from './components/About';
 import WishListComponent from './components/WishList/WishList';
 import Generator from './components/generator';
 import Home from './components/Home/Home';
 import axios from 'axios';
 import Profile from './components/Profile/Profileview';
+import Rheostat from 'rheostat';
 
 class UploadFile extends React.Component {
   constructor(props) {
@@ -33,6 +33,17 @@ class UploadFile extends React.Component {
     );
   }
 }
+
+const Test = () => (
+  <div style={{margin: '40px'}}>
+    <Rheostat
+      onChange={values => console.log(values)}
+      min={1}
+      max={100}
+      values={[1, 100]}
+    />
+  </div>
+);
 
 class App extends Component {
   render() {
@@ -57,6 +68,7 @@ class App extends Component {
             path="/user/:userId"
             component={props => <Profile id={props.match.params.userId} />}
           />
+          <Route path="/rheostat" component={Test} />
         </Switch>
       </BrowserRouter>
     );

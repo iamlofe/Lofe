@@ -16,8 +16,8 @@ const CenterRow = styled.div`
 `;
 
 const StyledRating = styled.div`
-  display: ${props => (!props.centered ? 'flex' : 'inline-block')};
-  justify-content: ${props => (!props.centered ? 'center' : null)};
+  display: ${props => (props.centered ? 'flex' : 'inline-block')};
+  justify-content: ${props => (props.centered ? 'center' : null)};
   line-height: 0;
 `;
 

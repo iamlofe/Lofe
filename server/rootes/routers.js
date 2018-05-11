@@ -89,9 +89,6 @@ router.post('/house/search', search);
 //
 router.get('/review/:reviewId', showreview);
 
-//Check user
-router.get('/checkUser', checkUser);
-
 //Show reviews
 router.get('/house/:houseId/reviews', reviews);
 
@@ -103,5 +100,7 @@ router.post('/user/isLoggedIn', isLoggedIn);
 
 //About user
 router.get('/user/:userId', aboutUser);
+
+router.post('/user/userExists', checkUser);
 
 export default router;

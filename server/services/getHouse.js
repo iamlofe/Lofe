@@ -5,7 +5,7 @@ export default async (req, res) => {
   const _id = req.params.houseId;
 
   try {
-    house = await House.find({_id}, {reviews: 0});
+    house = await House.find({_id});
     res.send(house);
   } catch ({message}) {
     return next({

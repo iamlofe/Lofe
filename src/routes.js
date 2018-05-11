@@ -7,10 +7,10 @@ const urls = {
   house: {
     get: {
       houseBasicInfo: houseId => `${housePrefix}/${houseId}`,
-      search: ({q, rating, price, page}) =>
-        `${housePrefix}/search?q=${q}&minprice=${price.min}&maxprice=${
-          price.max
-        }&minrating=${rating.min}&maxrating=${rating.max}&page=${page}`,
+      search: ({query, rating, price, page}) =>
+        `${housePrefix}/search?q=${query}&minprice=${price[0]}&maxprice=${
+          price[1]
+        }&minrating=${rating[0]}&maxrating=${rating[1]}`, //&page=${page}`,
       houseReviews: houseId => `${housePrefix}/${houseId}/reviews`
     },
     post: {
@@ -36,6 +36,7 @@ const urls = {
       emailExists: email => `${userPrefix}/emailExists?email=${email}`
     },
     post: {
+      userExists: () => `${userPrefix}/userExists`,
       changeProfile: () => `${userPrefix}/changeProfile`,
       wishList: () => `${userPrefix}/getWishList`,
       addToWishList: () => `${userPrefix}/addToWishList`,

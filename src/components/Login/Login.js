@@ -41,28 +41,6 @@ ToggleButton = connect(
 
 const onSignIn = values => {
   store.dispatch({type: 'change_signin_status', status: 'pending'});
-  console.log(values);
-  axios
-    .post(urls.user.post.signin(), values)
-    .then(res => {
-      console.log(res);
-      switch (res.status) {
-        case 'incorrect_pair':
-          store.dispatch({
-            type: 'change_signin_status',
-            status: 'incorrect_pair'
-          });
-          break;
-        default:
-          setCookie('userid', res.data.session.user);
-          store.dispatch({type: 'change_signin_status', status: 'success'});
-          window.location.replace('/');
-          break;
-      }
-    })
-    .catch(() =>
-      store.dispatch({type: 'change_signin_status', status: 'network_error'})
-    );
 };
 
 const onSignUp = values => {
